@@ -1,0 +1,6 @@
+[submodule "G"]
+	path = G
+	url = git://github.com/guokr/G.js.git
+[submodule "build"]
+	path = build
+	url = git://github.com/guokr/guokr-build.git
