@@ -1,0 +1,50 @@
+/* @module: new block component（全局弹出框样式）并且以后改成以gui-开头，因为所有的与js生成的class，统一用gui-开头。*/
+.gui-block {
+    position: fixed;
+    _position: absolute;
+    z-index: 999;
+    display: none;
+    padding: 8px;
+    width: 432px; /*默认值*/
+    background-color: #f0f0f0;
+}
+    .gui-block-b {
+        border: 1px solid #afafaf;
+    }
+    .gui-block-hd {
+        *zoom: 1;
+        overflow: hidden;
+        background-color: #ebf2f7;
+        border-bottom:1px solid #d9d9d9;
+    }
+        .gui-block-hd span {
+            _display: inline;
+            float: left;
+            margin-left: 20px;
+            height: 40px;
+            line-height: 40px;
+            font-weight: bold;
+            font-size: 14px;
+            color:#000;
+        }
+        .gui-block-close {
+            _display:inline;
+            float: right;
+            margin: 12px 10px 0 0;
+            width: 16px;
+            height: 16px;
+            overflow: hidden;
+            text-indent: -9999px;
+            background:url(/skin/imgs/small.gif?v2.8) no-repeat -16px -560px;
+        }
+        .gui-block-close:hover {
+            background-position: 0 -560px;
+        }
+    .gui-block-bd {
+        padding:20px;
+        _zoom: 1;
+        font-size: 14px;
+        word-wrap:break-word;
+        background-color:#FFF;
+        border-top:none;
+    }

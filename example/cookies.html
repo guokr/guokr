@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>cookies</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">cookies</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* cookies module<br/>
+*    1.1 修改了set函数的返回<br/>
+* @author mzhou<br/>
+* @version 1.1
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/cookies.js";
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+    /**
+     * 设置cookies的值
+     * @param {string} name key值
+     * @param {string} val 值
+     * @param {object} expired 过期时间的date对象
+     * @param {string} path 路径对象
+     * @param {object} 对象本身
+     */
+    var curDate = new Date();
+    var s = curDate.getTime() + 3000;
+    curDate.setTime( s );
+    //设置is_logined, 3000ms后过期
+    cookies.set( 'is_logined', 'TRUE', curDate );
+    $('#showCookies').prepend( 'set&lt;br/&gt;' );
+</pre><br/>
+<pre class="demo">
+    /**
+     * 获取cookies中key为name的值
+     * @param {string} name key值
+     * @return {string} 返回对应值，如果没有则返回''
+     */
+    var logined = cookies.get( 'is_logined' );
+    $('#showCookies').prepend( logined + '&lt;br/&gt;' );
+</pre>
+                <button class="sg_btn mt20" id="setCookies">SET</button>
+                <button class="sg_btn mt20" id="getCookies">GET</button>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                    <div id="showCookies"></div>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'cookies', function( cookies ) {
+            window.cookies = cookies;
+            $('#setCookies').bind('click', function(){
+                $.globalEval( $('.demo:eq(0)').text() );
+            });
+            $('#getCookies').bind('click', function(){
+                $.globalEval( $('.demo:eq(1)').text() );
+            });
+        });
+    </script>
+</body>
+</html>
+

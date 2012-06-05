@@ -1,0 +1,195 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>消息中心notify</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+    <style>
+dd .gheader {
+    margin-left: -60px;
+    margin-bottom: 300px;
+}
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">消息中心notify</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/notify.js"
+                </dd>
+
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+     var noti = notify( 12, 
+                         {
+                             "notify_list":["\n\n&lt;li data-id=\"464435\"&gt;\n&lt;p&gt;&lt;a href=\"/notify/follow_user/464435/\" data-operation=\"dismissOne\" target=\"_blank\" &gt;1个人关注你&lt;/a&gt;&lt;/p&gt;\n    &lt;a href=\"javascript: void 0;\" class=\"icon-close\" data-operation=\"dismissOne\"&gt;x&lt;/a&gt;\n&lt;/li&gt;\n",        // ATTENTION! 第一个dismissOne 原来是openLink
+                             "\n\n&lt;li data-id=\"-1\"&gt;\n&lt;p&gt;&lt;a href=\"/message/?t=4\" target=\"_blank\" &gt;1条新增@提到你&gt;/a&lt;&gt;/p&gt;\n    &lt;a href=\"javascript: void 0;\" class=\"icon-close\" data-operation=\"dismissOne\"&gt;x&lt;/a&gt;\n&lt;/li&gt;\n"],
+                             "notify_count":2
+                        });
+</pre>
+<pre class="demo">
+     noti.update( 2, 
+                         {
+                             "notify_list":["\n\n&lt;li data-id=\"464435\"&gt;\n&lt;p&gt;&lt;a href=\"/notify/follow_user/464435/\" data-operation=\"dismissOne\" target=\"_blank\" &gt;1个人关注你&lt;/a&gt;&lt;/p&gt;\n    &lt;a href=\"javascript: void 0;\" class=\"icon-close\" data-operation=\"dismissOne\"&gt;x&lt;/a&gt;\n&lt;/li&gt;\n",        // ATTENTION! 第一个dismissOne 原来是openLink
+                             "\n\n&lt;li data-id=\"-1\"&gt;\n&lt;p&gt;&lt;a href=\"/message/?t=4\" target=\"_blank\" &gt;1条新增@提到你&gt;/a&lt;&gt;/p&gt;\n    &lt;a href=\"javascript: void 0;\" class=\"icon-close\" data-operation=\"dismissOne\"&gt;x&lt;/a&gt;\n&lt;/li&gt;\n"],
+                             "notify_count":2
+                        });
+</pre>
+                <button class="sg_btn mt20 workdemoBtn">运行</button>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+        <div class="gheader">
+            <a title="果壳 科技有意思" class="gheader-logo" id="guokrLogo">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a class="current" href="/">首页</a></li>
+                <li class="m_menu" id="mMenu">
+                <a href="/minisite/" class="m_menu-title">主题站<b><s></s></b></a>
+                <div>
+                    <ul>
+                        <li>
+                            <a href="/site/diy/">
+                                <img width="20" height="20" alt="DIY" src="http://www.guokr.com/skin/mini_logo/diy_s.jpg">DIY
+                            </a>
+                        </li>
+                        <li><a href="/site/fact/"><img width="20" height="20" alt="谣言粉碎机" src="http://www.guokr.com/skin/mini_logo/fact_s.jpg">谣言粉碎机</a></li>
+                        <li><a href="/site/psybst/"><img width="20" height="20" alt="心事鉴定组" src="http://www.guokr.com/skin/mini_logo/psybst_s.jpg">心事鉴定组</a></li>
+                        <li><a href="/site/gizfan/"><img width="20" height="20" alt="趣科技" src="http://www.guokr.com/skin/mini_logo/gizfan_s.jpg">趣科技</a></li>
+                        <li><a href="/site/health/"><img width="20" height="20" alt="健康朝九晚五" src="http://www.guokr.com/skin/mini_logo/health_s.jpg">健康朝九晚五</a></li>
+                        <li><a href="/site/logos/"><img width="20" height="20" alt="死理性派" src="http://www.guokr.com/skin/mini_logo/logos_s.jpg">死理性派</a></li>
+                        <li><a href="/site/natural/"><img width="20" height="20" alt="自然控" src="http://www.guokr.com/skin/mini_logo/natural_s.jpg">自然控</a></li>
+                        <li><a href="/site/crime/"><img width="20" height="20" alt="谋杀 现场 法医" src="http://www.guokr.com/skin/mini_logo/sciblog_s.jpg">谋杀 现场 法医</a></li>
+                        <li><a href="/site/sciblog/"><img width="20" height="20" alt="科技名博" src="http://www.guokr.com/skin/mini_logo/sciblog_s.jpg">科技名博</a></li>
+                        <li><a href="/site/pet/"><img width="20" height="20" alt="爱宠" src="http://www.guokr.com/skin/mini_logo/pet_s.jpg">爱宠</a></li>
+                        <li><a href="/site/microsf/"><img width="20" height="20" alt="微科幻" src="http://www.guokr.com/skin/mini_logo/microsf_s.jpg">微科幻</a></li>
+                        <li><a href="/site/sex/"><img width="20" height="20" alt="性 情" src="http://www.guokr.com/skin/mini_logo/sex_s.jpg">性 情</a></li>
+                        <li><a href="/site/artsci/"><img width="20" height="20" alt="文艺科学" src="http://www.guokr.com/skin/mini_logo/artsci_s.jpg">文艺科学</a></li>
+                        <li><a href="/site/digest/"><img width="20" height="20" alt="环球科技观光团" src="http://www.guokr.com/skin/mini_logo/digest_s.jpg">环球科技观光团</a></li>
+                        <li><a href="/site/techb/"><img width="20" height="20" alt="科技与商业" src="http://www.guokr.com/skin/mini_logo/techb_s.jpg">科技与商业</a></li>
+                    </ul>
+                </div>
+                </li>
+                <li><a href="/group/">小组</a></li>
+                <li><a href="/nuts/">果壳达人</a></li>
+                <li><a href="/ask/">问答<sup class="new">new</sup></a></li>
+                <li id="gNavFocus"><a href="/focus/">今日推荐</a></li>
+            </ul>
+            <div class="gheader-i">
+                <div class="gheader-i-b"></div>
+                <a href="/minisite/" class="s_menu-title" id="sMenu">
+                    <img width="20" height="20" alt="敏明君" src="http://www.guokr.com/gkimage/rw/ck/5t/rwck5t.jpg">
+                    敏明君敏明君敏明君
+                    <b><s></s></b>
+                </a>
+                <ul class="s_menu-block" style="display: none;">
+                    <li class="s_menu-block-f">
+                        <a href="/minisite/" class="s_menu-title-hover"><img width="20" height="20" alt="敏明君" src="http://www.guokr.com/gkimage/rw/ck/5t/rwck5t.jpg">敏明君敏明君敏明君<b><s></s></b></a>
+                    </li>
+                    <li><a href="#">个人主页</a></li>
+                    <li><a href="#">设置</a></li>
+                    <li><a href="#">退出</a></li>
+                </ul>
+                <a class="gheader-i-msg" href="/message/">站内信（<span>16</span>）</a>
+                <div class="gheader-i-notice" id="gheaderNotice">
+                    <a target="_blank" href="/message/?t=3">通知<sup>5</sup></a>
+                    <div id="noticeBlock" class="gheader-i-notice-block">
+                        <b><s></s></b>
+                        <ul>
+                            <li>
+                                <p><a target="_blank" href="" data-operation="dismissOne">12个人关注了你</a></p>
+                                <a class="icon-close" href="javascript: void 0;" data-operation="dismissOne">x</a>
+                            </li>
+                            <li data-id="-1">
+                                <p><a target="_blank" href="">1条新增@提到你</a></p>
+                                <a class="icon-close" href="javascript: void 0;" data-operation="dismissOne">x</a>
+                            </li>
+                            <li>
+                                <p>帖子<a target="_blank" href="" data-operation="dismissOne">淘宝就是一家商业地...</a>有了新回复</p>
+                                <a class="icon-close" href="javascript: void 0;" data-operation="dismissOne">x</a>
+                            </li>
+                            <li>
+                                <p>日志<a target="_blank" href="" data-operation="dismissOne">明道一以人为中心的...</a>有了新回复</p>
+                                <a class="icon-close" href="javascript: void 0;" data-operation="dismissOne">x</a>
+                            </li>
+                            <li>
+                                <p>你的问题<a target="_blank" href="" data-operation="dismissOne">问答中，如何区别答案...</a>中的答案有了新评论</p>
+                                <a class="icon-close" href="javascript: void 0;" data-operation="dismissOne">x</a>
+                            </li>
+                        </ul>
+                        <div class="gheader-i-notice-block-bottom">
+                            <a class="sw_btn close_all" href="javascript: void 0;" data-operation="dismissAll">知道了</a>
+                            <a target="_blank" class="more" href="/message/?t=3">全部&gt;&gt;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form action="/search/all/" method="get" class="search" id="search">
+                <p>
+                    <input type="text" value="" placeholder="寻找你喜欢的内容或人" name="wd" class="search-txt" id="searchTxt">
+                    <input type="submit" value="搜索" class="search-bt">
+                </p>
+            </form>
+        </div> </dd>
+
+            </dl>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'notify', function( notify ) {
+            window.notify = notify;
+            var noti = notify( 12, 
+                         {
+                             "notify_list":["\n\n<li data-id=\"464435\">\n<p><a href=\"/notify/follow_user/464435/\" data-operation=\"dismissOne\" target=\"_blank\" >1个人关注你</a></p>\n    <a href=\"javascript: void 0;\" class=\"icon-close\" data-operation=\"dismissOne\">x</a>\n</li>\n",        // ATTENTION! 第一个dismissOne 原来是openLink
+                             "\n\n<li data-id=\"-1\">\n<p><a href=\"/message/?t=4\" target=\"_blank\" >1条新增@提到你</a></p>\n    <a href=\"javascript: void 0;\" class=\"icon-close\" data-operation=\"dismissOne\">x</a>\n</li>\n"],
+                             "notify_count":2
+             });
+            $('.workdemoBtn').click(function() {
+                noti.update( 2, 
+                         {
+                             "notify_list":["\n\n<li data-id=\"464435\">\n<p><a href=\"/notify/follow_user/464435/\" data-operation=\"dismissOne\" target=\"_blank\" >1个人关注你!!</a></p>\n    <a href=\"javascript: void 0;\" class=\"icon-close\" data-operation=\"dismissOne\">x</a>\n</li>\n",        // ATTENTION! 第一个dismissOne 原来是openLink
+                             "\n\n<li data-id=\"-1\">\n<p><a href=\"/message/?t=4\" target=\"_blank\" >1条新增@提到你!!</a></p>\n    <a href=\"javascript: void 0;\" class=\"icon-close\" data-operation=\"dismissOne\">x</a>\n</li>\n",
+                             "\n\n<li data-id=\"123\">\n<p><a href=\"/message/?t=4\" target=\"_blank\" >1条新增@提到你!!</a></p>\n    <a href=\"javascript: void 0;\" class=\"icon-close\" data-operation=\"dismissOne\">x</a>\n</li>\n",
+                             "\n\n<li data-id=\"124\">\n<p><a href=\"/message/?t=4\" target=\"_blank\" >1条新增@提到你!!</a></p>\n    <a href=\"javascript: void 0;\" class=\"icon-close\" data-operation=\"dismissOne\">x</a>\n</li>\n",
+                             "\n\n<li data-id=\"125\">\n<p><a href=\"/message/?t=4\" target=\"_blank\" >1条新增@提到你!!</a></p>\n    <a href=\"javascript: void 0;\" class=\"icon-close\" data-operation=\"dismissOne\">x</a>\n</li>\n",
+                             "\n\n<li data-id=\"126\">\n<p><a href=\"/message/?t=4\" target=\"_blank\" >1条新增@提到你!!</a></p>\n    <a href=\"javascript: void 0;\" class=\"icon-close\" data-operation=\"dismissOne\">x</a>\n</li>\n"],
+                             "notify_count":6
+                         });
+                         return false;
+                 //$.globalEval( $('.demo:eq(1)').text() );
+             });
+        });
+    </script>
+</body>
+</html>

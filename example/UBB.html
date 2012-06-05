@@ -1,0 +1,133 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UBB组件</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+    <style>
+.cmt-line {
+    border-bottom: 1px solid #CCCCCC;
+    font-size: 0;
+    height: 1px;
+    line-height: 1px;
+    margin: 5px 0;
+    width: 230px;
+}
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">UBB组件</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* UBB解析器
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/UBB.js"
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+    var ubbParser = new UBB(),
+        $content = $('#editorContent'),
+        s = ubbParser.HTMLtoUBB( $content );
+    $content.siblings('.msgPlace').html( s );
+</pre>
+                <button class="sg_btn mt20 workDemo">运行</button>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                    <div id="editorContent">
+                        <blockquote><div class="cmt-line"></div>引用 these are the parts inside the blockquote <div class="cmt-line"></div></blockquote>
+                        and these are the parts outside the blockquote, <br/>
+                        balabala
+                    </div>
+                    <br/>
+                    the result after UBB is:<br/>
+                    <p class="msgPlace"></p>
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+    // post/comments.js
+    var ubbParser = new UBB({ defaultColor: '#333333' }),
+        $content = $('#editorContent2'),
+        s = '';
+    /**
+     * 设置过滤器，如果想要忽略一些html就使用过滤器
+     * @param {function} nodeFilter 节点的过滤器，html转ubb时使用，返回false,0,null,undefined, 则不处理此节点和其子节点
+     *                                                             返回node，则是修改此节点返回值，子节点依旧
+     *                                                             返回true或非node，则是不修改此节点
+     * @param {function} ubbFilter
+     */
+    // 设置过滤器，去掉blockquote
+    ubbParser.filter(function(  $node, currentNode, setting ) {
+        var nodeName = $node[0].nodeName.toLowerCase();
+        if ( nodeName === 'blockquote' ) {
+            return false;
+        }
+        if ( nodeName === 'a' ) {
+            return new ubbParser.Node();
+        }
+        return true;
+    });
+    s = ubbParser.HTMLtoUBB( $content );
+    $content.siblings('.msgPlace').html( s );
+</pre>
+                <button class="sg_btn mt20 workDemo">运行</button>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                    <div id="editorContent2">
+                        <blockquote><div class="cmt-line"></div>引用 these are the parts inside the blockquote <div class="cmt-line"></div></blockquote>
+                        and these are the parts outside the blockquote, <br/>
+                        balabala
+                    </div>
+                    <br/>
+                    the result after UBB is:<br/>
+                    <p class="msgPlace"></p>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'UBB', function( UBB ) {
+            window.UBB = UBB;
+            $('.workDemo').each(function(i){
+                $(this).bind('click',function(){
+                    $.globalEval( $('.demo:eq('+i+')').text() );
+                });
+            });
+        });
+    </script>
+</body>
+</html>

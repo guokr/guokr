@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trie树查找</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">Trie树查找</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+                基于Trie树的查找算法
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/Trie.js";
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+    /**
+     * lib/Editor.js
+     * lib/at.js
+     * Tire初始化
+     * @param {function/object} source 如果是函数则用于获取trie数，如果是object则就是trie数
+     * @param {function} wordFilter 搜索字符的过滤转换函数
+     * @param {function} afterLoading loading结束后执行的函数，可以用来修改返回数据
+     */
+    var trie = new Trie(
+        // @param {function/object} source 如果是函数则用于获取trie数，如果是object则就是trie数
+        //api.getFriendList,
+        { g : { 
+                k : { 
+                    w : { $ : ['果壳网']}
+                    }, 
+                q : { 
+                    w : { $ : ['果壳qiao网']}
+                    }
+                }, 
+          m : { 
+                m : {
+                    j : { $ : ['敏明君']}
+                    }
+              }
+        },
+        // @param {function} wordFilter 搜索字符的过滤转换函数
+        // 改为小写
+        function( old ) {
+            return old.toLowerCase();
+        },
+        // afterLoading loading结束后执行的函数，可以用来修改返回数据
+        // 加载完成之后
+        function( data ) {
+            return data;
+        });
+        var $result = $('#result'),
+                tip = null;
+        // 关于事件绑定参见 at.js，此处仅简单模拟
+        $('#searchInfo').bind('keyup', function(){
+            var info = $(this).val();
+            /**
+             * 计算trie树搜索
+             * @param {string} search 搜索值
+             * @param {function} cb 回调函数
+             */
+            trie.calculate( info, function ( data ) {
+                if ( trie.isFailed() ) {
+                    tip = 'failed';
+                } else if ( trie.isLoading() ) {
+                    tip = 'loading';
+                } else if ( data == null ) {
+                    tip = '输入"g"试试呢？';
+                } else if ( data.length === 0 ) {
+                    tip = 'nothing found';   
+                } else {
+                    tip = data;
+                }
+            $('#searchInfo').after('&lt;br/&gt;' + tip);
+            });
+        });
+</pre>
+                <button class="sg_btn mt20" id="workDemo">运行</button>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                    <div id="result">
+                        <input type="text" class="b_txt" id="searchInfo" >
+                    </div>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'Trie', function( Trie ) {
+            window.Trie = Trie;
+            $('#workDemo').one('click', function(){
+               $.globalEval( $('.demo:eq(0)').text() );
+            });
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,83 @@
+/* @module: form */
+.form {
+    overflow: hidden;
+    width: 100%;
+    color: #666;
+}
+    .form p{
+        padding: 10px 0;
+        height: 30px;
+        overflow: hidden;
+        line-height: 30px;
+    }
+    .form-rem {
+        margin-left: 60px;
+    }
+        .form input,
+        .form label,
+        .form span{
+            font-size: 14px;
+            vertical-align: middle;
+        }
+        .form label{
+            float: left;
+            width: 60px;
+        }
+        .form-rem label{
+            float: none;
+            margin-left: 6px;
+            color: #666;
+        }
+        .form-txt{
+            margin-right: 13px;
+            width: 220px;
+        }
+        .form-txt-vcode{
+            width: 6em;
+        }
+        .form-check{
+            margin-left: 60px
+        }
+        .form .form-rem{
+            float: none;
+        }
+        .form-bt{
+            float: left;
+            margin: 0 20px 0 0;
+        }
+        .form .form-bt{
+            margin-left: 60px;
+            font-weight: bold;
+        }
+        .form-loading{
+            display: inline;
+            padding-right: 6px;
+            vertical-align: middle;
+        }
+        .form-link{
+            vertical-align: middle;
+            font-size: 14px;
+        }
+        .form .success,
+        .form .error{
+            display: inline-block;
+            padding-left: 27px;
+            height: 30px;
+            line-height: 30px;
+            background: url(/skin/imgs/log_reg.png) no-repeat -105px -28px;
+        }
+        .form .success{
+            width: 27px;
+        }
+        .form .error{
+            color: #F30;
+            background-position: -105px 1px;
+        }
+        .form-vcode{
+            display: inline;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        .form-help{
+            margin-left: 60px;
+        }

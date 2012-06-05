@@ -1,0 +1,205 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图片剪裁imgclip</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">图片剪裁imgclip</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* 实现图片剪裁<br/>
+* @author mzhou
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/imgclip.js";<br/>
+                    CSS:
+<pre class="demo">
+/*settings.css*/
+.crop {
+    clear: both;
+    margin-top: 20px;
+    overflow: hidden;
+}
+.crop .mask_wrapper {
+    background-color: #000000;
+    float: left;
+    position: relative;
+    z-index: 1;
+}
+.crop .img_mask {
+    height: 0;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    width: 0;
+    z-index: 2;
+}
+.crop .cover_mask {
+    left: 0;
+    position: absolute;
+    top: 0;
+}
+.crop .resizer_mask {
+    background-color: #CCCCCC;
+    border: 2px solid #CCCCCC;
+    bottom: 0;
+    cursor: se-resize;
+    height: 10px;
+    opacity: 0.5;
+    position: absolute;
+    right: 0;
+    width: 10px;
+}
+.crop .preview {
+    overflow: hidden;
+}
+.crop .top_border, .crop .left_border, .crop .right_border, .crop .bottom_border {
+    background: #CCC;
+}
+.crop .top_border {
+    height: 9px;
+    font-size: 0;
+    left: 0;
+    position: absolute;
+    top: -8px;
+    width: 100%;
+}
+.crop .left_border {
+    height: 100%;
+    left: -8px;
+    position: absolute;
+    top: 0;
+    width: 9px;
+}
+.crop .right_border {
+    cursor: e-resize;
+    height: 100%;
+    position: absolute;
+    right: -8px;
+    top: 0;
+    width: 9px;
+}
+.crop .bottom_border {
+    bottom: -8px;
+    cursor: n-resize;
+    height: 9px;
+    font-size: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+}
+.crop_operation {
+    float: left;
+    margin: 0 40px 26px 0;
+    width: 320px;
+}
+.crop_operation .hint {
+    color: #888888;
+    height: 34px;
+    line-height: 34px;
+}.crop_preview {
+    border-left: 1px dashed #CCCCCC;
+    color: #888888;
+    float: left;
+    left: -1px;
+    padding-left: 40px;
+    position: relative;
+    width: 220px;
+}
+#preview48 {
+    margin-top: 30px;
+}
+</pre>
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+    /**
+     * src/js/settings.js
+     * hotfix_guokr/nutshell/templates/upload_avatar.html
+     */
+    var $crop = $('.crop');
+    $crop.find('.preview_big_pic').bind( 'load', function() {
+        imgclip(
+            // headSelector, 图片容器对象
+            $(this), {
+            // previewSelectors, 预览对象
+            '#preview160': [160, 160],
+            '#preview48': [48, 48]
+            }, {
+            // option, 可选
+            // 设置裁剪框的大小，默认为待裁剪图片的高度和宽度中的较小的一个值
+            'width': 100,
+            'height': 100,
+            // 设置裁剪框离top 和left 距离，默认为0
+            'left': 20,
+            // 裁剪最小宽度和高度，默认为48
+            'minWidth': 20,
+            'minHeight': 20
+            }
+        );
+    }).load();</pre>
+                <button class="sg_btn mt20" id="workDemo">运行</button>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                <div class="crop">
+                    <div class="crop_operation">
+                        <img class="preview_big_pic" src="http://www.guokr.com/gkimage/16/c0/6l/16c06l.png" alt="" />
+                        <div class="hint cb">托拽或缩放大图中的方格，预览你的头像图标。</div>
+                    </div>
+                    <div class="crop_preview">
+                        <div id="preview160" class="preview"></div>
+                        <div>大尺寸头像 160x160 像素</div>
+                        <div id="preview48" class="preview"></div>
+                        <div>小尺寸头像 48x48 像素</div>
+                    </div>
+                </div>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'imgclip', function( imgclip ) {
+            document.getElementsByTagName('head')[0].appendChild( $('<style>'+$('.demo:eq(0)').text()+'</style>')[0] );
+            window.imgclip = imgclip;
+            $('#workDemo').one('click', function(){
+                $.globalEval( $('.demo:eq(1)').text() );
+            });
+        });
+    </script>
+</body>
+</html>

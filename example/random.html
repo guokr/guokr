@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>随机函数库random</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">随机函数库random</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* 随机函数库<br/>
+* 使用方法：<br/>
+*      random([1,3,4])                                  // 随机获取数组中的某一项<br/>
+*      random([1,3,4], 3)                               // 随机选取数组中前3个项中某一项<br/>
+*      random([1,3,4], function(item) { return item;})  // 以数组的值为权重，随机选取数组中的某一项<br/>
+*      random( 0, 10 )                                  // 随机0到10中的一个整数,包括0，但不包括0，即[0,10)<br/>
+*      random( 0, 10, true )                            // 随机0到10中的非整数，包括0，但不包括0，即[0,10)<br/>
+* @author mzhou
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/random.js";
+                </dd>
+                <dt>计算指定区间之间的随机数</dt>
+                <dd>
+<pre>
+/**
+ * 计算指定区间之间的随机数
+ *      区间为[from,to)
+ * @return {number} 
+ */
+var result = random(
+    // @param {number} from 开始值
+    1,
+    // @param {number} to 结束值
+    10,
+    // @param {boolean} notInteger 是否返回非整数，默认为false
+    true
+);
+</pre>
+                <button class="demo sg_btn mt20">运行</button>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                <div id="random0">
+                </div>
+                </dd>
+
+                <dt>随机选取数组中前几个项中某一项</dt>
+                <dd>
+<pre>
+/**
+ * 随机选取数组中前几个项中某一项
+ * @param {number} end 结束值
+ * @return {object}
+ */
+var result = random(
+    [1,3,4,6,7],
+    // @param {number} end 结束值，可缺省
+    4
+);
+</pre>
+                <button class="demo sg_btn mt20">运行</button>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                <div id="random1">
+                </div>
+                </dd>
+
+                <dt>以数组的值为权重，随机选取数组中的某一项</dt>
+                <dd>
+<pre>
+/**
+ * 以数组的值为权重，随机选取数组中的某一项
+ * @param {function} getWeight 获取weight的方式，默认为obj的weight属性。 权重值小于等于0则不会被选取到。
+ * @return {object} 
+ */
+var result = random(
+    [1,2,3,5,20,-5,-8,-7],
+    // @param {function} getWeight 获取weight的方式，默认为obj的weight属性。 权重值小于等于0则不会被选取到。
+    function( obj ){
+        return obj;
+    }
+);
+</pre>
+                <button class="demo sg_btn mt20">运行</button>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                <div id="random2">
+                </div>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'random', function( random ) {
+            window.random = random;
+            $('.demo').each(function( i ) {
+                var $this = $(this);
+                $this.click(function() {
+                    $.globalEval( $this.prev().text() );
+                    $('#random'+i).prepend( result + '<br/>' );
+                });
+            });
+       });
+    </script>
+</body>
+</html>

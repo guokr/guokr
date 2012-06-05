@@ -1,0 +1,165 @@
+/* @module: tabs */
+/*
+ * tab宽：60px
+ *    高：37px
+ */
+.tabs {
+    width: 100%;
+    height: 33px;
+    overflow: hidden;
+}
+    .tabs li {
+        float: left;
+    }
+        .tabs li a {
+            float: left;
+            margin-top: 5px;
+            margin-left: 10px;
+            padding: 0 10px;
+            height: 26px;
+            line-height: 26px;
+            color: #888;
+            text-align: center;
+            font-size: 12px;
+            border: 1px solid #dbdbdb;
+            border-bottom-color: #D9D9D9;
+            background-color: #fafafa;
+        }
+        .tabs li a:hover {
+            text-decoration: none;
+            background-color: #eee;
+        }
+            /* hack ie6 */
+            *html .tabs li a:hover span {
+                text-decoration: none;
+            }
+        .tabs li .current {
+            margin-top: 0;
+            height: 32px;
+            line-height: 32px;
+            font-size: 14px;
+            color: #666;
+            border-top: none;
+            border-bottom: 1px solid #FFF;
+            background-color: #FFF;
+        }
+        .tabs li .current:hover {
+            text-decoration: none;
+            color: #666;
+            background-color: #FFF;
+        }
+            .tabs li .current span {
+                margin: 0 -11px;
+                padding: 0 15px;
+                display: block;
+                border-top: 3px solid #29a2cf;
+            }
+/*
+ * top custom
+ */
+.top .tabs {
+    _position: relative;
+    _z-index: 1; /* fix ie6 */
+    clear: both; /* fix firefox */
+    margin-bottom: -1px;
+}
+
+/* @module: top */
+.top-wp {
+    border-bottom: 1px solid #d9d9d9;
+    background-color: #f0f7fc;
+}
+    .top {
+        margin: 0 auto;
+        width: 940px;
+    }
+        .top-main {
+            float: left;
+            padding: 30px 0;
+            width: 640px;
+        }
+            .top-main img {
+                border: 1px solid #d2d2d2;
+                float: left;
+                margin-right: 25px;
+            }
+            .top-main-head {
+                float: left;
+                margin-right: 25px;
+                height: 162px;
+                width: auto !important;
+                vertical-align: middle;
+                overflow: hidden;
+            }
+                .top-main-head img {
+                    float: none;
+                    margin-right: 0;
+                }
+            .top-main div {
+                float: left;
+                width: 450px;
+                color: #888;
+            }
+                .top-main-n1 {
+                    margin-top: 15px;
+                }
+                .top-main-n2 {
+                    font-size: 20px;
+                    color: #29a2cf;
+                }
+                    .top-main-n2 a,
+                    .top-main-n1 a {
+                        font-size: 20px;
+                        color: #000;
+                    }
+                    .top-main-n2 a{
+                        color: #29a2cf;
+                    }
+                    .top-main-n2 span{
+                        font-size: 14px;
+                        color: #888;
+                    }
+                .top-main-info {
+                    margin: 10px 0 5px 0;
+                    line-height: 15px;
+                    word-wrap: break-word;
+                }
+        .top-side {
+            float: right;
+            padding: 30px 0 0;
+            width: 300px;
+        }
+
+
+/* @module: top-board */
+.top-board {
+    float: right;
+    padding: 10px;
+    overflow: hidden;
+    color: #888;
+    background-color: #FFF;
+    border: 1px solid #cbd1d5;
+    border-radius: 5px;
+}
+    .top-board li {
+        float: left;
+        padding: 0 20px;
+        text-align: center;
+        border-right: 1px dotted #c6c6c6;
+    }
+    .top-board .last {
+        border-right-color: #FFF;
+    }
+        .top-board li a {
+            color: #888;
+        }
+        .top-board li span {
+            display: block;
+        }
+/*
+ * custom
+ */
+.top-side .top-board {
+    _display: inline;
+    margin-right: 50px;
+}

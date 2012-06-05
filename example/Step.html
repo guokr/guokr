@@ -1,0 +1,128 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>步骤控制模块Step</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">步骤控制模块Step</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* 步骤控制模块<br/>
+*      每一步骤只能运行一次<br/>
+*      如果有运行条件，则必须满足才能运行<br/>
+*      步骤之间是双向链表关系<br/>
+*      不一定从开始步骤运行，直接从中间开始也可<br/>
+*      是否执行下一步由回调函数决定，若没有完成回调函数，则一定执行下一步。如果已完成，则不会运行下一步，直接返回
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/Step.js";
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+    /**
+     * lib/missions/guide.js
+     */
+    var demoStatus = {step: 0 };
+    $.extend( Step.prototype );
+    // method方法，执行方法，绑定完成后的执行函数
+    function showDemo( data, complete ){
+        var msg = '&lt;button class="sg_btn mt20"&gt;Step{msg}&lt;/button&gt;';
+        data.msg = G.format( msg, {
+                            msg: data.msg
+                            });
+        $('#wrap').empty().append(data.msg);
+        //绑定click事件，点击后执行完成后的函数complete,用来调用回调函数completeCallback
+        $('#wrap :button').click(function(){
+            complete();
+        });
+    }
+    /**
+     * 每一步
+     * @param {function} method 方法，参数：数据data，完成后执行函数complete
+     * @param {object} data 方法执行所需数据
+     * @param {function} completeCallback 【可选】完成此步后的回调函数，参数为执行下一步的函数
+     * @param {function} condition 【可选】执行此步骤的运行先决条件
+     */
+    var steps = [ new Step( showDemo, { msg:'1' }, function( next ) {
+                    // completeCallback, 完成后的回调函数，修改全局step值，执行下一步
+                    demoStatus.step = 1;
+                    next();
+                }, function(){
+                    // condition, 执行条件判断，是否执行到前一步
+                    return (demoStatus.step == 0)?true:false;
+                }),
+                new Step( showDemo, { msg:'2'}, function( next ) {
+                    demoStatus.step = 2;
+                    next();
+                }, function(){
+                    return (demoStatus.step == 1)?true:false;
+                }),
+                new Step( showDemo, { msg:'3'}, function( next ) {
+                    demoStatus.step = 3;
+                    next();
+                }, function(){
+                    return (demoStatus.step == 2)?true:false;
+                }),
+                new Step( showDemo, { msg:'完成'}, function( next ) {
+                    demoStatus.step = -1;
+                }, function(){
+                    return (demoStatus.step == 3)?true:false;
+                })];
+    steps[0].link( steps[1] )
+            .link( steps[2] )
+            .link( steps[3] );
+    steps[demoStatus.step].run();
+</pre>
+                <button class="sg_btn mt20" id="workDemo">运行</button>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                    <div id="wrap"></div>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'Step', function( Step ) {
+            window.Step = Step;
+            $('#workDemo').bind('click', function(){
+                $.globalEval( $('.demo:eq(0)').text() );
+            });
+        });
+    </script>
+</body>
+</html>
+

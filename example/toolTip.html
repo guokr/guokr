@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>提示组件toolTip</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">提示组件toolTip</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* 提示组件，用于页面上的小tip。例如第一次登录时候的“今日推荐”链接下的提示<br/>
+* @eg:<br/>
+*      toolTip( container, option, closeCallback );<br/>
+*      container 为position为relative的祖先元素<br/>
+*      option = {<br/>
+*          msg: 显示的html<br/>
+*          position: 坐标值[top,left]<br/>
+*          coordinates: 相对坐标系，jquery对象或选择符，提示的坐标值是相对于coordinates和position计算得到，可选<br/>
+*          direction: 小箭头的方向:up,down,left,right，默认为up<br/>
+*          offset: 小箭头与提示框的偏移距离，用于调整小箭头位置，默认为0<br/>
+*          width: 宽度<br/>
+*      },<br/>
+*      closeCallback 关闭时候的回调函数<br/>
+*<br/>
+* @log 0.1 fix z-index bug;<br/>
+*          fix show在scroll完成之后导致的bug<br/>
+<br/>
+//@import "scrollTo.js";
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/toolTip.js";
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+    /**
+     * lib/missions/guide.js
+     */
+    var $wrap = $('.gheader');
+    var tool = toolTip(
+        // container
+        $wrap, {
+        // option
+            msg: '&lt;p style="margin-bottom:5px;color:#666;"&gt;toolTip demo&lt;/p&gt;\
+                    &lt;p&gt;&lt;a class="sw_btn-ext" id="nextGuide" href="javascript:void 0;"&gt;知道了&lt;/a&gt;&lt;/p&gt;',
+            position: [40, 100],
+            direction: 'down',
+            offset: 10,
+            width: 100
+        }, function(){
+        // coloseCallback
+            return false;
+        }
+    );
+    $('#nextGuide').bind('click', function(){
+        tool.remove();
+    });
+
+</pre>
+                <button class="sg_btn mt20" id="workDemo">运行</button>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'toolTip', function( toolTip ) {
+            window.toolTip = toolTip;
+            $('#workDemo').bind('click', function(){
+                $.globalEval( $('.demo:eq(0)').text() );
+            });
+        });
+    </script>
+</body>
+</html>
+

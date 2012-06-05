@@ -1,0 +1,249 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>返回顶部screenTop</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+    <style>
+    .answer {
+        width: 600px;
+    }
+    .answer-r {
+        border-bottom: 1px solid #EEEEEE;
+        margin-left: 30px;
+        padding: 0 0 20px;
+    }
+    .answer-t {
+        background-color: #FBFDF8;
+        border-radius: 5px 5px 5px 5px;
+        color: #999999;
+        height: 32px;
+        line-height: 32px;
+        overflow: hidden;
+    }
+    .answer:target .answer-t, .highlight .answer-t {
+        background-color: #F0F7FC;
+    }
+    .answer-usr {
+        height: 12px;
+        line-height: 12px;
+        margin-top: 10px;
+    }
+    .answer-img, .answer-usr {
+        float: left;
+        margin-left: 5px;
+    }
+    .answer-date {
+        float: right;
+        margin-right: 15px;
+    }
+    .answer-diggers {
+        color: #999999;
+        margin-top: 5px;
+    }
+    .answer-digg {
+        float: left;
+        width: 20px;
+    }
+       .answer-digg a {
+            background-color: #CCCCCC;
+            border-radius: 5px 5px 5px 5px;
+            color: #FFFFFF;
+            display: block;
+            height: 20px;
+            line-height: 30px;
+            margin-bottom: 5px;
+            overflow: hidden;
+            width: 20px;
+        }
+            .answer-digg-up s, .answer-digg-dw s {
+                border-color: transparent transparent #FFFFFF;
+                border-style: dashed dashed solid;
+                border-width: 6px;
+                display: block;
+                font-size: 0;
+                height: 0;
+                line-height: 0;
+                margin-left: 4px;
+                overflow: hidden;
+                width: 0;
+            }
+            .answer-digg-dw s {
+                border-color: #FFFFFF transparent transparent;
+                border-style: solid dashed dashed;
+                border-width: 6px;
+                margin-top: 8px;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">返回顶部screenTop</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* screenTop，用于处理添加“返回顶部”功能<br/>
+* 样式存于/skin/lib/screen-top.css<br/>
+* @author mzhou<br/>
+* @log 0.1<br/>
+//@import "support.js";<br/>
+//@import "scrollTo.js";
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/screenTop.js"<br/>
+                    CSS:<br/>
+<pre class="demo">
+.gui-screen-top {
+    background-color: #FDFDFD;
+    border: 1px solid #D5D5D5;
+    border-radius: 5px 5px 5px 5px;
+    bottom: 60px;
+    box-shadow: 0 0 5px #F5F5F5;
+    height: 40px;
+    left: 50%;
+    margin-left: 135px;
+    outline: 0 none;
+    overflow: hidden;
+    position: fixed;
+    text-indent: -9999px;
+    width: 40px;
+}
+.gui-screen-top s {
+    border-color: transparent transparent #D5D5D5;
+    border-style: dashed dashed solid;
+    border-width: 10px;
+    font-size: 0;
+    height: 0;
+    left: 10px;
+    position: absolute;
+    top: -2px;
+    width: 0;
+}
+.gui-screen-top b {
+    background-color: #D5D5D5;
+    height: 12px;
+    left: 16px;
+    position: absolute;
+    top: 18px;
+    width: 8px;
+}</pre>
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+    // 设置返回顶部
+    screenTop(); </pre>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                    <div class="answer" id="answer126356">
+                        <div class="answer-digg digg gui-stick">
+                            <a href="javascript:void 0;" data-operation="digg" data-id="126356" class="answer-digg-up" title="支持(+1)"><s></s>顶</a>
+                            <a href="javascript:void 0;" data-operation="undigg" data-id="126356" class="answer-digg-dw" title="反对(-1)"><s></s>踩</a>
+                        </div>
+                        <div class="answer-r">
+                            <div class="answer-t">
+                                <a class="answer-img" href="/i/2128453766/" title="我是法医" target="_blank">
+                                    <img src="http://img1.guokr.com/gkimage/1b/0v/af/1b0vaf.jpg" height="24" width="24">
+                                </a>
+                                <p class="answer-usr">
+                                    <a class="answer-usr-name" href="/i/2128453766/" title="我是法医" target="_blank">我是法医</a>
+                                    法医病理硕士<a class="sai" title="果壳达人" href="/nuts/" target="_blank">ψ</a>
+                                </p>
+                                <p class="answer-date">2012-03-25 05:22:10</p>
+                            </div>
+                            <div class="answer-diggers diggers" data-id="126356">             58支持&nbsp;&nbsp;/&nbsp;&nbsp;0反对，来自                                                   <span>                                                  <a href="/i/1629419027/">yyy_daodao</a>                         、                                                  <a href="/i/0805337153/">王小成</a>                         、                                                  <a href="/i/0058808914/">moogee</a>                                                                       </span>                     <a href="javascript:void 0;" data-operation="expandDiggers" data-id="126356">更多...</a>                     <span class="hide">                         <a href="/i/0261941769/">双料黑客</a>                         、                                              <a href="/i/1617726241/">宇宙</a>                         、                                              <a href="/i/1646751462/">xxy0516</a>                         、                                              <a href="/i/1464144530/">初阳</a>                         、                                              <a href="/i/1302951976/">面包啊</a>                         、                                              <a href="/i/1927070127/">囍乐</a>                         、                                              <a href="/i/1872381934/">we_cry</a>                         、                                              <a href="/i/0520449659/">fu-80</a>                         、                                              <a href="/i/1918012180/">蚁观沧海0w0</a>                         、                                              <a href="/i/1454170809/">陈宁子</a>                         、                                              <a href="/i/1543413887/">木先生</a>                         、                                              <a href="/i/0518615862/">pizim</a>                         、                                              <a href="/i/0685233529/">宫小狐</a>                         、                                              <a href="/i/1239530013/">云无心</a>                         、                                              <a href="/i/1734233484/">姬十三</a>                         、                                              <a href="/i/0634754294/">nebuchadnezzar</a>                         、                                              <a href="/i/0538823539/">phyanont</a>                         、                                              <a href="/i/1718654871/">Amaranth</a>                         、                                              <a href="/i/1721592528/">亲爱的乌龟先生</a>                         、                                              <a href="/i/2105291735/">飞鸟未来</a>                         、                                              <a href="/i/0841765129/">马德里之夏的AI</a>                         、                                              <a href="/i/0810960081/">箫汲</a>                         、                                              <a href="/i/0002836547/">impish</a>                         、                                              <a href="/i/1106952530/">麦子WHEAT</a>                         、                                              <a href="/i/0320398623/">叶子疏</a>                         、                                              <a href="/i/0317561261/">鱼在在藻</a>                         、                                              <a href="/i/1487456923/">虫且山人</a>                         、                                              <a href="/i/0856830912/">非言语</a>                         、                                              <a href="/i/0839381010/">avalon</a>                         、                                              <a href="/i/1810279659/">Preston</a>                         、                                              <a href="/i/0314179016/">两个意达</a>                         、                                              <a href="/i/0122449284/">工业聚</a>                         、                                              <a href="/i/1467161421/">vanguard</a>                         、                                              <a href="/i/1503565304/">果愈</a>                         、                                              <a href="/i/0695689049/">焦糖白兔</a>                         、                                              <a href="/i/0356414476/">爱游泳的鹰</a>                         、                                              <a href="/i/0356939795/">Steed</a>                         、                                              <a href="/i/0086437761/">ranch</a>                         、                                              <a href="/i/0610569718/">蚂蚁电饭锅</a>                         、                                              <a href="/i/0766376053/">水旬</a>                         、                                              <a href="/i/0242112700/">阮光锋</a>                         、                                              <a href="/i/0530459455/">百变猩菌</a>                         、                                              <a href="/i/1166839501/">speranza</a>                         、                                              <a href="/i/0093516434/">飞刀断雨</a>                         、                                              <a href="/i/1474216581/">snow-plum</a>                         、                                              <a href="/i/1146800053/">碧蓝怒火</a>                         、                                              <a href="/i/0271028576/">老张家的拨鱼儿</a>                         、                                              <a href="/i/1807521678/">odegra</a>                         、                                              <a href="/i/0852495758/">奥氮平</a>                         、                                              <a href="/i/0541772254/">神隐</a>                         、                                              <a href="/i/1025990369/">老虎素</a>                         、                                              <a href="/i/1060209672/">敏明君</a>                         、                                              <a href="/i/0103192444/">Dear.Geek</a>                         、                                              <a href="/i/1497137943/">隐身人</a>                         、                                              <a href="/i/1103862749/">毛驴骑着阿凡提</a>                                              </span>                                       </div>
+                            <div class="answer-txt answerTxt">我认为的确是社会因素造成的。<br>
+对比一下，来日本之后出现了两起类似报道：<br>
+第一起，119救护车收了一名孕妇后往某医院送，途中医院电话表示无床，第二个医院又无床，第三个还是无床，结果孕妇死亡。<br>
+媒体报道用详细数据表明当时的确三家医院都没床，而且分析了这几家医院的床位使用率很高，呼吁当地增加妇产科医生及床位。<br>
+第二起<br>
+某护士值班胡乱给患者用安眠镇静类药物，警方问话后表示是”患者老是按警报器让她很烦。”<br>
+当然，首先表明护士涉嫌何种犯罪，院长出来谢罪，表示要加强此类药物管理，媒体忽然话锋一转，开始分析全国护士平均管了多少床，护士有多少比例不想干了要辞职，得出结论全国护士普遍工作量偏大，这问题急需解决。<br>
+<br>
+首先对日本媒体的冷静客观赞扬一个，另一个这是不得不说，媒体客观性在日本是有法律保障的，比如涉及事件要请执政党人士发表意见，那么同时必须也有反对党人士参加，不然反对党可以告你（现在有一个诉讼刚判决，判决结果是电视台必须在相同时段请反对党做时长一样的意见发表）。<br>
+<br>
+不过慢慢看出有政治倾向的主持会怎么办了，自己喜欢的队请高手，不喜欢的队请笨蛋，呵呵。永远上有政策下有对策。<br>
+<br>
+还有一些原因诸如医改，将医院骤然市场化后造成老百姓对市场化特别是市场化尚不成熟时期必然会产生诸多问题的不满；医疗事故鉴定程序缺乏公正性等等。<br>
+<br>
+老百姓的不满不是问题，事实上人性决定人永远不满，但是不满无法倾泻就是问题了。<br>
+<br>
+会有各种过激事件甚至变态事件产生。</div>
+                            <div class="cmts cmtsBody">
+                                <div class="cmts-t cmtsTitle">
+                                    <p class="fl">
+                                        <a href="javascript: void 0;" data-operation="control" class="cmts-num">5条讨论</a>
+                                        
+                                        
+                                    </p>
+                                    <p class="fr">
+                                        <a href="javascript: void 0;" data-operation="helplessAnswer" data-id="126356" class="cmts-t-grey answer-hover">没有帮助</a>
+                                    </p>
+                                </div>
+                                <div class="hide cmtsList">
+                                    <ul class="cmts-list">
+                                        <li>TC呢，永远是事情先做再说，法律法规一向是不到位的····&nbsp;-&nbsp;<a href="/i/0520449659/" target="_blank">fu-80</a> 2012-03-25 
+                                        
+                                        </li><li>TC有多少医生护士想辞职不干的？这些数据在我们的媒体上是见不到的&nbsp;-&nbsp;<a href="/i/0356414476/" target="_blank">爱游泳的鹰</a> 2012-03-25 
+                                        
+                                        </li><li>找笨蛋促进了反对党进步。&nbsp;-&nbsp;<a href="/i/0346771578/" target="_blank">wsabc</a> 2012-03-26 
+                                        
+                                        </li><li>哎这种做饭很不明智啊谁还敢招笨蛋啊。都是演员啦。&nbsp;-&nbsp;<a href="/i/1543413887/" target="_blank">木先生</a> 2012-03-26 
+                                        
+                                        </li><li>多党制...呵呵，这个...&nbsp;-&nbsp;<a href="/i/0465943456/" target="_blank">辽</a> 2012-03-26 
+                                        
+                                    </li></ul>
+                                    <div class="cmts-do cmtsDo">
+                                        <textarea name="cmt" rows="10" cols="30" class="b_txt"></textarea>
+                                        <p>
+                                            <input value="讨论" class="mw_btn" data-operation="newCmt" data-id="126356" data-type="answer" type="submit">
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'screenTop', function( screenTop ) {
+            var style = document.createElement('style');
+            document.getElementsByTagName('head')[0].appendChild( style );
+            style.innerHTML += $('.demo:eq(0)').text();
+            window.screenTop = screenTop;
+            $.globalEval( $('.demo:eq(1)').text() );
+        });
+    </script>
+</body>
+</html>

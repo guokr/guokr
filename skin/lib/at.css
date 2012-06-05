@@ -1,0 +1,28 @@
+/* @module: gui-at */
+.gui-at {
+    position: absolute;
+    width: 280px;
+    background-color: #FFF;
+}
+    .gui-at input,
+    .gui-at p {
+        width: 270px;
+    }
+    .gui-at p {
+        margin-top: -1px;
+        padding: 0 5px;
+        height: 30px;
+        line-height: 30px;
+        color: #BBB;
+        border: 1px solid #C5C5C5;
+        -webkit-box-shadow: 1px 1px 2px #CCC;
+        -moz-box-shadow: 1px 1px 2px #CCC;
+        -o-box-shadow: 1px 1px 2px #CCC;
+        box-shadow: 1px 1px 2px #CCC;
+    }
+    .gui-at-none {
+        background-color: #F5F5F5;
+    }
+    .gui-at .gui-menu {
+        margin-top: -1px;
+    }

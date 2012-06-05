@@ -1,0 +1,35 @@
+/* @module: share */
+.gui-share-xl,
+.gui-share-db,
+.gui-share-rr,
+.gui-share-qq,
+.gui-share-tqq {
+    display: inline-block;
+    margin-left: 5px;
+    padding-left: 0;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-indent: -9999px;
+    text-align: left;
+    overflow: hidden;
+    vertical-align: middle;
+    background: url(/skin/imgs/small.gif?v2.8) no-repeat 0 -32px;
+}
+.gui-share-xl {
+    padding-left: 20px;
+    width: auto;
+    text-indent: 0;
+}
+.gui-share-db {
+    background-position: 0 -50px;
+}
+.gui-share-rr {
+    background-position: 0 -180px;
+}
+.gui-share-qq {
+    background-position: 0 -200px;
+}
+.gui-share-tqq {
+    background-position: 0 -738px;
+}

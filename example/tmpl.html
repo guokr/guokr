@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>简易模板tmpl</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">简易模板tmpl</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* 基于john resig的micro template写的前端模板模块<br/>
+* @author mzhou<br/>
+* @version 1.0<br/>
+* @description 此模块基于自john resig的micro template，最大的特色是代码很少，性能处于中等水准<a href="http://jsperf.com/dom-vs-innerhtml-based-templating/73">&lt;http://jsperf.com/dom-vs-innerhtml-based-templating/73&gt;</a>
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/tmpl.js";
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+    var $image = $('#showImage'),
+    // demo中 替换的文本
+    path = 'http://www.guokr.com/gkimage/16/c0/6l/16c06l.png',
+    // demo中 id名为 tp_image
+    tp = tmpl('tp_image');
+
+    $image.empty().html( tp({ src: path}));</pre>
+                <button class="sg_btn mt20" id="workDemo">运行</button>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                    <div id="showImage">div id = "showImage"</div>
+                    <script id="tp_image" type="text/html">
+                        <img src="<%=src%>" />
+                    </script>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'tmpl', function( tmpl ) {
+            window.tmpl = tmpl;
+            $('#workDemo').one('click', function(){
+                $.globalEval( $('.demo:eq(0)').text() );
+            });
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,166 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>菜单Menu</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+    <link rel="stylesheet" href="../skin/lib/Menu.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">菜单Menu</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* 模拟菜单的组件<br/>
+*      有“选择值修改”和“选择完成”两个事件，选择完成事件只能绑定一次<br/>
+*      只有当useFocus参数为true时，才会有focus方法，才会支持按键tab<br/>
+*      注意: 菜单一旦初始化结束就无法修改菜单项，所以如果是经常变化的菜单，请在done方法中remove，然后新建菜单；<br/>
+*            如果想重复使用菜单，但又希望菜单暂时消失，请使用hide方法；<br/>
+*<br/>
+* @eg:<br/>
+*      var menu = new Menu( <br/>
+*              $container,                 // 容器 jQuery 对象<br/>
+*              [12,123],                   // 菜单数据<br/>
+*              function( value ) {         // 【可选】选择完成后的回调<br/>
+*                  console.log( value );<br/>
+*                  console.log( this === menu );<br/>
+*              },<br/>
+*              {<br/>
+*                  useFocus: true,                         // 【可选】使用focus<br/>
+*                  convert: function( item ) {             // 【可选】将data中的数据项转换成显示用的菜单项，没有则默认用data的值<br/>
+*                      console.log( this === menu );<br/>
+*                      return item.name;<br/>
+*                  },<br/>
+*                  className: 'gui-autocomplete-menu'<br/>
+*              }<br/>
+*          );<br/>
+*      menu.select( 2 )                    // 选择二项，如果超过则设置为不选择<br/>
+*          .up()                           // 选择下一项<br/>
+*          .down()<br/>
+*          .focus()<br/>
+*          .onChange(function( value ) {   // 选择值修改事件<br/>
+*              console.log( value );<br/>
+*              // return false;<br/>
+*          })<br/>
+*          .select();<br/>
+*      menu.show()<br/>
+*          .hide()<br/>
+*          .remove();<br/>
+*<br/>
+* @log 0.1 刚新建<br/>
+*      0.2 增加onChange方法，用于注册选择项修改时候的事件，返回false则会阻止修改<br/>
+*          修改up/down方法，使其循环的上下选择（即down方法，当前为最后一个时，下一次选择的是第一个）<br/>
+*          增加convert参数，用于将data中的数据项转换成显示用的菜单项，没有则默认用data的值<br/>
+*          修改useFocus和convert参数到option中,注意api和以前不兼容了<br/>
+*          修证了在li被click的时候，会修改selected值，原来不修改直接调用done回调函数<br/>
+*          修改了remove方法，使其会delete掉所有属性值<br/>
+*          添加了done方法，调用它可以直接触发doneCallBack，并且remove掉menu<br/>
+*          使用了Event组件实现事件<br/>
+*      0.3 设置done回调为可选<br/>
+*          fix keydown enter时候的bug<br/>
+*      0.4 fix了done为函数时候的bug，把option也设置成null了，太失误了<br/>
+//@import "tmpl.js";<br/>
+//@import "Event.js";
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/Menu.js";<br/>
+                    CSS:<br/>
+                    //@import "lib/Menu.css";
+
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+    /**
+     * lib/at.js
+     * lib/autoComplete.js
+     * new Menu() 初始化菜单
+     */
+    var $wrap = $('#showMenu'),
+        menu,
+        data = ['i1', 'ii2', 'iii3', 'iiii4', 'iiiii5', 'iiiiii6'];
+    $('#workDemo').bind('click', function(){
+        // 在menu隐藏的情况下显示出来，而不是重新加载一遍
+        if( !menu ){
+            menu = new Menu( 
+                // @param {object} $container 菜单的容器
+                $wrap,
+                // @param {array} data 菜单的数据，是一个数组
+                data, 
+                // @param {function} done 选择后回调参数，给予选中的值
+                function( name ) {
+                    $('#result').append( name + '&lt;br/&gt;' );
+                    // 避免重复绑定
+                    $('body').unbind('click').bind('click',function(e){
+                        // 一次选择完成后，如果点击在 #result, #showMenu 的父元素 dd 外，则隐藏 menu
+                        if( !$.contains( $('#result').parent()[0], e.target ) ) {
+                            menu.hide();
+                            $('body').unbind('click');
+                        }
+                    });
+                },
+                // @param {object} option 可选项
+                //                          useFocus 【可选】是否使用focus
+                //                          convert 【可选】将data中的数据项转换成显示用的菜单项，没有则默认用data的值
+                //                          className 【可选】增加设置menu的class，用于样式修改
+                {
+                    useFocus: true,
+                    convert: function( item ) {
+                        return '&lt;span class="ll"&gt;' + item + '&lt;/span&gt;';
+                    },
+                    className: 'gui-autocomplete-menu'
+                }
+            );
+        }else{
+            menu.show();
+        }
+    });
+</pre>
+                <button class="sg_btn mt20" id="workDemo">运行</button>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                    <div id="result"></div>
+                    <div id="showMenu"></div>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'Menu', function( Menu ) {
+            window.Menu = Menu;
+            $.globalEval( $('.demo:eq(0)').text() );
+        });
+    </script>
+</body>
+</html>
+

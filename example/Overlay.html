@@ -1,0 +1,211 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>浮动框Overlay</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+    <style>
+.gui-block-bd-do {
+    margin-top: 20px;
+}
+.gui-block-bd-do .mw_btn {
+    color: #888888;
+    font-weight: bold;
+    margin-right: 20px;
+}
+.gui-block-bd-do a {
+    color: #BBBBBB;
+}
+.workdemoBtn {
+    margin-right: 10px;
+} 
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">浮动框Overlay</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* 用于替代block2的浮层库，解决了block2的openCallback等回调函数在多个浮层之间调用混乱的缺点<br/>
+* 依赖的css已经在h/comment.css中的 @blockWindow 模块中<br/>
+*  <br/>
+* 用例：<br/>
+*      新建实例:<br/>
+*              var block = new Overlay();<br/>
+*      新建实例的同时打开弹出框：<br/>
+*              var block = new Overlay(<br/>
+*                      // html或者是iframe链接地址<br/>
+*                      '框中显示的html', <br/>
+*                      // 设置在窗口上的事件代理对象，或者是多个对象（即对象数组，多个代理）<br/>
+*                      { event:'click',selector:'#id',func:func },<br/>
+*                      // 打开后的回调，自0.7版本开始，多次回调可以使用afterOpen代替，不过任就可以作为一次性回调的情况下使用。<br/>
+*                      function() {<br/>
+*                           console.log('afterOpen');<br/>
+*                      });<br/>
+*      打开弹出框:<br/>
+*              block.open( <br/>
+*                      // html或者是iframe链接地址<br/>
+*                      '框中显示的html', <br/>
+*                      // 设置在窗口上的事件代理对象，或者是多个对象（即对象数组，多个代理）<br/>
+*                      { event:'click',selector:'#id',func:func },<br/>
+*                      // 打开后的回调<br/>
+*                      function() {<br/>
+*                           console.log('afterOpen');<br/>
+*                      });<br/>
+*      设置回调：<br/>
+*              函数的this都为block对象<br/>
+*              函数的参数都为数组：[ $blockWindow, $blockContent ]<br/>
+*              block.openCallBack(function() {});  // 打开之前的回调函数,return false可以阻止打开<br/>
+*              block.closeCallBack(function() {}); // 关闭之前的回调函数,return false可以阻止关闭<br/>
+*              block.afterOpen(function() {});     // 打开之后的回调函数<br/>
+*              block.afterClose(function() {}):    // 关闭之后的回调函数<br/>
+*      设置title:<br/>
+*              block.title( '新标题' );<br/>
+*      关闭窗体:<br/>
+*              block.close();<br/>
+*      是否打开：<br/>
+*              block.isOpen();<br/>
+*      重新定位窗体的位置：<br/>
+*              block.pos();<br/>
+*      设置或获取宽度(不算padding\margin\border)：<br/>
+*              block.width( 100 );<br/>
+*              block.width();<br/>
+*      设置当前浮层不跟随窗口滚动[fixed](只要浏览器支持position:fixed)<br/>
+*              block.pin();<br/>
+*      设置当前浮层随窗口滚动[absolute]<br/>
+*              block.unpin();<br/>
+*      <br/>
+* @author: mzhou<br/>
+* @log: 0.1<br/>
+*       0.2 支持open和初始化方法直接输入地址，输出iframe的方式<br/>
+*       0.3 增加width方法设置宽度，并增加api注释，修复了多个实例可以相互控制对方title的bug，修复了打开一个新窗口是undelegate不被执行的bug<br/>
+*       0.4 增加取消fix定位的功能： pin 和 unpin 函数<br/>
+*       0.5 修改pos方法，使其根据fixed状态来计算。并且在pin/unpin方法中，重新计算位置<br/>
+*       0.6 fix 弹出框closeCallBack返回false阻止关闭事件后无法第二次触发closeCallBack的bug<br/>
+*       0.7 使用Event组件重写了事件部分，并增加了afterOpen和afterClose两个api<br/>
+*       0.8 fix了同一个实例open两次时，先关闭再重新打开的bug。这回触发一次close事件<br/>
+*       0.9 增加了showCover和hideCover两个方式，支持了背景cover。<br/>
+//@import "Event.js";
+//@import "support.js";
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/Overlay.js"<br/>
+                    CSS:<br/>
+                    //@import "lib/Overlay.js"
+                </dd>
+
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+    /**
+     * ask.js, Editor.js
+     */
+    var block = new Overlay();
+    block.title( 'demo浮动框标题' );
+    /**
+     * 打开block
+     * @param {string} html 内容框,或者是iframe链接地址
+     * @param {array/object} objs 绑定事件设置 例如：对象数组[{event:'click',selector:'#id',func:func}]或者一个对象{event:'',selector:'',func:}
+     * @param {function} afterOpen 显示内容之后的回调函数，只在有html参数时调用，用于给新添加的html做初始化，绑定无法delegate的事件
+     * open: function( html, objs, afterOpen) {}
+     */
+    block.open(
+        '&lt;p class="gui-block-bd-intro"&gt;可以插入各种编辑或者提醒&lt;p class="gui-block-bd-do"&gt;&lt;a data-operation="confirm" href="javascript: void 0;" class="mw_btn"&gt;确定&lt;/a&gt;&lt;a class="blockClose" href="javascript: void 0;"&gt;取消&lt;/a&gt;&lt;/p&gt;&lt;/p&gt;',
+        {
+            event: 'click',
+            selector: '[data-operation=confirm]',
+            func: function() {
+                alert('confirm?');
+                return this;
+            }
+        },
+        function(){
+            block.title( 'changeTitle by afterOpen' );
+        }
+    );
+</pre>
+                <button class="sg_btn mt20 workdemoBtn">运行</button><span>（默认运行）</span>
+                </dd>
+                <dt>iframe链接框</dt>
+                <dd>
+<pre class="demo">
+    block.open(
+        'http://www.guokr.com',         // src地址
+        null,
+        function(){
+            block.title( 'iframe链接框' );
+            // 设置宽度
+            block.width( 500 );
+            // 设置浮层位置固定，不随页面滚动
+            block.unpin();
+        }
+    );
+    </pre>
+                <button class="sg_btn mt20 workdemoBtn">运行</button><span>（须返回页首查看效果）</span>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                </dd>
+                <dt>带cover的Overlay框</dt>
+                <dd>
+<pre class="demo">
+    block.open('&lt;div&gt;框中的内容!&lt;/div&gt;')
+         .title( '带cover的Overlay框' )
+         // 设置宽度
+         .width( 500 )
+         // 设置浮层位置固定，不随页面滚动
+         .showCover(); // 显示cover，并且cover随着浮窗的显示而显示。
+         // .showCover( 0.1, '#FFF' )
+         // .showCover( 0.1 );
+         // block.hideCover(); 隐藏cover，并且cover以后并不随着浮窗的显示而显示。
+    </pre>
+                <button class="sg_btn mt20 workdemoBtn">运行</button><span>（须返回页首查看效果）</span>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'Overlay', function( Overlay ) {
+            window.Overlay = Overlay;
+            $.globalEval( $('.demo:eq(0)').text() );
+            $('.workdemoBtn').each( function( i ) {
+                $(this).bind( 'click', function() {
+                    $.globalEval( $('.demo:eq('+ i +')').text() );
+                });
+            });
+        });
+    </script>
+</body>
+</html>

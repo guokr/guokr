@@ -1,0 +1,47 @@
+/* @module: example */
+h2.main-cate {
+    padding-top: 30px;
+    clear: left;
+    font-size: 20px;
+    border-bottom: 1px solid #CCC;
+}
+a.main-lib {
+    float: left;
+    _display: inline;
+    margin: 10px 20px 10px 0;
+    padding: 5px 10px;
+    color:#FFF;
+    font-size:12px;
+    background-color:#35abdd;
+}
+a.main-lib:hover {
+    color:#35abdd;
+    background-color:#FFF;
+}
+/* @module: main-example*/
+.main-example {
+}
+    .main-example dt {
+        margin-top: 20px;
+        font-weight: bold;
+        font-size: 15px;
+    }
+    .main-example dd {
+        margin-top: 5px;
+        padding-left: 20px;
+        border-left: 1px dashed #CCC;
+    }
+    .main-example-intro {
+        white-space: pre;
+    }
+        .main-example dd pre {
+            padding: 8px 10px;
+            background: #F1F5F6;
+            border: 1px dashed #B0BEC7;
+            border-radius: 5px;
+        }
+
+.wrap {
+    overflow: visible;
+    font-size: 14px;
+}

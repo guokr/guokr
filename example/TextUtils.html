@@ -1,0 +1,221 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Textarea及input:text的工具库TextUtils</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+    <link rel="stylesheet" href="../skin/lib/Editor.css" />
+<style>
+.demo input {
+    margin: 0 10px 0 5px;
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">Textarea及input:text的工具库TextUtils</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* Textarea及input:text的工具库<br/>
+* 修改自：<a href="http://code.google.com/p/rangyinputs/" target="_blank">http://code.google.com/p/rangyinputs/</a><br/>
+* 添加了insertCaret函数用于插入光标<br/>
+* @author mzhou<br/>
+* @version 0.1<br/>
+* @license Rangy Text Inputs, a cross-browser textarea and text input library plug-in for jQuery.<br/>
+*<br/>
+* Part of Rangy, a cross-browser JavaScript range and selection library<br/>
+* <a href="http://code.google.com/p/rangy/" target="_blank">http://code.google.com/p/rangy/</a><br/>
+*<br/>
+* Depends on jQuery 1.0 or later.<br/>
+*<br/>
+* Copyright 2010, Tim Down<br/>
+* Licensed under the MIT license.<br/>
+* Version: 0.1.205<br/>
+* Build date: 5 November 2010
+</dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/TextUtils.js"; <br/>
+                    CSS:<br/>
+                    @import "lib/Editor.css";
+               </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+/*
+ * 用于Editor.js
+ */
+    var $textarea = $('#editorContent');
+    function showResult( str ){
+        $('#result').prepend( str + '&lt;br/&gt;&lt;br/&gt;' );
+        $textarea.focus();
+    }
+    $('#getSelection').bind('click',function(){
+        // 返回start, end, text
+        var s = $textarea.getSelection(),
+            content = '选择开始：' + s.start + '&nbsp;,&nbsp;选择结束：' + s.end + '&nbsp;,&nbsp;选择内容："' + s.text + '"&nbsp;,&nbsp;选择长度：' + s.length;
+        showResult(content);
+    });
+    $('#setSelection').bind('click',function(){
+        var $inputs =   $(this).parent().find(':input'),
+            startVal=   $inputs.eq(0).val(),
+            endVal  =   $inputs.eq(1).val();
+        startVal = parseInt( startVal , 10 ) || 0;
+        endVal = parseInt( endVal , 10 ) || 0;
+        // 选中相应字符
+        $textarea.setSelection(startVal, endVal);
+        showResult('已选择,&nbsp;from:&nbsp;' + startVal + '，&nbsp;to:&nbsp;' + endVal);
+    });
+    $('#collapseSelection').bind('click',function(){
+        // 将光标移至选区开始
+        $textarea.collapseSelection(true).focus();
+        showResult( '光标移至选区开始' );
+    });
+    $('#extractSelectedText').bind('click',function(){
+        // 返回提取字符
+        var s = $textarea.extractSelectedText();
+        showResult( '提取字符:&nbsp;' + s );
+    });
+    $('#deleteSelectedText').bind('click',function(){
+        // 删除所选
+        $textarea.deleteSelectedText();
+        showResult( '已删除所选' );
+    });
+    $('#insertText').click(function(){
+        var $inputs =   $(this).parent().find(':input'),
+            text    =   $inputs.eq(0).val(),
+            indexVal=   $inputs.eq(1).val(),
+            moveSelectionVal  =  ( $inputs.filter(':radio:checked').val() === 'true' );       //需要转换成布尔值
+        indexVal = parseInt( indexVal , 10 ) || 0;
+        // 插入字符，index 插入位置，moveSelection 是否移动光标
+        $textarea.insertText( text, indexVal ,moveSelectionVal);
+        showResult( '加入字符:&nbsp;' + text );
+    });
+    $('#deleteText').bind('click',function(){
+        var $inputs =   $(this).parent().find(':input'),
+            startVal=   $inputs.eq(0).val(),
+            endVal  =   $inputs.eq(1).val();
+        startVal = parseInt( startVal , 10 ) || 0;
+        endVal = parseInt( endVal , 10 ) || 0;
+        // 删除所选
+        $textarea.deleteText(startVal, endVal);
+        showResult( '已删除,&nbsp;from:&nbsp;' + startVal + '，&nbsp;to:&nbsp;' + endVal);
+    });
+    $('#replaceSelectedText').click(function(){
+        var text    =   $(this).parent().find(':input').val();
+        // 替换字符，text 替换后的字符
+        $textarea.replaceSelectedText( text );
+        showResult( '替换字符:&nbsp;' + text );
+    });
+    $('#surroundSelectedText').bind('click',function(){
+        var $inputs =   $(this).parent().find(':input'),
+            before  =   $inputs.eq(0).val(),
+            after   =   $inputs.eq(1).val();
+        // 将选中字符两端加上指定字符，before 在前端添加的字符，after 在结束处添加的字符
+        $textarea.surroundSelectedText( before , after );
+        showResult( '已添加,&nbsp;before:&nbsp;' + before + '，&nbsp;after:&nbsp;' + after);
+    });
+    $('#insertCaret').bind('click',function(){
+        var index   =   $(this).parent().find(':input').val();
+        index = parseInt( index , 10 ) || 0;
+        // 将光标移至指定位置，index 光标位置
+        $textarea.insertCaret( index );
+        showResult( '光标已移到,&nbsp;index:&nbsp;' + index);
+    });
+</pre>
+                </dd>
+                <dt>demo:</dt>
+                <dd class="demo">
+                <div style="overflow:hidden;">
+                <textarea id="editorContent" name="" rows="10" class="editor-content" cols="50" style="float:left; margin-right:10px;">各位在本小组找到对象的同学，或者想来果壳找对象的。快在本贴自曝吧！亮出你们的照片。
+ [bold]发现已自曝的同学：[/bold] 
+1. [url href=http://www.guokr.com/i/0927807376/]nasdaq[/url]君及其夫人
+[image]http://ouchxp.sitemix.jp/z1.PNG[/image]    
+
+2. [url href=http://www.guokr.com/blog/51386/?page=1#comment]小园听风[/url]
+[image]http://img1.guokr.com/gkimage/d8/kn/9l/d8kn9l.png[/image]       
+其夫人：
+[image]http://img1.guokr.com/gkimage/nt/3m/7u/nt3m7u.png[/image]
+
+如果我的发帖侵犯了如上几位的肖像权，切勿怪我。我的眼珠子已经掉下来了！
+
+3. [bold]果壳网视频曝光：[/bold]
+各种你见过的、没见过的果壳员工。
+[flash]http://www.tudou.com/v/rBE4JTbbZSE/v.swf[/flash]
+                </textarea>
+                <div id="result" style="height:150px; overflow:scroll; background:#eee; padding:5px;"></div>
+                </div>
+                    <a class="sg_btn-ext mt20" href="javascript:void 0;" id="getSelection">getSelection</a>
+                    <p>
+                        <a class="sg_btn-ext mt20" href="javascript:void 0;" id="setSelection">setSelection</a>
+                        <label>start:<input type="number" value="0" class="s_txt" style="width:30px;" /></label>
+                        <label>end:<input type="number" value="0" class="s_txt" style="width:30px;" /></label>
+                    </p>
+                    <a class="sg_btn-ext mt20" href="javascript:void 0;" id="collapseSelection">collapseSelection</a>
+                    <a class="sg_btn-ext mt20" href="javascript:void 0;" id="extractSelectedText">extractSelectedText</a>
+                    <a class="sg_btn-ext mt20" href="javascript:void 0;" id="deleteSelectedText">deleteSelectedText</a>
+                    <p>
+                        <a class="sg_btn-ext mt20" href="javascript:void 0;" id="deleteText">deleteText</a>
+                        <label>start:<input type="number" value="0" class="s_txt" style="width:30px;" /></label>
+                        <label>end:<input type="number" value="0" class="s_txt" style="width:30px;" /></label>
+                    </p>
+                    <p>
+                        <a class="sg_btn-ext mt20" href="javascript:void 0;" id="insertText">insertText</a>
+                        <label>insertText:<input type="text" value="||||some text====" class="s_txt" /></label>
+                        <label>index:<input type="number" value="1" class="s_txt" style="width:30px;" /></label>
+                        moveSelection:<label><input type="radio" checked="checked" value="true" name="moveSelect" />true</label><label><input type="radio" value="false" name="moveSelect" />false</label>
+                    </p>
+                    <p>
+                        <a class="sg_btn-ext mt20" href="javascript:void 0;" id="replaceSelectedText">replaceSelectedText</a>
+                        <label>replaceText:<input type="text" value="some other text" class="s_txt" /></label>
+                    </p>
+                    <p>
+                        <a class="sg_btn-ext mt20" href="javascript:void 0;" id="surroundSelectedText">surroundSelectedText</a>
+                        <label>text surround before:<input type="text" value="[before]" class="s_txt" /></label>
+                        <label>text surround after:<input type="text" value="[after]" class="s_txt" /></label>
+                    </p>
+                    <p>
+                        <a class="sg_btn-ext mt20" href="javascript:void 0;" id="insertCaret">insertCarst</a>
+                        <label>index:<input type="number" value="0" class="s_txt" style="width:30px;" /></label>
+                    </p>
+                </dd>
+
+            </dl>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'TextUtils', function( TextUtils ) {
+            window.TextUtils = TextUtils;
+            $.globalEval( $('.demo:eq(0)').text() );
+        });
+    </script>
+
+</body>
+</html>

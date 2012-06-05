@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GUtils工具库</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+    </div>
+    <div class="top-wp">
+        <div class="top fix">
+            <div class="top-main">
+                <h1 class="top-main-n2">GUtils工具库</h1>
+            </div>
+        </div>
+    </div>
+    <div class="wrap">
+        <pre class="mt20">
+* 用于替代字符串拼接的模板函数
+*      G.format( '{1} name is {2}!', { 1: 'Her', 2: 'Mo' });
+*      G.format( '{v} is good!', 'JavaScript' );
+*      G.format( '{s} is good!', '{s}', 'JavaScript' );
+*      G.format( '<1> name is <2>!', { 1: 'Her', 2: 'Mo' }, /<([^<>]+)>/g);
+* @param {string} tmpl 模板字符串
+* @param {string/object} key 如果是字符串则是键值；
+*                            如果是object则是Map,key为键值，value为替换值;
+*                            如果没有第三个参数，则key为{v}，value为此值
+* @param {string/regexp} val 如果key是字符串，则val是被替换值
+*                            如果key是Map，且有val，则val是搜索key的正则，例如：/<([^<>]+)>\/g
+* @return {string} 替换成功后的值
+<strong>G.format</strong>
+
+* 截字，如果超过长度就添加'...'
+* @param {string} s 字符串
+* @param {number} n 最大长度
+* @return {string}
+<strong>G.ellipsis</strong>
+
+* 获取对象的类型
+*      结果: null, undefined, boolean, function, number,
+*               string, array, date, regexp, object
+* @param {object} obj everything
+<strong>G.type</strong>
+
+* 基于jQuery的浏览器UA判断
+* G.ua.isIE （IE8以下的IE浏览器）
+* G.ua.isIE6
+* G.ua.isIE7
+* G.ua.isIE8
+* G.ua.isIE9
+* G.ua.isOpera
+* G.ua.isIpad
+* G.ua.isIphone
+<strong>G.ua</strong>
+
+* 判断对象是不是一个函数
+* @param {object} obj 被判断对象
+* @return {boolean} 是或否
+<strong>G.isFun</strong>
+
+* 判断对象是不是Array
+* @param {object} obj 被判断对象
+* @return {boolean} 是或否
+<strong>G.isArray</strong>
+
+* 判断对象是不是数字
+* @param {object} obj 被判断对象
+* @return {boolean} 是或否
+<strong>G.isNumber</strong>
+
+* 判断对象是不是html字符串
+* @param {object} obj 被判断对象
+* @return {boolean} 是或否
+<strong>G.isHtml</strong>
+
+* forEach函数
+* @param {array/object} array 被迭代数组或map
+* @param {function} iterator 迭代函数 callback: function( array[key], key, array );
+* @param {object} context 设置的this对象
+<strong>G.each</strong>
+
+* https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/filter
+* 根据回调函数，过滤数组的各个值
+* @param {array} array 被迭代数组
+* @param {function} iterator 过滤数组的回调函数
+* @param {object} context 回调函数的this值
+* @return {array} 过滤之后的数组
+<strong>G.filter</strong>
+
+* https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/every
+* 用于判断数组内的值是否都满足“回调函数”的判断
+* @param {array} array 被迭代数组
+* @param {function} iterator 回调函数
+* @param {object} context 回调函数的this值
+* @return {boolean} 成功与否
+<strong>G.every</strong>
+
+* https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/some
+* 用于判断数组内的值是否有任意一个满足“回调函数”的判断
+* @param {array} array 被迭代数组
+* @param {function} iterator 回调函数
+* @param {object} context 回调函数的this值
+* @return {boolean} 成功与否
+<strong>G.some</strong>
+
+* https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/array/map
+* 用于判断map函数
+<strong>G.map</strong>
+
+* 不修改原字符串，返回去掉首尾空格的字符
+* @return {string} 去掉首尾空格的字符
+<strong>String.prototype.trim</strong>
+
+* https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object/create
+* @param {object} o 对象
+* @return {object} 被创建的对象
+<strong>Object.create</strong>
+
+* 数组的indexOf方法，查询元素在数组中的位置
+* @param {object} searchElement 搜索元素
+* @param {number} fromIndex 从第几个开始搜索，与slice方法一样支持负数
+* @return {number} 搜索到的位置
+<strong>Array.prototype.indexOf</strong>
+        </pre>
+    </div>
+</body>
+</html>

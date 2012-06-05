@@ -1,0 +1,42 @@
+/* @module: gui-screen-top */
+.gui-screen-top {
+    position: fixed;
+    _position: absolute;
+    bottom: 80px;
+    left: 50%;
+    margin-left: 135px;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    outline: none;
+    text-indent: -9999px;
+    background-color: #FDFDFD;
+    border: 1px solid #D5D5D5;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 0 5px #F5F5F5;
+    -moz-box-shadow: 0 0 5px #F5F5F5;
+    -o-box-shadow: 0 0 5px #F5F5F5;
+    box-shadow: 0 0 5px #F5F5F5;
+}
+    .gui-screen-top s {
+        position: absolute;
+        top: -2px;
+        left: 10px;
+        width: 0;
+        height: 0;
+        font-size: 0;
+        border-width: 10px;
+        border-style: dashed dashed solid dashed;
+        border-color: transparent transparent #D5D5D5 transparent;
+    }
+    .gui-screen-top b {
+        position: absolute;
+        top: 18px;
+        left: 16px;
+        width: 8px;
+        height: 12px;
+        background-color: #D5D5D5;
+    }

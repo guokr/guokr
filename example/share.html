@@ -1,0 +1,189 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>分享模块share</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">分享模块share</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* 分享模块，文章分享会用到<br/>
+* @author: mzhou<br/>
+* @desc 用于设置文章内容页的三个分享按钮（以后会重写）。等到全部静态化了就把g.js中的类似代码去了<br/>
+* @version: 1.0
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/share.js";<br/>
+                    CSS: content.css?2.9.0<br/>
+<pre class="demo">/* @module: post, question, answered, diary, article */
+    .gui-share-xl, .gui-share-db, .gui-share-rr, .gui-share-qq, .gui-share-tqq {
+        background: url("/skin/imgs/small.gif?v2.8") no-repeat scroll 0 -32px transparent;
+        display: inline-block;
+        height: 18px;
+        line-height: 18px;
+        margin-left: 5px;
+        overflow: hidden;
+        padding-left: 0;
+        text-align: left;
+        text-indent: -9999px;
+        vertical-align: middle;
+        width: 18px;
+    }
+    .gui-share-xl {
+        padding-left: 20px;
+        text-indent: 0;
+        width: auto;
+    }
+    .gui-share-db {
+        background-position: 0 -50px;
+    }
+    .gui-share-rr {
+        background-position: 0 -180px;
+    }
+    .gui-share-qq {
+        background-position: 0 -200px;
+    }
+    .gui-share-tqq {
+        background-position: 0 -738px;
+    }</pre>
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">//post.js
+var $shareDiv = $('#share');
+$shareDiv.doOnce(function( share ) {
+    share( this, function( type ) {
+        // 这里会重复获取数据，但是很少有人会使用多种分享按钮，且性能不影响初始化加载速度，可以接受
+        var summary = $('#articleDescription').text().trim(),                                   //描述
+            picUrl  = $('#sharePic').attr('src') || $('#articleContent img:eq(0)').attr('src'), //有题图则分享题图，没有则选文章中的第一张图
+            title   =  $('#articleTitle').text() || document.title,                             //标题
+            shareData = {
+                url: location.protocol + '//' + location.host + location.pathname,
+                title:'',
+                summary: summary.length > 115 ? (summary.slice(0,115)+'...') : summary,
+                pic:''
+            };
+        if ( picUrl != null ) {
+            picUrl = picUrl.replace( /http:\/\/[^.]+.guokr.com/, '' );
+            picUrl = picUrl.indexOf('http://') > 0 ? picUrl : ('http://www.guokr.com' + picUrl);
+        } else {
+            picUrl = '';
+        }
+        shareData.pic = picUrl;
+        switch( g_page_name ) {
+            case 'post':
+                shareData.title = '果壳网' + g_group_name + '小组：' + title;
+                // 若是微博则使用summary字段
+                if ( type === 'sinaminiblog' || type === 'qqmb' ) {
+                    shareData.summary = shareData.title;
+                    shareData.title = '';
+                }
+                // 或是人人
+                if ( type === 'renren' && !shareData.summary ) {
+                    shareData.summary = shareData.title;
+                    shareData.title = '';
+                }
+                break;
+            case 'question':
+                shareData.title = '果壳问答：' + title;
+                if ( type === 'sinaminiblog' || type === 'qqmb' ) {
+                    shareData.summary = shareData.title;
+                    shareData.title = '';
+                }
+                // 或是人人
+                if ( type === 'renren' && !shareData.summary ) {
+                    shareData.summary = shareData.title;
+                    shareData.title = '';
+                }
+                break;
+            case 'answered':
+                shareData.title = '果壳问答：' + title;
+                if ( type === 'sinaminiblog' || type === 'qqmb' ) {
+                    shareData.summary = shareData.title;
+                    shareData.title = '';
+                }
+                // 或是人人
+                if ( type === 'renren' && !shareData.summary ) {
+                    shareData.summary = shareData.title;
+                    shareData.title = '';
+                }
+                break;
+            case 'diary':
+                shareData.title = g_diary_author + '的果壳网日志：' + title;
+                if ( type === 'sinaminiblog' || type === 'qqmb' ) {
+                    shareData.summary = shareData.title;
+                    shareData.title = '';
+                }
+                // 或是人人
+                if ( type === 'renren' && !shareData.summary ) {
+                    shareData.summary = shareData.title;
+                    shareData.title = '';
+                }
+                break;
+            case 'article':
+                if ( (type === 'sinaminiblog' || type === 'qqmb') && shareData.summary ) {
+                    shareData.title = '';
+                    shareData.summary = '果壳网：'+shareData.summary;
+                }
+                shareData.title = '果壳网：' + shareData.title;
+                break;
+            default:
+                shareData.title = title;
+                break;
+        }
+        return shareData;
+    });
+}, 'share');</pre>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                <div id="share">
+                </div>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        var g_page_name = 'article';
+    </script>
+    <script>
+        G.req( 'share', function( share ) {
+            document.getElementsByTagName('head')[0].appendChild( $('<style>'+$('.demo:eq(0)').text()+'</style>')[0] );
+            window.share = share;
+            $.globalEval( $('.demo:eq(1)').text() );
+       });
+    </script>
+</body>
+</html>

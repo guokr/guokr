@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>字符串参数解析QueryString</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">字符串参数解析QueryString</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* 这是一个处理搜索字符串的库，比如用于获取url里面search部分的参数，或者获取hash部分的参数。只要是以key=value&key2=value2为格式的都可以搞定<br/>
+* 参考: <a href="http://unixpapa.com/js/querystring.html" target="_blank">http://unixpapa.com/js/querystring.html</a><br/>
+* @author mzhou<br/>
+* @version 0.1
+</dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/QueryString.js";
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+    $('#editDemo').click( function() {
+        // ask.js
+        /**
+         * json转字符串,值为null或undefined或''的时候会不会被转换
+         * @param {object} json json对象
+         * @return {string} 字符串
+         */
+        var query   = QueryString.toQueryString(),
+        /**
+         * Query.getSearch
+         * 获取url里面search部分的Query对象
+         * @return {object} Query对象
+         */
+            search  = QueryString.getSearch(),
+        /**
+         * 获取url里面hash部分的Query对象
+         * @return {object} Query对象
+         */
+            hash    = QueryString.getHash();
+        /**
+         * 获取某个key值，值为''时返回undefined
+         *  ''        ==&gt; undefined
+         *  undefined ==&gt; undefined
+         *  null      ==&gt; null
+         *  0         ==&gt; 0
+         * 如果没有设置值，则统一返回undefined
+         */
+        if( search.get('_edit') ) {
+            var sel = $(this).data('id');
+            sel = '#demo' + sel;
+            var $demo = $(sel);
+            var hashJson = '';
+            $.each( hash.dict, function(i,n){
+                hashJson += i + '&nbsp;:&nbsp;' + n;
+            });
+            $demo.prepend( '通过data-id：' + sel + '&nbsp;选中，QueryString.getHash得到：' + hashJson + '&lt;br/&gt;');
+        }
+    }).click();     // demo需要，先跳转再实现修改
+
+</pre>
+                <a id="editDemo" href="?_edit=1#demo129094" data-id="129094" class="sg_btn mt20">修改</a>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                    <div id="demo129094"></div>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'QueryString', function( QueryString ) {
+            window.QueryString = QueryString;
+            $.globalEval( $('.demo:eq(0)').text() );
+        });
+    </script>
+</body>
+</html>
+

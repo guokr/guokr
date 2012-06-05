@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>hash change 模块(hash)</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">hash change 模块(hash)</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* hash change 模块<br/>
+* @author mzhou<br/>
+* @version 1.0<br/>
+* @description 此模块修改自jquery的hash插件<br/>
+* <a href="http://benalman.com/projects/jquery-hashchange-plugin/" target="_blank">http://benalman.com/projects/jquery-hashchange-plugin/</a>
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/hash.js";
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+</pre>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'hash', function( hash ) {
+            window.hash = hash;
+            $.globalEval( $('.demo:eq(0)').text() );
+        });
+    </script>
+</body>
+</html>
+

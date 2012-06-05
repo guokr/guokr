@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件上传ajaxupload</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">文件上传ajaxupload</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* 简易的异步文件上传模块，用iframe实现<br/>
+* @author: yuest<br/>
+* @desc: 文件上传模块<br/>
+* @version: 1.0<br/>
+* @eg: 参考 form.js 中的使用方式<br/>
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/ajaxupload.js";<br/>
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre>ajaxUpload(
+    // 上传url
+    '/uploadfile/head_image', 
+    // 与要上传的文件关联的 &lt;input type="file" ... /&gt; 的 jQuery 对象
+    $('#trueFile'),
+    // 其他配置
+    {
+        // 【可选】再上传文件之前需要做的异步回调,通常用于获取token
+        asyncPrepare: function (ready) {
+            $.ajax({
+                url: "/uploadfile/get_req_id",
+                data: { target: "head", ukey_uploader: ukey },
+                type: "post",
+                success: function(text) {
+                    ready({ requestID: text });
+                }
+            });
+        },
+        // 【可选】上传成功后回调函数，data是iframe中的text。（from zmm: 数据很可能会被某些插件添加上奇怪的html，例如火狐魔镜）
+        success: function (data) {
+        },
+        // 【可选】超时时间，默认为0
+        timeout: 30,
+        // 【可选】超时时候的回调函数
+        timeoutCallback: function () {
+        }
+    }
+);</pre>
+                </dd>
+            </dl>
+        </div>
+    </div>
+</body>
+</html>

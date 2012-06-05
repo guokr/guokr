@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>特性检测support</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+    </head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">特性检测support</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* 特征检测库<br/>
+* @author mzhou<br/>
+* @log 0.1
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/support.js"
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+    /**
+     * 返回 boolean 值
+     * 判断支持position:fixed与否
+     * ios5版本及之后支持了fixed，但是没有好的特征检测方法，故先用ua探测，以后增强
+     */
+    $('#result').append( ( support.fixed()? '' : '不' ) + '支持fixed&lt;br/&gt;' )
+    .append( ( support.touchEvent()? '' : '不' ) + '支持touchEvent&lt;br/&gt;' )
+    .append( ( support.cssanimation()? '' : '不' ) + '支持cssanimation' );
+</pre>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                    <div id="result">the result is: <br/></div>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'support', function( support ) {
+            window.support = support;
+            $.globalEval( $('.demo:eq(0)').text() );
+        });
+    </script>
+</body>
+</html>

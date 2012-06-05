@@ -1,0 +1,38 @@
+/* 全局css */
+
+/* 通用css状态class（不可用作一般符号） */
+/*
+ * current
+ * hover
+ * selected
+ * actived
+ *
+ */
+
+/* 通用css */
+@import "h/reset.css";
+
+/* 模块 */
+@import "h/header.css";
+@import "h/top.css";
+@import "h/bottom.css";
+
+/* 组件 */
+@import "h/common.css";
+
+/* 404 等做404彩蛋的时候重构 */
+.fof {background:none;}
+    .fof_box {padding:100px 0; text-align:center;}
+    .fof_img {margin:0 auto 24px; width:401px;line-height:1.5;}
+        .fof_img .bigger {font-size:24px;}
+        .fof_img a {color:#069;}
+        .fof_box input.back_bt {
+            border:none;
+            width:55px;
+            height:28px;
+            line-height:28px;
+            cursor:pointer;
+            color:#333;
+            padding-bottom:4px;
+            background:url(imgs/g_main.png) -120px -106px no-repeat;
+        }

@@ -1,0 +1,681 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>简易tab</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+    <style>
+.category a.current {
+    color: #BBBBBB;
+}
+.main-example dd {
+    border: none;
+    padding-left: 0;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">简易tab</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* 简易的tab模块<br/>
+* @author mzhou<br/>
+* @version 1.2<br/>
+* @description 真的很简易<br/>
+*              根据trigger和target一一对应的切换<br/>
+* @log 1.1 添加了targetSelector,与前一版本不再兼容<br/>
+*      1.2 添加了callback回调，参数为currentTrigger（当前tab的jquery对象）、currentPanel（当前panel的jquery对象）
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/tab.js";<br/>
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">//profile.js
+/**
+ * return function( triggerPanel, triggerSelector, targetPanel, targetSelector, currentClass, callback ) 
+ */
+    // tab切换
+    var tabber = tab( '#switcherTitle', 'a', '#switcherContent', 'div,ul', 'current', function ( $panel, $trigger ) {
+        // 此处可以设置：用户本人的页面时，显示提醒“设置我关注的人”等
+        var text = $trigger.text();
+        $('#currentPanel').text(text);
+        return true;
+    }),
+        t =  3;         //选中的链接，此处为“关注的人”
+    tabber.set( t-1 );
+</pre>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                    <div>
+                        <div id="currentPanel"></div>
+                        <div class="category" id="switcherTitle">
+                            <ul>
+                                <li><a href="#followedSite" class="current">关注的主题站</a></li>
+                                <li><a href="#followedGroup" class="">关注的小组</a></li>
+                                <li><a href="#followUser" class="">关注的人</a></li>
+                                <li><a href="#followedUser" class="">被谁关注</a></li>
+                            </ul>
+                        </div>
+                        <div class="main-title-line"></div>
+                        <div id="switcherContent">
+                            <!-- 主题站 -->
+                            <div id="followedSite" class="pack" style="display: block;">
+                            <dl class="pack_s">
+                                <dt>
+                                <a href="/site/techb/" title="科技与商业"><img width="48" height="39" src="/skin/mini_logo/techb_b.jpg"></a>
+                                </dt>
+                                <dd>
+                                <a href="/site/techb/" title="科技与商业">科技与商业</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_s">
+                                <dt>
+                                <a href="/site/pet/" title="爱宠"><img width="48" height="39" src="/skin/mini_logo/pet_b.jpg"></a>
+                                </dt>
+                                <dd>
+                                <a href="/site/pet/" title="爱宠">爱宠</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_s">
+                                <dt>
+                                <a href="/site/artsci/" title="文艺科学"><img width="48" height="39" src="/skin/mini_logo/artsci_b.jpg"></a>
+                                </dt>
+                                <dd>
+                                <a href="/site/artsci/" title="文艺科学">文艺科学</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_s">
+                                <dt>
+                                <a href="/site/sciblog/" title="科技视点"><img width="48" height="39" src="/skin/mini_logo/sciblog_b.jpg"></a>
+                                </dt>
+                                <dd>
+                                <a href="/site/sciblog/" title="科技视点">科技视点</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_s">
+                                <dt>
+                                <a href="/site/digest/" title="环球科技观光团"><img width="48" height="39" src="/skin/mini_logo/digest_b.jpg"></a>
+                                </dt>
+                                <dd>
+                                <a href="/site/digest/" title="环球科技观光团">环球科技观光团</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_s">
+                                <dt>
+                                <a href="/site/microsf/" title="微科幻"><img width="48" height="39" src="/skin/mini_logo/microsf_b.jpg"></a>
+                                </dt>
+                                <dd>
+                                <a href="/site/microsf/" title="微科幻">微科幻</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_s">
+                                <dt>
+                                <a href="/site/diy/" title="DIY"><img width="48" height="39" src="/skin/mini_logo/diy_b.jpg"></a>
+                                </dt>
+                                <dd>
+                                <a href="/site/diy/" title="DIY">DIY</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_s">
+                                <dt>
+                                <a href="/site/gizfan/" title="创意科技"><img width="48" height="39" src="/skin/mini_logo/gizfan_b.jpg"></a>
+                                </dt>
+                                <dd>
+                                <a href="/site/gizfan/" title="创意科技">创意科技</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_s">
+                                <dt>
+                                <a href="/site/natural/" title="自然控"><img width="48" height="39" src="/skin/mini_logo/natural_b.jpg"></a>
+                                </dt>
+                                <dd>
+                                <a href="/site/natural/" title="自然控">自然控</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_s">
+                                <dt>
+                                <a href="/site/health/" title="健康朝九晚五"><img width="48" height="39" src="/skin/mini_logo/health_b.jpg"></a>
+                                </dt>
+                                <dd>
+                                <a href="/site/health/" title="健康朝九晚五">健康朝九晚五</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_s">
+                                <dt>
+                                <a href="/site/psybst/" title="心事鉴定组"><img width="48" height="39" src="/skin/mini_logo/psybst_b.jpg"></a>
+                                </dt>
+                                <dd>
+                                <a href="/site/psybst/" title="心事鉴定组">心事鉴定组</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_s">
+                                <dt>
+                                <a href="/site/sex/" title="性 情"><img width="48" height="39" src="/skin/mini_logo/sex_b.jpg"></a>
+                                </dt>
+                                <dd>
+                                <a href="/site/sex/" title="性 情">性 情</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_s">
+                                <dt>
+                                <a href="/site/crime/" title="谋杀 现场 法医"><img width="48" height="39" src="/skin/mini_logo/crime_b.jpg"></a>
+                                </dt>
+                                <dd>
+                                <a href="/site/crime/" title="谋杀 现场 法医">谋杀 现场 法医</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_s">
+                                <dt>
+                                <a href="/site/logos/" title="死理性派"><img width="48" height="39" src="/skin/mini_logo/logos_b.jpg"></a>
+                                </dt>
+                                <dd>
+                                <a href="/site/logos/" title="死理性派">死理性派</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_s">
+                                <dt>
+                                <a href="/site/fact/" title="谣言粉碎机"><img width="48" height="39" src="/skin/mini_logo/fact_b.jpg"></a>
+                                </dt>
+                                <dd>
+                                <a href="/site/fact/" title="谣言粉碎机">谣言粉碎机</a>
+                                </dd>
+                            </dl>
+                            </div>
+                            <!-- 我关注的小组 -->
+                            <div id="followedGroup" class="pack hide" style="display: none;">
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/98/" title="乐动黑白"><img width="48" height="48" src="http://img1.guokr.com/gkimage/wo/d3/j2/wod3j2.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/98/" title="乐动黑白">乐动黑白</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/99/" title="游戏宅"><img width="48" height="48" src="http://img1.guokr.com/gkimage/ys/le/6a/ysle6a.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/99/" title="游戏宅">游戏宅</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/97/" title="快乐数独"><img width="48" height="48" src="http://img1.guokr.com/gkimage/yd/9i/de/yd9ide.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/97/" title="快乐数独">快乐数独</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/95/" title="兵器科学"><img width="48" height="48" src="http://img1.guokr.com/gkimage/bm/zf/vw/bmzfvw.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/95/" title="兵器科学">兵器科学</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/94/" title="药学驿站"><img width="48" height="48" src="http://img1.guokr.com/gkimage/xj/jr/od/xjjrod.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/94/" title="药学驿站">药学驿站</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/96/" title="人文咖啡馆"><img width="48" height="48" src="http://img1.guokr.com/gkimage/9u/ml/he/9umlhe.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/96/" title="人文咖啡馆">人文咖啡馆</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/93/" title="海外剧场"><img width="48" height="48" src="http://img1.guokr.com/gkimage/wa/nl/yx/wanlyx.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/93/" title="海外剧场">海外剧场</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/91/" title="汽车研究院"><img width="48" height="48" src="http://img1.guokr.com/gkimage/nr/f4/yf/nrf4yf.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/91/" title="汽车研究院">汽车研究院</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/89/" title="户外Explorer"><img width="48" height="48" src="http://img1.guokr.com/gkimage/r0/hu/z7/r0huz7.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/89/" title="户外Explorer">户外Explorer</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/90/" title="科学E先生"><img width="48" height="48" src="http://img1.guokr.com/gkimage/4c/hp/ln/4chpln.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/90/" title="科学E先生">科学E先生</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/87/" title="菠萝科学奖"><img width="48" height="48" src="http://img1.guokr.com/gkimage/84/f7/my/84f7my.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/87/" title="菠萝科学奖">菠萝科学奖</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/86/" title="Apps尽享"><img width="48" height="48" src="http://img1.guokr.com/gkimage/td/kd/r8/tdkdr8.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/86/" title="Apps尽享">Apps尽享</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/84/" title="图研基地"><img width="48" height="48" src="http://img1.guokr.com/gkimage/b7/wn/ra/b7wnra.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/84/" title="图研基地">图研基地</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/85/" title="ACG"><img width="48" height="48" src="http://img1.guokr.com/gkimage/bi/5r/f8/bi5rf8.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/85/" title="ACG">ACG</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/81/" title="挑战拖延症"><img width="48" height="48" src="http://img1.guokr.com/gkimage/md/u3/dq/mdu3dq.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/81/" title="挑战拖延症">挑战拖延症</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/83/" title="泛阅读"><img width="48" height="48" src="http://img1.guokr.com/gkimage/g3/vz/z4/g3vzz4.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/83/" title="泛阅读">泛阅读</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/77/" title="可持续生存"><img width="48" height="48" src="http://img1.guokr.com/gkimage/m2/4s/3n/m24s3n.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/77/" title="可持续生存">可持续生存</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/75/" title="知识影像馆"><img width="48" height="48" src="http://img1.guokr.com/gkimage/qf/nw/y1/qfnwy1.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/75/" title="知识影像馆">知识影像馆</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/70/" title="亲子时间"><img width="48" height="48" src="http://img1.guokr.com/gkimage/h7/ra/i1/h7rai1.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/70/" title="亲子时间">亲子时间</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/73/" title="美丽也是技术活"><img width="48" height="48" src="http://img1.guokr.com/gkimage/oo/9v/kw/oo9vkw.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/73/" title="美丽也是技术活">美丽也是技术活</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/79/" title="数码控"><img width="48" height="48" src="http://img1.guokr.com/gkimage/ig/xs/2t/igxs2t.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/79/" title="数码控">数码控</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/69/" title="吃货研究所"><img width="48" height="48" src="http://img1.guokr.com/gkimage/ed/ef/5x/edef5x.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/69/" title="吃货研究所">吃货研究所</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/67/" title="飞面神教果壳分舵"><img width="48" height="48" src="http://img1.guokr.com/gkimage/qm/ss/ha/qmssha.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/67/" title="飞面神教果壳分舵">飞面神教果壳分舵</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/66/" title="小儿科"><img width="48" height="48" src="http://img1.guokr.com/gkimage/98/u0/n4/98u0n4.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/66/" title="小儿科">小儿科</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/62/" title="互联网搭车客"><img width="48" height="48" src="http://img1.guokr.com/gkimage/sa/3z/qh/sa3zqh.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/62/" title="互联网搭车客">互联网搭车客</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/60/" title="Hello world!"><img width="48" height="48" src="http://img1.guokr.com/gkimage/94/nq/y9/94nqy9.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/60/" title="Hello world!">Hello world!</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/58/" title="观星者"><img width="48" height="48" src="http://img1.guokr.com/gkimage/2o/zp/gm/2ozpgm.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/58/" title="观星者">观星者</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/59/" title="巴别塔"><img width="48" height="48" src="http://img1.guokr.com/gkimage/1c/s8/yg/1cs8yg.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/59/" title="巴别塔">巴别塔</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/57/" title="鲜蜂中队"><img width="48" height="48" src="http://img1.guokr.com/gkimage/gb/xf/a4/gbxfa4.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/57/" title="鲜蜂中队">鲜蜂中队</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/54/" title="一地果壳"><img width="48" height="48" src="http://img1.guokr.com/gkimage/z5/bo/mc/z5bomc.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/54/" title="一地果壳">一地果壳</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/27/" title="DIY"><img width="48" height="48" src="http://img1.guokr.com/gkimage/4y/py/yc/4ypyyc.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/27/" title="DIY">DIY</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/48/" title="万有引力"><img width="48" height="48" src="http://img1.guokr.com/gkimage/p3/ck/03/p3ck03.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/48/" title="万有引力">万有引力</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/29/" title="爱宠"><img width="48" height="48" src="http://img1.guokr.com/gkimage/93/mc/a3/93mca3.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/29/" title="爱宠">爱宠</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/28/" title="健康朝九晚五"><img width="48" height="48" src="http://img1.guokr.com/gkimage/rp/tr/fw/rptrfw.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/28/" title="健康朝九晚五">健康朝九晚五</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/30/" title="性 情"><img width="48" height="48" src="http://img1.guokr.com/gkimage/ms/11/vg/ms11vg.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/30/" title="性 情">性 情</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/33/" title="心事鉴定组"><img width="48" height="48" src="http://img1.guokr.com/gkimage/c2/eh/ue/c2ehue.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/33/" title="心事鉴定组">心事鉴定组</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/32/" title="文艺科学"><img width="48" height="48" src="http://img1.guokr.com/gkimage/1u/wx/io/1uwxio.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/32/" title="文艺科学">文艺科学</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/31/" title="谋杀 现场 法医"><img width="48" height="48" src="http://img1.guokr.com/gkimage/ou/lq/bx/oulqbx.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/31/" title="谋杀 现场 法医">谋杀 现场 法医</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/36/" title="自然控"><img width="48" height="48" src="http://img1.guokr.com/gkimage/r9/ml/wj/r9mlwj.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/36/" title="自然控">自然控</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/34/" title="微科幻"><img width="48" height="48" src="http://img1.guokr.com/gkimage/6s/y3/1o/6sy31o.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/34/" title="微科幻">微科幻</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/37/" title="环球科技观光团"><img width="48" height="48" src="http://img1.guokr.com/gkimage/pr/h1/ex/prh1ex.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/37/" title="环球科技观光团">环球科技观光团</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/38/" title="创意科技"><img width="48" height="48" src="http://img1.guokr.com/gkimage/f0/6x/9k/f06x9k.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/38/" title="创意科技">创意科技</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/40/" title="谣言粉碎机"><img width="48" height="48" src="http://img1.guokr.com/gkimage/ra/5w/o5/ra5wo5.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/40/" title="谣言粉碎机">谣言粉碎机</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/group/posts/39/" title="死理性派"><img width="48" height="48" src="http://img1.guokr.com/gkimage/kj/yj/0a/kjyj0a.png"></a>
+                                </dt>
+                                <dd>
+                                <a href="/group/posts/39/" title="死理性派">死理性派</a>
+                                </dd>
+                            </dl>
+                            </div>
+                            <!-- 我关注的用户 -->
+                            <div id="followUser" class="pack hide" style="display: none;">
+                            <div class="nolist">TA还没有关注的人</div>
+                            <!-- no need pager -->
+                            </div>
+                            <!-- 关注我的用户 -->
+                            <div id="followedUser" class="pack hide" style="display: none;">
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/i/1763148941/" title="A.V." target="_blank"><img width="48" height="48" src="http://img1.guokr.com/gkimage/ho/lw/v1/holwv1.jpg" alt="A.V."></a>
+                                </dt>
+                                <dd>
+                                <a href="/i/1763148941/" title="A.V." target="_blank">A.V.</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/i/0472599746/" title="drachez" target="_blank"><img width="48" height="48" src="http://img1.guokr.com/gkimage/86/27/5v/86275v.png" alt="drachez"></a>
+                                </dt>
+                                <dd>
+                                <a href="/i/0472599746/" title="drachez" target="_blank">drachez</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/i/1100564056/" title="薄荷糖" target="_blank"><img width="48" height="48" src="http://img1.guokr.com/gkimage/he/08/58/he0858.jpg" alt="薄荷糖"></a>
+                                </dt>
+                                <dd>
+                                <a href="/i/1100564056/" title="薄荷糖" target="_blank">薄荷糖</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/i/1680728895/" title="泛用人形决战兵器" target="_blank"><img width="48" height="48" src="http://img1.guokr.com/gkimage/tp/is/je/tpisje.jpg" alt="泛用人形决战兵器"></a>
+                                </dt>
+                                <dd>
+                                <a href="/i/1680728895/" title="泛用人形决战兵器" target="_blank">泛用人形决战兵器</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/i/1272912311/" title="小懒zhu" target="_blank"><img width="48" height="48" src="http://img1.guokr.com/gkimage/61/cb/r6/61cbr6.jpg" alt="小懒zhu"></a>
+                                </dt>
+                                <dd>
+                                <a href="/i/1272912311/" title="小懒zhu" target="_blank">小懒zhu</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/i/0293801311/" title="约禅" target="_blank"><img width="48" height="48" src="http://img1.guokr.com/gkimage/xg/m2/y8/xgm2y8.jpg" alt="约禅"></a>
+                                </dt>
+                                <dd>
+                                <a href="/i/0293801311/" title="约禅" target="_blank">约禅</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/i/2059691715/" title="SloSnail" target="_blank"><img width="48" height="48" src="http://img1.guokr.com/gkimage/rp/vq/mc/rpvqmc.png" alt="SloSnail"></a>
+                                </dt>
+                                <dd>
+                                <a href="/i/2059691715/" title="SloSnail" target="_blank">SloSnail</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/i/1802354947/" title="VioletCrystal" target="_blank"><img width="48" height="48" src="http://img1.guokr.com/gkimage/we/ld/ex/weldex.png" alt="VioletCrystal"></a>
+                                </dt>
+                                <dd>
+                                <a href="/i/1802354947/" title="VioletCrystal" target="_blank">VioletCrystal</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/i/0493417814/" title="DAIDAIDAI" target="_blank"><img width="48" height="48" src="http://img1.guokr.com/gkimage/6f/uq/tv/6fuqtv.jpg" alt="DAIDAIDAI"></a>
+                                </dt>
+                                <dd>
+                                <a href="/i/0493417814/" title="DAIDAIDAI" target="_blank">DAIDAIDAI</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/i/1898006156/" title="张湉梓" target="_blank"><img width="48" height="48" src="http://img1.guokr.com/gkimage/gx/l8/3s/gxl83s.jpg" alt="张湉梓"></a>
+                                </dt>
+                                <dd>
+                                <a href="/i/1898006156/" title="张湉梓" target="_blank">张湉梓</a>
+                                </dd>
+                            </dl>
+                            <dl class="pack_u">
+                                <dt>
+                                <a href="/i/1386740193/" title="Greeny" target="_blank"><img width="48" height="48" src="http://img1.guokr.com/gkimage/gj/25/s5/gj25s5.jpg" alt="Greeny"></a>
+                                </dt>
+                                <dd>
+                                <a href="/i/1386740193/" title="Greeny" target="_blank">Greeny</a>
+                                </dd>
+                            </dl>
+                            <!-- no need pager -->
+                            </div>
+                    </div>
+                </div>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'tab', function( tab ) {
+            window.tab = tab;
+            $.globalEval( $('.demo:eq(0)').text() );
+       });
+    </script>
+</body>
+</html>

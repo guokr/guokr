@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>轮播模块slide</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">轮播模块slide</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* 轮播模块，大看版会用到<br/>
+* @author: mzhou<br/>
+* @version: 0.1
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/slide.js";<br/>
+                    CSS:<br/>
+<pre class="demo">/* @module: focus ,focus board start */
+.focus{
+    position: relative;
+    margin-top: 30px;
+    width: 620px;
+}
+    .focus-content{
+        height: 220px;
+    }
+        .focus-content a{
+            display: none;
+        }
+    .focus-tag{
+        position: absolute;
+        right: 10px;
+        bottom: 5px;
+        overflow: hidden;
+        width: 48px;
+        height: 12px;
+    }
+        .focus-tag a{
+            _display: inline;
+            float: left;
+            margin-left: 4px;
+            width: 12px;
+            height: 12px;
+            text-indent: -9999px;
+            background-color: #6F737E;
+
+            -webkit-border-radius: 6px;
+            -moz-border-radius: 6px;
+            -o-border-radius: 6px;
+            border-radius: 6px;
+        }
+        .focus-tag a:hover{
+            cursor: pointer;
+        }
+        .focus-tag .current{
+            background-color: #1fa0d8;
+        }</pre>
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">slide(
+    // 大看版的容器对象，此对象第一个元素为图片集合，第二个为触发器集合
+    $('#slide'), 
+    // 指定默认显示的图片，默认为0开始
+    1,
+    // 指定轮播间隔，默认为5000ms
+    1000
+);</pre>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                <div id="slide" class="focus">
+                    <div class="focus-content">
+                        <a href="http://www.guokr.com//article/118099/" title="为何红色最让男人怦然心动？" target="_blank">
+                            <img width="620" height="220" src="http://www.guokr.com/gkimage/9c/ok/ts/9cokts.png">
+                        </a>
+                        <a href="http://www.guokr.com//article/117877/" title="一滴水珠，让手机变成“显微镜”" target="_blank">
+                            <img width="620" height="220" src="http://www.guokr.com/gkimage/ut/aw/78/utaw78.png">
+                        </a>
+                        <a href="http://www.guokr.com//blog/117694/" title="维C能帮你成为白雪公主吗？" target="_blank">
+                            <img width="620" height="220" src="http://www.guokr.com/gkimage/fs/85/ak/fs85ak.png">
+                        </a>
+                    </div>
+                    <div class="focus-tag">
+                        <a target="_blank" title="为何红色最让男人怦然心动？" href="http://www.guokr.com//article/118099/">为何红色最让男人怦然心动？</a>
+                        <a target="_blank" title="一滴水珠，让手机变成“显微镜”" href="http://www.guokr.com//article/117877/">一滴水珠，让手机变成“显微</a>
+                        <a target="_blank" title="维C能帮你成为白雪公主吗？" href="http://www.guokr.com//blog/117694/">维C能帮你成为白雪公主吗？</a>
+                    </div>
+                </div>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'slide', function( slide ) {
+            var style = document.createElement('style');
+            document.getElementsByTagName('head')[0].appendChild( style );
+            style.innerHTML += $('.demo:eq(0)').text();
+            window.slide = slide;
+            $.globalEval( $('.demo:eq(1)').text() );
+        });
+    </script>
+</body>
+</html>

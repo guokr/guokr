@@ -1,0 +1,463 @@
+/* @module: guokr */
+/* guokr-oops and guokr trigger for oops module */
+.guokr {
+    height: 20px;
+    background: url(/skin/imgs/3-guokr-bg.png?v2.4) #d6eff9 no-repeat center top;
+}
+
+/* @module: menu */
+.m_menu b,
+.s_menu-title b,
+.s_menu-title-hover b{
+    position: absolute;
+    right: 0;
+    top: 50%;
+    margin-top: -6px;
+    *margin-top: -8px;
+    width: 12px;
+    height: 12px;
+    overflow: hidden;
+    vertical-align: middle;
+    background-color: #efefef;
+}
+.m_menu b {
+    right: 6px;
+}
+.m_menu s,
+.s_menu-title s,
+.s_menu-title-hover s{
+    display: block;
+    margin: 5px 0 0 2px;
+    width: 0;
+    height: 0;
+    font-size: 0;
+    border-top: 4px solid #999;
+    border-left: 4px dashed transparent;
+    border-right: 4px dashed transparent;
+    border-bottom: 4px dashed transparent;
+    _border-color:  #999 #efefef #efefef;
+}
+.m_menu.hover b,
+.s_menu-block .s_menu-title-hover b {
+    background-color: #FFF;
+}
+.s_menu-block .s_menu-title-hover b {
+    *margin-top: -8px;
+}
+    .m_menu.hover s,
+    .s_menu-block .s_menu-title-hover s {
+        border-color: #29a2cf transparent transparent;
+        _border-color: #29a2cf #FFF #FFF;
+    }
+
+/* @module: m_menu 多列菜单 */
+/* outerWidth: 452px;
+ * innerWidth: 450px;
+ * border: 1px;
+ */
+.m_menu.hover {
+    position: relative;
+    _float: left;
+}
+    .m_menu div {
+        position: absolute;
+        top: 25px;
+        left: 0;
+        z-index: 101;
+        display: none;
+        padding: 15px 0;
+        width: 450px;
+        border: 1px solid #c5c5c5;
+        background-color: #FFF;
+        -webkit-box-shadow:1px 1px 1px #CCC;
+        -moz-box-shadow:1px 1px 1px #CCC;
+        -o-box-shadow:1px 1px 1px #CCC;
+        box-shadow:1px 1px 1px #CCC;
+    }
+    .m_menu.hover div {
+        display: block;
+    }
+        .m_menu ul {
+            overflow: hidden;
+            width: 100%;
+        }
+            .m_menu ul li {
+                _display: inline;
+                float: left;
+                margin: 0 -1px -1px 0;
+                padding: 5px 10px;
+                width: 130px;
+                height: 20px;
+                line-height: 20px;
+                border-right: 1px dashed #CCC;
+                border-bottom: 1px dashed #CCC;
+            }
+                .m_menu ul img {
+                    _display: inline;
+                    float: left;
+                    margin-right: 4px;
+                }
+                .m_menu ul a {
+                    font-size: 12px;
+                    color: #069;
+                }
+    .m_menu-title {
+        position: relative;
+        padding: 0 22px 0 10px;
+        height: 20px;
+        line-height: 20px;
+        font-size: 14px;
+    }
+    .m_menu.hover .m_menu-title {
+        z-index: 102;
+        float: left;
+        padding: 5px 20px 0 10px;
+        border: 1px solid #c5c5c5;
+        border-bottom: none;
+        background-color: #FFF;
+        -webkit-box-shadow:1px 0 0 #CCC;
+        -moz-box-shadow:1px 0 0 #CCC;
+        -o-box-shadow:1px 0 0 #CCC;
+        box-shadow:1px 0 0 #CCC;
+    }
+/*
+ * custom
+ */
+.gheader-nav .m_menu.hover {
+    top: -6px;
+}
+    .gheader-nav .m_menu.hover b {
+        top: 9px;
+        *top: 7px;
+        margin-top: 0;
+    }
+
+/* @module: s_menu 单列菜单 */
+.s_menu-title {
+    display: inline-block;
+    position: relative;
+    padding: 0 20px 0 24px;
+    margin-right: 5px;
+    line-height: 20px;
+}
+    .s_menu-title b {
+        right: 2px;
+    }
+    .s_menu-title img {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+.s_menu-block {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 3px;
+    z-index: 1; /* fix for linux chrome */
+    padding: 5px 5px 10px;
+
+    background: #FFF;
+    border:1px solid #c5c5c5;
+    -webkit-box-shadow:1px 1px 1px #CCC;
+    -moz-box-shadow:1px 1px 1px #CCC;
+    -o-box-shadow:1px 1px 1px #CCC;
+    box-shadow:1px 1px 1px #CCC;
+}
+.s_menu-block-f {
+    overflow: hidden;
+    padding-bottom: 10px;
+}
+    .s_menu-block .s_menu-title-hover {
+        position: relative;
+        margin: 0;
+        padding: 0 15px 0 5px;
+        height: 20px;
+        line-height: 20px;
+    }
+        .s_menu-block .s_menu-title-hover:hover {
+            text-decoration: underline;
+            color: #666;
+            background-color: #FFF;
+        }
+        .s_menu-title-hover img {
+            _display: inline;
+            float: left;
+            margin-right: 5px;
+        }
+        .s_menu .s_menu-title-hover b {
+            right: 0;
+        }
+
+/* fix IE7(ie8 compat) */
+.s_menu-block li:hover {
+    +background-color: #29a2cf;
+}
+.s_menu-block .s_menu-block-f:hover {
+    +background-color: #FFF;
+}
+/* end */
+        .s_menu-block a {
+            display: block;
+            padding: 2px 5px;
+            height: 16px;
+            line-height: 16px;
+            color: #666;
+        }
+        .s_menu-block a:hover {
+            text-decoration: none;
+            color: #FFF;
+            background-color: #29a2cf;
+        }
+        /* fix IE7(ie8 compat) */
+        .s_menu-block .s_menu-block-f:hover a {
+            +color: #666;
+            +background-color: #FFF;
+        }
+        .s_menu-block li:hover a {
+            +color: #FFF;
+            +background-color: #29a2cf;
+        }
+        /* end */
+
+/* @module: search */
+.search-txt {
+    padding-left: 5px;
+    width: 190px;
+    height: 24px;
+    line-height: 24px\9; /* fix for chrome 如果chrome设置了line-height，placeholder文字高度会变化 */
+    /* color: #BBB; fix for ie6 必须是设置在input上，否则js操作设置input的value之后，颜色并不是继承字父元素的*/
+    vertical-align: middle;
+
+    border: 1px solid #DDD;
+    border-right: none;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
+    -webkit-box-shadow: 1px 1px 1px #ddd inset;
+    -moz-box-shadow: 1px 1px 1px #ddd inset;
+    -o-box-shadow: 1px 1px 1px #ddd inset;
+    box-shadow: 1px 1px 1px #ddd inset;
+}
+.search-bt {
+    margin-left: -4px;
+    width: 30px;
+    height: 26px;
+    vertical-align: middle;
+    text-indent: -9999px;
+
+    background: url(/skin/imgs/small.gif?v2.8) no-repeat 6px -266px;
+    border: 1px solid #C2C2C2;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -o-border-radius: 3px;
+    border-radius: 3px;
+}
+
+
+/* @module: gheader */
+.gheader-wp {
+    *position: relative; /* fix ie6/7 popup menu */
+    *z-index: 100;
+    border-bottom: 3px solid #DCE6EC;
+}
+.gheader-wp-b {
+    border-bottom: 1px solid #C4D5E0;
+}
+    .gheader {
+        position: relative; /* setup gheader-i */
+        margin: 20px auto 0;
+        width: 940px;
+        height: 70px;
+    }
+    .gheader-logo {
+        float: left;
+        width: 146px;
+        height: 42px;
+        line-height: 10em; /* hide word */
+        overflow: hidden;
+        background: url(/skin/imgs/3-logo.png?v2.4) no-repeat 0 0;
+    }
+    .gheader-nav {
+        float: left;
+        margin-top: 18px;
+        height: 20px;
+        line-height: 20px;
+        font-size: 14px;
+        padding-left: 20px;
+    }
+        .gheader-nav li {
+            _display: inline;
+            float: left;
+            margin: 0 15px;
+        }
+        .gheader-nav li a {
+            float: left;
+            color: #666;
+        }
+            .gheader-nav li a .new {
+                position: relative; /* IE6 和opera 11.64都需要这个fix*/
+                margin-top: -12px;
+                _margin-top: -9px;
+                display: inline-block;
+                width: 28px;
+                _height: 16px;
+                line-height: 16px;
+                overflow: hidden;
+                vertical-align: 10px;
+                text-indent: -9999px;
+                background: url(/skin/imgs/small.gif) no-repeat -80px 0;
+            }
+        .gheader-nav .current {
+            color: #069;
+        }
+        .gheader-nav .current:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+    .gheader .search {
+        float: right;
+        margin-top: 15px;
+    }
+    .gheader-i {
+        position: absolute;
+        top: -34px;
+        right: 0;
+        padding: 6px 13px 0;
+        height: 20px;
+        line-height: 20px;
+        background: url(/skin/imgs/small.gif?v2.8) #FFF no-repeat 0 -365px;
+    }
+    .gheader-i-b {
+        position: absolute;
+        top: 0;
+        right: -1px;
+        height: 30px;
+        width: 8px;
+        background: url(/skin/imgs/small.gif?v2.8) #FFF no-repeat 0 -400px;
+    }
+        .gheader-i img {
+            overflow: hidden;
+        }
+        .gheader-i a {
+            color: #999;
+        }
+        .gheader-i-msg {
+            font-size: 12px;
+            margin-right: 10px;
+        }
+            .gheader-i-msg span{
+                color: red;
+            }
+        .gheader-i-sp {
+            display: inline-block;
+            margin: 0 8px;
+            *margin-right: 10px; /* fix IE6/7 */
+            width: 0;
+            height: 10px;
+            line-height: 10px;
+            overflow: hidden;
+            color: #999;
+            border-right: 1px solid #999;
+        }
+
+        .gheader-i-notice {
+            display: inline;
+        }
+            .gheader-i sup {
+                position: relative; /* IE6 和opera 11.64都需要这个fix*/
+                display: inline-block;  /* fix IE9 */
+                margin-top: -10px;
+                font-weight: bold;
+                padding: 1px 4px;
+                margin-left: 1px;
+                color: #FFF;
+                background: #FF172B;
+                -webkit-border-radius: 8px;
+                -moz-border-radius: 8px;
+                -o-border-radius: 8px;
+                border-radius: 8px;
+                font-size: 12px;
+                line-height: 1.2;
+                text-align: center;
+            }
+            .gheader-i-notice-block {
+                width: 300px;
+                position: absolute;
+                right: 0;
+                top: 26px;
+                padding-top: 14px;
+                z-index: 999;
+                background: #FFF;       /* fix IE */
+                display: none;
+            }
+                .gheader-i-notice-block b {
+                    position: absolute;
+                    left: 245px;
+                    top: -11px;
+                    width: 0;
+                    height: 0;
+                    font-size: 0;
+                    border-color: transparent transparent #BDBDBD;
+                    border-style: dashed dashed solid;
+                    border-width: 13px;
+                }
+                    .gheader-i-notice-block b s {
+                        position: absolute;
+                        z-index: 9;
+                        top: -11px;
+                        _top: -12px;
+                        left: -12px;
+                        width: 0;
+                        height: 0;
+                        font-size: 0;
+                        border-color: transparent transparent #FAFAFA;
+                        border-style: dashed dashed solid;
+                        border-width: 12px;
+                        background-color: transparent;  /* fix IE 6 */
+                        color: #BDBDBD;                 /* fix IE 6 */
+                    }
+                .gheader-i-notice-block ul, .gheader-i-notice-block-bottom {
+                    background: #FAFAFA;
+                    padding: 10px 17px;
+                    border: 1px solid #BDBDBD;
+                }
+                .gheader-i-notice-block ul {
+                    border-bottom: none;
+                }
+                .gheader-i-notice-block-bottom {
+                    border-top: none;
+                    overflow: hidden;
+                    _zoom: 1;
+                }
+                .gheader-i-notice-block li {
+                    border-bottom: 1px dashed #CCC;
+                    padding: 10px 0;
+                    position: relative;
+                    width: 100%;
+                    _display: inline;       /*fix IE 6 3px bug*/
+                    overflow: hidden;
+                    _zoom: 1;
+                }
+                    .gheader-i-notice-block li a {
+                        color: #069;
+                    }
+                    .gheader-i-notice-block p {
+                        width: 230px;
+                    }
+                    .gheader-i-notice-block a.icon-close {
+                        padding: 2px 8px;
+                        color: #BFBFBF;
+                        position: absolute;
+                        right: 0;
+                        top: 10px;
+                    }
+                    .gheader-i-notice-block-bottom a.close_all {
+                        float: left;
+                        color: #626262;
+                    }
+                    .gheader-i-notice-block-bottom a.more {
+                        float: right;
+                        color: #3A6090;
+                    }

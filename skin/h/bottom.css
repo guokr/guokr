@@ -1,0 +1,30 @@
+.bottom {
+    clear: both;
+    width: 940px;
+    overflow: hidden;
+    margin: 30px auto 0;
+    padding-bottom: 20px;
+    line-height: 35px;
+    color: #ccc;
+    text-align: center;
+}
+    .bottom-i {
+        border-top: #ccc 1px solid;
+    }
+        .bottom-i a {
+            color: #ccc;
+        }
+    .bottom-nav {
+        width: 51em;
+        margin: 0 auto;
+        overflow: hidden;
+        zoom: 1;
+    }
+        .bottom-nav li {
+            float: left;
+            margin-right: 1.5em;
+        }
+            .bottom-nav-m {
+                padding-left: 15px;
+                background: url(/skin/imgs/small.gif?v2.8) 0 -652px;
+            }

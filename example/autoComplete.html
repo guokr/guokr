@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>自动补全autoComplete</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+    <link rel="stylesheet" href="../skin/lib/Menu.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">自动补全autoComplete</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd class="main-example-intro">
+ * 自动补全插件，扩展自Event。
+ * 提供了show/hide/open/close/select五种事件，不支持return false来阻止事件
+ * @author mzhou
+ * @eg  var a = autoComplete( $input, api.getSimilarQuestion, {     // api是返回数组的函数,参数为value和回调函数(传递补全列表参数)，如果是ajax api则还需要返回xhr。
+ *                  done: function(){},                             // 选中菜单项后的回调函数，默认为设置input的值
+ *                  convert: function() {},                         // 将api返回的数组项，转换成可显示和可用来设置input值的菜单项。默认为数组项 === 菜单项
+ *                  width: 100,                                     // 补充框的宽度,默认不设置
+ *                  limit: 3,                                       // 至少多少个字输入后，才会自动补全，默认为2
+ *                  tip: '提示',                                    // 提示的html，显示在menu上面
+ *                  afterSetup: function(){},                       // 设置完成后的回调函数
+ *                  intervalTime: 3000                              // 更新自动补全列表的间隔时间，默认为3000
+ *              });
+ *      a.show(function() {     // 显示autoComplete菜单
+ *          console.log('afterShow');
+ *      });
+ *      a.hide();               // 隐藏
+ *      a.close();              // 关闭，无法再显示菜单，除非再次打开
+ *      a.open();               // 打开
+ *      a.on('show', function() {           // show/hide/close/open 四种事件的回调都没有参数
+ *          console.log('show');
+ *      });
+ *      a.on('select', function( item ) {   // select事件在选中自动补全选项时触发(支持return false回调)，之后会触发done回调
+ *          console.log( item );
+ *      });
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    CSS:<br/>
+                    //@import "lib/Anime.css";
+                    JS:<br/>
+                    //@import "lib/Anime.js";
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+var similarNames = ['mzhou','weihu','777','zmm','guokr'],
+    a = autoComplete(
+            $('#autoComplete'),
+            function( value, syncReturn ) {
+                var n = [],
+                    i = 0,
+                    l = similarNames.length;
+                for(; i&lt;l; i++) {
+                    if( ~similarNames[i].indexOf(value) ) {
+                        n.push(similarNames[i]);
+                    }
+                }
+                console.log(n);
+                syncReturn(n);
+            },
+            {
+                limit: 1,
+                tip: '提示'
+            }
+        );
+    console.log(a)
+</pre>
+                <button class="sg_btn mt20" id="workDemo">运行</button>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                <input type="text" id="autoComplete" class="t_txt" />
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'autoComplete', function( autoComplete ) {
+            window.autoComplete = autoComplete;
+            $('#workDemo').bind('click', function(){
+                $.globalEval( $('.demo:eq(0)').text() );
+            });
+        });
+    </script>
+</body>
+</html>
+

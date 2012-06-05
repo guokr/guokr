@@ -1,0 +1,387 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表单验证插件validate</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+    <style>
+.form {
+    color: #666666;
+    overflow: hidden;
+    width: 100%;
+}
+.form p {
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+    padding: 10px 0;
+}
+.form-rem {
+    margin-left: 60px;
+}
+.form input, .form label, .form span {
+    font-size: 14px;
+    vertical-align: middle;
+}
+.form label {
+    float: left;
+    width: 60px;
+}
+.form input, .form label, .form span {
+    font-size: 14px;
+    vertical-align: middle;
+}
+.form label {
+    float: left;
+    width: 60px;
+}
+.form-rem label {
+    color: #666666;
+    float: none;
+    margin-left: 6px;
+}
+.form-txt {
+    margin-right: 13px;
+    width: 220px;
+}
+.form-txt-vcode {
+    width: 6em;
+}
+.form-check {
+    margin-left: 60px;
+}
+.form .form-rem {
+    float: none;
+}
+.form-bt {
+    float: left;
+    margin: 0 20px 0 0;
+}
+.form .form-bt {
+    font-weight: bold;
+    margin-left: 60px;
+}
+.form-loading {
+    display: inline;
+    padding-right: 6px;
+    vertical-align: middle;
+}
+.form-link {
+    font-size: 14px;
+    vertical-align: middle;
+}
+.form .success, .form .error {
+    background: url("/skin/imgs/log_reg.png") no-repeat scroll -105px -28px transparent;
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 27px;
+}
+.form .success {
+    width: 27px;
+}
+.form .error {
+    background-position: -105px 1px;
+    color: #FF3300;
+}
+.form-vcode {
+    display: inline;
+    margin-right: 10px;
+    vertical-align: middle;
+}    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">表单验证插件validate</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* FORM表单验证插件<br/>
+*      支持多表单验证<br/>
+*      支持自定义验证规则和提示信息<br/>
+* @AUTHOR MZHOU<br/>
+* @VERSION 1.0<br/>
+* //@import "ValidateUtils.js";
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/validate.js";
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+    /**
+     * login_reg.js
+     * login.html, register.html, resetpassword.html, reg_alias.html
+     * @public
+     * @param {string} _formSelector 验证表单选择符号
+     * @param {object} _rules 验证规则
+     * @param {object} _option 配置
+     */
+    // 初始化，这一步原本由 g_page_name 自动判断
+    var prefixCode = 'YiQunSongShu',
+        i18n = {
+            email        : 'Email',
+            passwd       : '密码',
+            vcode        : '验证码',
+            nickname     : '昵称',
+            rule         : '',
+            errors       : {
+                noChinese: '{desc}只能是英文字母或数字',
+                vcode: '{desc}是4个字母或数字',
+                noAngleBrackets: '昵称里不能包含尖括号',
+                rule: '一定要同意才能注册',
+                email: '这个Email已经被人使用了',
+                nickname: '这个昵称已经被人使用了'
+            },
+            emailError   : 'Email格式错误',
+            serverError  : '服务器正在休息，请刷新之后过一会再试！',
+            globalError  : '&lt;div class="tip_box"&gt;{v}&lt;/div&gt;',
+            susertoken   : '&lt;input name="susertoken" value="{v}" type="hidden" /&gt;'
+        },
+        $loading = $('&lt;img class="form-loading" width="16" height="16" src="/skin/imgs/loading.gif"/&gt;'),
+        isChrome = !!navigator.userAgent.match( /chrome\/([\d.]_)/i ),
+        showError = function( msg ) {
+            $( '#tipBox' ).html(
+                $( i18n.globalError.replace( '{v}', msg ) )
+            );
+        },
+        encodeError = function( xmlHttp, textStatus, errorThrown ) {
+            $loading.detach();
+            if ( xmlHttp.status === 406 ) {
+                var r = $.parseJSON(xmlHttp.responseText);
+                showError( r.errmsg );
+            } else {
+                G.log( xmlHttp.status + ': 服务器悲剧了，不是前端bug！不要来烦我 ^_^');
+            }
+        };
+    var $email      = $('#email'),
+        $pwdTrue    = $('#password'),
+        $pwd        = $('#passwordFake'),
+        $pwdConfirm = $('#passwordConfirm'),
+        $nickname   = $('#nickname'),
+        $vcodePic   = $('#vcodePic'),
+        $vcodeChange= $('#changeVcode'),
+        pic         = $vcodePic.attr( 'src' ),
+        v           = 1;
+
+    // 第一次focus后显示msgPlace
+    $.each( [$email, $pwd, $pwdConfirm, $nickname], function() {
+        var self = this;
+        // self.is(':focus') is not work under IE6/7
+        if ( self.get(0) === document.activeElement ) {
+            self.siblings( '.msgPlace' ).removeClass( 'hide' );
+            return;
+        }
+        self.bind( 'focus.show', function() {
+            self.siblings( '.msgPlace' ).removeClass( 'hide' );
+            self.unbind( 'focus.show' );
+        } );
+    } );
+
+    if ( !isChrome && $pwd.is( ':disabled' ) ) {
+        $pwdConfirm.removeAttr( 'disabled' );
+        $pwd.removeAttr( 'disabled' );
+    }
+    
+    // 验证
+    validate( 
+            // @param {string} _formSelector 验证表单选择符号
+            '#regForm', 
+            // @param {object} _rules 验证规则
+            null,
+            // @param {object} _option 配置
+            { 
+                msgPlace: function( $element ) {
+                    return $element.siblings( '.msgPlace' );
+                },
+                successCallBack: function( msgPlace, msg, arg, desc ) {
+                    msgPlace.removeClass( 'error' )
+                            .text('&nbsp;');// 设置一个空格，避免IE6/7显示不了背景ug
+                if ( desc !== i18n.vcode ) {
+                    msgPlace.addClass( 'success' )
+                }
+            }
+        }
+    )
+    .method( 'noChinese', function( arg, rule, source ) {
+        return !ValidateUtils.isEnglishAndNumber( this.val() );
+    }, i18n.errors.noChinese )
+    .method( 'vcode', function() {
+        return ValidateUtils.isVcode( this.val() );
+    }, i18n.errors.vcode )
+    .method( 'noAngleBrackets', function() {
+        return ValidateUtils.hasAngleBrackets( this.val() );
+    }, i18n.errors.noAngleBrackets )
+    .method( 'rule', function( arg, rule ) {
+        /**
+         * 添加验证方法
+         * @public
+         * @param {string} name
+         * @param {function} func
+         * @param {string} msg
+         * @returns {object} 对象本身
+         * exports.method = function( name, func, msg ) 
+         */
+        return !arg || rule._$inputs.is( ':checked' );
+    }, i18n.errors.rule )
+    .rules({
+    /*
+     *      _rules = {
+     *          id: {
+     *              _selector           : '.class',        // 如果没有 selector 则会在调用rules方法或初始化的时候添加为“#id”
+     *              _desc               : 'id',            // 用于描述此input，会在显示错误信息时候被调用
+     *              _isValidated        : null,            // 默认是否通过验证，此值会在input值修改的时候被设置为false，验证成功后修改为true,验证失败修改为false，如果有异步验证则验证调用之后并不设置其值。默认为null
+     *              _asyncValidateError : 0,               // 表示此规则异步验证调用出错与否，正确为0，错误为1;目前只支持一个异步调用
+     *              _$inputs            : $( _selector )   // 不需要用户添加。如果是live的，那么就不一定有此属性。
+     *              _isLive             : false,           // 用于表示，用_selector或者是id获取_doms时是否是像jquery live方法那样支持后来添加的元素。默认为false
+     *              method              : arg,             // 验证方法1, 及其参数
+     *              method2             : arg,             // 验证方法2
+     *
+     *          }
+     */
+        email : { 
+            _desc: i18n.email,
+            required: 1,
+            email: 1,
+            async: {
+                url: '/api/check_username/',
+                param: 'username',
+                msg: i18n.errors.email,
+                error: function() {
+                    showError( i18n.serverError );
+                }
+            }
+        },
+        passwordFake: {
+            _desc    : i18n.passwd,
+            required: 1,
+            minlength: 4,
+            maxlength: 16,
+            noChinese: 1
+        },
+        passwordConfirm: {
+            _desc: i18n.passwd,
+            required: 1,
+            eq: 'passwordFake'
+        },
+        nickname: {
+            _desc: i18n.nickname,
+            required: 1,
+            noAngleBrackets: 1,
+            nickname: 1,
+            nicknameLen: 1,
+            async: {
+                url: '/api/check_nickname/',
+                param: 'nickname',
+                msg: i18n.errors.nickname,
+                error: function() {
+                    showError( i18n.serverError );
+                }
+            }
+        },
+        vcode: {
+            _desc: i18n.vcode,
+            vcode: 1
+        },
+        rule: {
+            _desc: i18n.rule,
+            rule: 1
+        }
+    })
+    .afterFormValidate(function( form ) {
+        $pwdTrue.val( 
+            Safe.SHA1( prefixCode + $pwd.val() )
+        );
+        if ( isChrome ) {
+            $pwd.val('');
+            $pwdConfirm.val('');
+        } else {
+            $pwd.attr( 'disabled', 'disabeld');
+            $pwdConfirm.attr( 'disabled', 'disabled');
+        }
+        return true;
+    });
+</pre>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                    <form method="POST" action="" class="form" id="regForm" novalidate="true">
+                        <input type="hidden" id="id_ucode" value="9869427" name="ucode">
+                        <p>
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-txt b_txt" required="" autofocus="" maxlength="40" name="email">
+                            <span class="msgPlace hide">请填写真实邮箱</span>
+                        </p>
+                        <p>
+                            <label for="password">密码</label>
+                            <input type="password" required="" name="passwordFake" id="passwordFake" maxlength="40" class="form-txt b_txt password">
+                            <span class="msgPlace hide">密码4-16位任意字符（字母区分大小写）</span>
+                        </p>
+                            <input type="hidden" name="password" id="password" maxlength="40">
+                        <p>
+                            <label for="password">确认密码</label>
+                            <input type="password" required="" name="passwordConfirm" id="passwordConfirm" maxlength="40" class="form-txt b_txt password">
+                            <span class="msgPlace hide">请再输一遍密码</span>
+                        </p>
+                        <p>
+                            <label for="nickname">昵称</label>
+                            <input type="text" class="form-txt b_txt" name="nickname" id="nickname" required="">
+                            <span class="msgPlace hide">仅支持中英文、数字、“.”、“-”以及“_”</span>
+                        </p>
+                        <p>
+                            <label for="vcode">验证码</label>
+                            <input type="text" id="vcode" name="vcode" class="form-txt b_txt form-txt-vcode" maxlength="4">
+                            <span>看不清<a id="changeVcode" href="#">换一张</a></span>
+                            <span class="msgPlace"></span>
+                        </p>
+                        <p class="form-rem">
+                            <input type="checkbox" name="rule" id="rule" checked="checked">
+                            <label for="rule">已经认真阅读并同意果壳的<a target="_blank" href="/help/agreement.html">《使用协议》</a></label>
+                        <span class="msgPlace"></span>
+                        </p>
+                        <p>
+                            <input type="submit" value="验　证" title="验证" class="form-bt bg_btn">
+                        </p>
+                    </form>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( [ 'validate', 'ValidateUtils' ], function( validate, ValidateUtils ) {
+            window.validate = validate;
+            window.ValidateUtils = ValidateUtils;
+            $.globalEval( $('.demo:eq(0)').text() );
+        });
+    </script>
+</body>
+</html>
+

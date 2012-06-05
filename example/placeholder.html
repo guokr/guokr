@@ -1,0 +1,114 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>placeholder模块</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+    <style>
+.form p {
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+    padding: 10px 0;
+}
+.form input {
+    margin-right: 10px;
+}
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">placeholder模块</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* placeholder模块<br/>
+* 用于模拟html5 form的placeholder元素，用特征检测的方式获取浏览器的支持性，如果不支持就用js实现。默认的placeholder字体颜色是#CCC<br/>
+*          1.1 添加了submit方法，用于处理表单为空或者为placeholder值的时候不让提交的方法<br/>
+* @author: mzhou<br/>
+* @version: 1.1
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/placeholder.js"
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+    $('#demoForm').doOnce(function() {
+        var $inputText = $('#inputText');
+        /**
+         * 设置input:text的placeholder，做降级处理
+         * @param {string/dom/object} selector input:text的jquery对象
+         * @return {object} 返回此对象本身
+         */
+        placeholder.init( $inputText )
+        /**
+         * 设置input:form的submit处理placeholder（即如果value为placeholder，那么value为空），做降级处理
+         * @param {string/dom/object} inputTxt input:text的jquery对象
+         * @param {string/dom/object} form 表单的jquery对象
+         * @param {function} func submit的回调函数
+         * @return {object} 返回此对象本身
+         * submit: function( inputTxt, form, func ) 
+         */
+            .submit( $inputText, this, function() {
+                var v = $inputText.val();
+                if ( !$.trim(v) ) {
+                    return false;
+                } else {
+                    alert('submit suspend');
+                    return false;
+                }
+            });
+    });
+    </pre>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                    <form method="POST" action="" class="form" id="demoForm">
+                        <p>
+                            <input type="text" class="b_txt" id="inputText" value="" placeholder="placeholder demo" name="inputtext">
+                        </p>
+                        <p>
+                            <input type="submit" class="form-bt sg_btn" value="提交">
+                        </p>
+                    </form>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'placeholder', function( placeholder ) {
+            window.placeholder = placeholder;
+            $.globalEval( $('.demo:eq(0)').text() );
+        });
+    </script>
+</body>
+</html>

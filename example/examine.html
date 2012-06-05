@@ -1,0 +1,267 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>examine</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">examine</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+ * 测试流程模块，扩展自Event。<br/>
+ * 提供close事件。<br/>
+ * @author weihu<br/>
+ * @log 0.1<br/>
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/examine.js";
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+    var hasExtraInput = 0,                          // 是否有选填步，0 没有, 1 有
+        randomExam = Math.round(Math.random());     // 随机抽题集
+    
+    hasExtraInput = randomExam;                     // 此为demo, 将题集1中不显示选填部分，题集2中显示选填部分
+
+    var data =[
+        [
+            {
+                'question': '问题0',
+                'answers': ['选项0', '选项1', '选项2', '选项3']
+            },
+            {
+                'question': '问题1',
+                'answers': ['选项0', '选项1', '选项2', '选项3']
+            },
+            {
+                'question': '问题2',
+                'answers': ['选项0', '选项1', '选项2', '选项3']
+            },
+            {
+                'question': '问题3',
+                'answers': ['选项0', '选项1', '选项2', '选项3']
+            },
+            {
+                'question': '问题4',
+                'answers': ['选项0', '选项1', '选项2', '选项3']
+            }
+        ],
+        [
+            {
+                'question': '问题10',
+                'answers': ['选项0', '选项1', '选项2', '选项3']
+            },
+            {
+                'question': '问题11',
+                'answers': ['选项0', '选项1', '选项2', '选项3']
+            },
+            {
+                'question': '问题12',
+                'answers': ['选项0', '选项1', '选项2', '选项3']
+            },
+            {
+                'question': '问题13',
+                'answers': ['选项0', '选项1', '选项2', '选项3']
+            },
+            {
+                'question': '问题14',
+                'answers': ['选项0', '选项1', '选项2', '选项3']
+            }
+        ]
+    ];
+    var data2 = data[randomExam];
+
+    // 获得答案的数据
+    // 验证这步是否完成
+    function getResult(){
+        var r = $('#blockContent').find('input:checked').val();
+        if( r ) {
+            return r;
+        }else {
+            alert( 'choose one object' );
+            return false;
+        }
+    }
+    // 最后一步的method方法
+    function LastStepMethod( curData, complete ) {
+         // 完成测试，提交
+        function examineComplete() {
+            // curData 将结果拼接
+            var r = randomExam;           // 题库型
+            $.each( curData, function( i, n ) {
+                r += '|' + n;
+            });
+            alert(r);
+            examdemo.close();
+        }
+        if( hasExtraInput ) {
+            examdemo.overlay.open(examLastTmpl);
+            $('#submit').click(function() {
+                var text = $.trim($('#blockContent :input').val());
+                if( text ) {
+                    curData.text = text;
+                    examineComplete( curData );
+                    complete();
+                }else {
+                    alert( 'input is empty' );
+                }
+            });
+            $('#skipText').click(function() {
+                examineComplete();
+                complete();
+            });
+        } else {
+            examineComplete();
+            complete();
+        }
+    }
+   
+    /**
+     * @param {object} data 方法执行所需数据，题目数组
+     *                      以后可扩展为 function, 适应每一步都是交互类型测试
+     * @param {string} examineTmpl 模板拼接参数
+     * @param {function} getResult 获得答案的方法
+     * @param {function} lastExamine 最后一步的执行
+     * @param {object} option 【可选】
+     *                      stepStatus      {number} 默认为0, 未执行
+     *                      overlayWidth    {number} 默认宽度760px
+     *                      quitTmpl        {string} 退出测试的模板
+     *                      examineStepOpen {function} 打开Overlay 的执行函数 afterOpen
+     *                      coverNeed       {boolean} 是否需要Cover, 默认需要
+     */
+    // 关于第14题是”提交“不是“下一步”可在examineTmpl中修改，使得无论在哪问题一步都是“下一步”
+    var examdemo = examine( data2, 'examineTmpl', getResult, LastStepMethod, 
+                            { 
+                                'quitTmpl' : quitTmpl,
+                                'examineStepOpen': function(){
+                                    $('#blockContent').delegate('[data-operation=choose]', 'click', function() {
+                                        $('#nextStep').css('background','#ccc');
+                                    });
+                                }
+                            });
+</pre>
+                <button class="sg_btn mt20 workDemo">运行</button>
+                </dd>
+                <dt>插件demo:</dt>
+                <dd>
+<pre class="demo">
+    var exam = examine( [
+        {
+          'question': '问题10',
+           'answers': ['选项0', '选项1', '选项2', '选项3']
+        },
+        {
+           'question': '问题11',
+           'answers': ['选项0', '选项1', '选项2', '选项3']
+        },
+        {
+           'question': '问题12',
+           'answers': ['选项0', '选项1', '选项2', '选项3']
+        },
+        {
+           'question': '问题13',
+           'answers': ['选项0', '选项1', '选项2', '选项3']
+        },
+        {
+           'question': '问题14',
+           'answers': ['选项0', '选项1', '选项2', '选项3']
+        }
+        ],                                              // 传入题目数组
+        'examineTmpl',                                  // 模板的id
+        function (){                                    // 获得答案的方法，验证这步是否完成
+           var r = $('#blockContent').find('input:checked').val();
+           if( r ) {
+               return r;
+           }else {
+               alert( 'choose one object' );
+               return false;
+           }
+        },
+        function ( curData, complete ) {                // 最后一步处理，拼接答案，传出
+           // 完成测试，提交
+           // curData 将结果拼接
+           var r = 'answers';
+           $.each( curData, function( i, n ) {
+               r += '|' + n;
+           });
+           alert(r);
+           exam.close();
+           complete();
+        },
+        {
+           'quitTmpl': quitTmpl,                        // 退出测试的模板
+           'coverNeed': false                           // 不需要cover
+        });
+ </pre>
+                <button class="sg_btn mt20 workDemo">运行</button>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script src="../js/h.js"></script>
+    <script type="text/html" id="examineTmpl">
+        <h3>第<%=i%>步：<%=question%></h3>\
+        <ul>\
+            <% for (var i=0;i<answers.length;i++) { %>\
+            <li>\
+            <label><input type="radio" name="question" value="<%=i%>" data-operation="choose" /><%=answers[i]%></label>\
+            </li>\
+        <% } %>\
+        </ul>\
+        <a href="javascript: void 0;" id="nextStep" data-operation="next"><%= (lastQuestion)?'提交':'下一步' %></a>\
+    </script>
+    <script>
+        var quitTmpl = '<h3>确定要离开测试吗？</h3>\
+                    <p>你的测试记录将不被保存</p>\
+                    <p><a href="javascript:void 0;" <%=quit%>>我要退出</a><br/>\
+                        <a href="javascript:void 0;" <%=back%>>继续测试</a></p>';
+
+        var examLastTmpl = '<h3>最后一步</h3>\
+                            <p>\
+                                <label>填点什么：<input type="text" name="text" value="" /></label>\
+                            </p>\
+                            <a href="javascript: void 0;" id="skipText" class="sg_btn">跳过</a>\
+                            <a href="javascript: void 0;" id="submit" class="sg_btn">提交</a>';
+
+        G.req( 'examine', function( examine ) {
+            window.examine = examine;
+            $('.workDemo').each( function( i ) {
+                $(this).bind( 'click', function() {
+                    if(!$('#blockWindow:visible').length) {
+                        $.globalEval( $('.demo:eq('+ i +')').text() );
+                    }
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>
+

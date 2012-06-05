@@ -1,0 +1,41 @@
+/* @module: reset */
+/**
+ * log:
+ *    2011/8/25 a默认颜色#069，所有文字默认颜色#333，修改默认字体：增加Helvetica
+ */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td{margin:0;padding:0;}
+*,body{font-family:Arial,Helvetica,sans-serif; }
+body{color:#333;background:#FFF;font-size:12px;line-height:1.5;}
+th,td{text-align:left;vertical-align:top;}
+h1,h2,h3,h4,h5,h6{font-size:1em;font-weight:normal;}
+font{font-size: 12px;}
+a,a.visited{color:#069;text-decoration:none;}
+a:hover {text-decoration:underline;}
+*html a:hover span{text-decoration:underline;}
+a.current:hover {text-decoration:none;cursor:default;}
+img{display:block;border:0;}
+li{list-style:none;}
+input,label,select,option,textarea,button,fieldset,legend{font-size:1em;font-family:Arial,Helvetica,sans-serif;}
+textarea {overflow:auto\9;} /* fix IE area scrollbar*/
+q:before,q:after{content:''}
+
+/* @module: layout */
+.container {
+    min-width: 960px;
+    background-color: #FFF;
+}
+.wrap {
+    margin: 0 auto;
+    width: 940px;
+    overflow: hidden;
+}
+.main {
+    float: left;
+    width: 600px;
+    overflow: hidden;
+}
+.side {
+    float: right;
+    width: 290px;
+    overflow: hidden;
+}

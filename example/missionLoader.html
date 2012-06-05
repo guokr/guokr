@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>任务系统missionLoader</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+    </head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">任务系统missionLoader</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* 任务的加载模块，用于加载前端任务模块<br/>
+* @author mzhou<br/>
+* @desc 任务系统的设计：<br/>
+*              任务包含：名字、运行条件、运行任务的模块、当前登陆用户的任务状态，这几个属性；<br/>
+*              如果任务状态中不包含此任务，则表示任务没有执行过，需要执行；<br/>
+*              任务与运行任务的模块是多对一关系，具体如何的运行任务由模块内的逻辑判断；比如guide模块运行所有新手引导的任务；<br/>
+*              任务的运行与否由条件函数决定，任务如何运行则由运行任务的模块决定。这是因为运行任务的模块是按需加载的；<br/>
+*              所有的任务运行的模块都放在lib/mission/文件夹下；<br/>
+*              推荐任务与页面是一对多关系,不过多对多也可以；<br/>
+*<br/>
+* 现有的mission:<br/>
+*      gGuideNavFocus  全局的今日推荐链接(但是只在果壳主站)<br/>
+*      askGuideLogin   问答首页<br/>
+*      askGuideContent 问答内容页<br/>
+*      indexGuideLogin 登录后首页，第一次登录<br/>
+* //目前 G.req mission/guide, guide.js
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/missionLoader.js"
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+    /**
+     * h.js
+     * 用到了全局变量
+     * @param {string} g_page_name
+     * @param {object} g_mission_status 当前用户所有任务的状态,{step: 1,...}
+     *                  （目前只有step参数，记录执行到的步骤，0为未执行，-1为已完成)
+     * 没有g_mission_status或ukey时不执行
+     * 确保g_page_name存在
+     * askGuideLogin 需要选择 $('#wrap')
+    */
+    var g_page_name = 'askLogin',
+        ukey = 'vgjxq2',
+        g_mission_status = {
+                                askGuideContent: { step : 0 },
+                                askGuideLogin: { step : $('#wrap option:selected').val() },    // 更改此处的 step 值，可以查看不同的提示
+                                                                                        // 但由于 h.js 中 api.mission 是要有 post 返回的，所以 guide.js 中 CompleteCallback 没能绑定跳转到下一步
+                                gGuideNavFocus: { step : 0 },
+                                indexGuideFollow: { step : 0 }
+                            };
+    missionLoader();
+</pre>
+                <button id="workDemo" class="sg_btn mt20">运行</button>
+                </dd>
+                <dt>demo:</dt>
+                <dd>
+                    <div id="wrap" style="height:200px; width:940px;">
+                        <select>
+                            <option value = "0">问答首页提示0</option>
+                            <option value = "1">问答首页提示1</option>
+                            <option value = "2">问答首页提示2</option>
+                        </select>
+                    </div>
+                </dd>
+            </dl>
+            <div class="mt30"></div>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../G/G.js"></script>
+    <script>
+        G.req( 'missionLoader', function( missionLoader ) {
+            window.missionLoader = missionLoader;
+            $('#workDemo').bind('click',function(){
+                $.globalEval( $('.demo:eq(0)').text() );
+            });
+        });
+    </script>
+</body>
+</html>
