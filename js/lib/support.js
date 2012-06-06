@@ -67,7 +67,7 @@ G.def( 'support', function() {
                 var isSupported = (eventName in el);
                 if ( !isSupported ) {
                     el.setAttribute(eventName, 'return;');
-                    isSupported = typeof el[eventName] == 'function';
+                    isSupported = typeof el[eventName] === 'function';
                 }
                 if ( !isSupported ) {
                     result = false;
@@ -81,7 +81,7 @@ G.def( 'support', function() {
          * copy自modernizr: <https://github.com/Modernizr/Modernizr/blob/master/modernizr.js>
          */
         cssanimation: function supportCssAnimation() {            // 缓存
-            if ( typeof supportCssAnimation.r != 'undefined' ) {
+            if ( typeof supportCssAnimation.r !== 'undefined' ) {
                 return supportCssAnimation.r;
             }
             var result = false,
