@@ -3,10 +3,10 @@
 ##目录结构
 
     ./
-      G/            G.js库
       build/        构建工具
       example/      javascript组件样例
       js/           javascript目录
+          G/            G.js库
       skin/         css及图片目录
 
 ##如何开始
