@@ -5,6 +5,7 @@
     <title>返回顶部screenTop</title>
     <link rel="stylesheet" href="../skin/h.css" />
     <link rel="stylesheet" href="all.css" />
+    <link rel="stylesheet" href="../skin/lib/screen-top.css" />
     <style>
     .answer {
         width: 600px;
@@ -114,47 +115,13 @@
                     JS:<br/>
                     //@import "lib/screenTop.js"<br/>
                     CSS:<br/>
-<pre class="demo">
-.gui-screen-top {
-    background-color: #FDFDFD;
-    border: 1px solid #D5D5D5;
-    border-radius: 5px 5px 5px 5px;
-    bottom: 60px;
-    box-shadow: 0 0 5px #F5F5F5;
-    height: 40px;
-    left: 50%;
-    margin-left: 135px;
-    outline: 0 none;
-    overflow: hidden;
-    position: fixed;
-    text-indent: -9999px;
-    width: 40px;
-}
-.gui-screen-top s {
-    border-color: transparent transparent #D5D5D5;
-    border-style: dashed dashed solid;
-    border-width: 10px;
-    font-size: 0;
-    height: 0;
-    left: 10px;
-    position: absolute;
-    top: -2px;
-    width: 0;
-}
-.gui-screen-top b {
-    background-color: #D5D5D5;
-    height: 12px;
-    left: 16px;
-    position: absolute;
-    top: 18px;
-    width: 8px;
-}</pre>
+                    //@import "lib/screen-top.css"
                 </dd>
                 <dt>API接口</dt>
                 <dd>
 <pre class="demo">
     // 设置返回顶部
-    screenTop(); </pre>
+    screenTopp(); </pre>
                 </dd>
                 <dt>demo:</dt>
                 <dd>
@@ -238,10 +205,8 @@
     <script src="../G/G.js"></script>
     <script>
         G.req( 'screenTop', function( screenTop ) {
-            var style = document.createElement('style');
-            document.getElementsByTagName('head')[0].appendChild( style );
-            style.innerHTML += $('.demo:eq(0)').text();
-            window.screenTop = screenTop;
+            // screenTop IE6下无法被重写
+            window.screenTopp = screenTop;
             $.globalEval( $('.demo:eq(1)').text() );
         });
     </script>

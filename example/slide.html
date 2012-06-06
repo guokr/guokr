@@ -126,7 +126,12 @@
         G.req( 'slide', function( slide ) {
             var style = document.createElement('style');
             document.getElementsByTagName('head')[0].appendChild( style );
-            style.innerHTML += $('.demo:eq(0)').text();
+            style.setAttribute('type', 'text/css');
+            if (style.styleSheet) {
+                style.styleSheet.cssText = $('.demo:eq(0)').text();
+            } else {
+                style.innerHTML += $('.demo:eq(0)').text();
+            }
             window.slide = slide;
             $.globalEval( $('.demo:eq(1)').text() );
         });
