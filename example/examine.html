@@ -225,7 +225,11 @@
             <div class="mt30"></div>
         </div>
     </div>
-    <script src="../js/h.js"></script>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../js/G/G.js"></script>
     <script type="text/html" id="examineTmpl">
         <h3>第<%=i%>步：<%=question%></h3>\
         <ul>\
