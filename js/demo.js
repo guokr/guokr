@@ -1,3 +1,4 @@
+//@import "lib/Overlay.js";
 G.def('./demo', ['Overlay'], function (Overlay) {
     new Overlay()
             .title('果壳前端组件')
