@@ -1,14 +1,19 @@
 /**
  * 编辑器模块
  * @author mzhou
- * @desc 用于所见即所得的UBB编辑器，而且有弹出框、文件上传等功能，可以配合block模块实现。
- * @version 1.1
+ * @desc 用于所见即所得的UBB编辑器
+ * @version 1.5
  * @log 1.1 修改添加了配置文件中的contentHtml参数，当有此参数时content的子元素会被contentHtml替换，并选取其子元素中的textarea作为编辑器的包装对象
  *      1.2 使用block2替代block
  *      1.3 重构了编辑器，添加了很多特性，支持了多实例，添加了@功能
  *      1.4 支持了设置div为输入框的功能
  *      1.4 使用Overlay替代block2
+ *      1.5 完全重构了代码
  */
+
+/*jshint undef:true, browser:true, noarg:true, curly:true, regexp:true, newcap:true, trailing:false, noempty:true, regexp:false, strict:true, evil:true, funcscope:true, iterator:true, loopfunc:true, multistr    :true, boss:true, eqnull:true, eqeqeq:false, undef:true */
+/*global G:false, $:false */
+
 //@import "Overlay.js"
 //@import "ajaxfile.js"
 //@import "tab.js"
@@ -17,7 +22,7 @@
 //@import "rangy-restore.js"
 //@import "TextUtils.js";
 //@import "at.js";
-G.def( 'Editor', ['UBBUtils', 'Overlay', 'ajaxfile', 'tab', 'EditorHelper', 'cookies', 'rangy-restore', 'TextUtils', 'at'], function(  UBBUtils, Overlay, ajaxfile, tab, EditorHelper, cookies, rangy, TextUtils, at) {
+G.def( 'Editor', ['UBB'], function(  UBBUtils, Overlay, ajaxfile, tab, EditorHelper, cookies, rangy, TextUtils, at) {
     var idNum  = 0,
         cookie = 'editorMod',
         prefix = 'editor';                   // 所有相关id的前缀
