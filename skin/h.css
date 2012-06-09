@@ -10,7 +10,7 @@
  */
 
 /* 通用css */
-@import "h/reset.css";
+@import "lib/reset.css";
 
 /* 模块 */
 @import "h/header.css";

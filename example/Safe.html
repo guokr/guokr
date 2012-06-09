@@ -81,7 +81,11 @@
             <div class="mt30"></div>
         </div>
     </div>
-    <script src="../js/h.js"></script>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../js/G/G.js"></script>
     <script>
         G.req( 'Safe', function( Safe ) {
             window.Safe = Safe;
