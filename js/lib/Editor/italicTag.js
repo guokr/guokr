@@ -10,7 +10,7 @@
 /*global G:false, $:false */
 
 G.def('Editor/italicTag', {
-	tagName: 'italic',
+	name: 'italic',
 	barHtml: '<a class="gui-ubb-italic" href="javascript:void 0;" title="斜体">斜体</a>',
 	keyBind: 'I',
 	action: function(editor, mod) {

@@ -10,10 +10,10 @@
 /*global G:false, $:false */
 
 G.def('Editor/boldTag', {
-	tagName: 'bold',
+	name: 'bold',
 	barHtml: '<a class="gui-ubb-bold" href="javascript:void 0;" title="加粗">加粗</a>',
 	keyBind: 'B',
-	onclick: function(editor, mod) {
+	action: function(editor, mod) {
 		'use strict';
 		editor.viewApi.execCommand('bold', false, '');
 		editor.textApi.surroundSelectedText('[bold]', '[/bold]');

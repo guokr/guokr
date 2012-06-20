@@ -9,10 +9,15 @@
 /*global G:true, console:false, GJS_VERSION:false, GJS_PRELOAD:false, GJS_URL:false, GJS_LIB_URL:false */
 
 G.def('Editor/ViewApi', function() {
-	function ViewApi(doc) {
+	function ViewApi(win, doc) {
+		this.win = win;
 		this.doc = doc;
 	}
 	ViewApi.prototype.execCommand = function() {
-		this.doc.execCommand.apply(this.doc, arguments);
+		if (this.doc) {
+			this.doc.execCommand.apply(this.doc, arguments);
+		}
 	};
+
+	return ViewApi;
 });
