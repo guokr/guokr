@@ -30,7 +30,8 @@ G.def( 'Base', function() {
     Base.extend = function( Klass, _Father ) {
         var Father = _Father || this;
         for( var staticMethod in Father ) {
-            if ( Father.hasOwnProperty( staticMethod ) ) {
+            if ( Father.hasOwnProperty( staticMethod ) && staticMethod !== 'prototype' ) {
+		// On mac safari 5.0.2, staticMethod may be prototype
                 Klass[staticMethod] = Father[staticMethod];
             }
         }
