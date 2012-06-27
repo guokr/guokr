@@ -427,6 +427,16 @@ G.def( 'UBB', ['Node'], function (Node) {
                 re.push( rendUbb( children[i], setting ) );
             }
             return Util.rendUbbTag( node, re.join(''), setting );
+        },
+        /**
+         * 解析ubb string为Node 对象
+         * @param {string} ubb 
+         * @param {object} currentNode 当前解析完成的节点(即父节点)
+         * @param {object} setting 配置
+         * @param {object} 解析完成的节点
+         */
+        parseUbb = function(ubb, currentNode, setting) {
+            
         };
 
     /**
