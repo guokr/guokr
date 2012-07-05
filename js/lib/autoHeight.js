@@ -18,13 +18,16 @@ G.def('autoHeight', ['Event'], function(Event) {
             nodeName = obj && obj.nodeName.toLowerCase(),
             timer,
             $iframe;
+        if (!obj) {
+            return;
+        }
 
         if (nodeName === 'iframe') {
             $iframe = $obj;
             var win = obj.contentWindow || obj.contentDocument && obj.contentDocument.defaultView,
                 doc = win.document,
                 oldHtml = $(doc.body).html();
-            if (doc.designMode !== 'on') {
+            if (doc.designMode.toLowerCase() !== 'on') {
                 doc.designMode = 'on';
                 // must do this or doc.body is null
                 doc.open();
@@ -35,19 +38,20 @@ G.def('autoHeight', ['Event'], function(Event) {
             $obj = $('body', doc);
             // if no children
             if ($obj.children().length === 0) {
-                $('<br/>', doc).appendTo($obj);
+                $('<div></div>', doc).appendTo($obj);
                 // throw error on IE6
             }
             self.doc = doc;
             self._isIFrame = true;
         } else if (nodeName !== 'textarea') {
-            return this;
+            return;
         }
 
         self.$obj = $obj;
         self.$iframe = $iframe;
 
-        var opt = {
+        var adjustHeight,
+            opt = {
                 blankHeight: 0,
                 // maxHeight: 
                 minHeight: self._isIFrame ?  $iframe.height() : $obj.height()
@@ -58,16 +62,26 @@ G.def('autoHeight', ['Event'], function(Event) {
         self.minHeight = opt.minHeight;
         self.blankHeight = opt.blankHeight;
 
-        function adjustHeight() {
-            self.adjustHeight();
+        if (self._isIFrame) {
+            // because of image flash load, so have to use setTimeout;
+            adjustHeight = function() {
+                self.adjustHeight();
+                setTimeout(adjustHeight, 50);
+            };
+            adjustHeight();
+        } else {
+            adjustHeight = function() {
+                self.adjustHeight();
+            };
+
+            adjustHeight();
+            $obj.bind('paste.gkAutoHeight cut.gkAutoHeight mouseup.gkAutoHeight keydown.gkAutoHeight keyup.gkAutoHeight dragover.gkAutoHeight drop.gkAutoHeight', function() {
+                if (timer) {
+                    clearTimeout(timer);
+                }
+                timer = setTimeout(adjustHeight, 50);
+            });
         }
-        adjustHeight();
-        $obj.bind('paste.gkAutoHeight cut.gkAutoHeight mouseup.gkAutoHeight keyup.gkAutoHeight dragover.gkAutoHeight drop.gkAutoHeight', function() {
-            if (timer) {
-                clearTimeout(timer);
-            }
-            timer = setTimeout(adjustHeight, 50);
-        });
     }
     Event.extend(AutoHeight);
 
@@ -80,34 +94,34 @@ G.def('autoHeight', ['Event'], function(Event) {
 
         if (self._isIFrame) {
             // iframe
-            if (!self.$marker) {
-                if (!self._inited) {
-                    backupStyleNames = ['word-wrap', 'overflow-x'];
-                    self.backupStyle = {};
+            var $marker;
+            if (!self._inited) {
+                backupStyleNames = ['word-wrap', 'overflow-x'];
+                self.backupStyle = {};
+                try {
+                    // linux firefox may throw error
                     G.each(backupStyleNames, function(v) {
                         self.backupStyle[v] = $obj.css(v);
                     });
-                    $obj.css('word-wrap', 'break-word');
-                    $obj.css('overflow-x', 'hidden');
-                    self._inited = true;
-                }
-                self.$marker = $('<span style="width:0;display:block;font-size:0;height:0;line-height:0;">&nbsp;</span>', self.doc).appendTo($obj);
-            } else {
-                parent = self.$marker.parent();
-                if (!parent[0] || parent[0].nodeName.toLowerCase() !== 'body') {
-                    self.$marker.remove();
-                    self.$marker = $('<span style="width:0;display:block;font-size:0;height:0;line-height:0;">&nbsp;</span>', self.doc).appendTo($obj);
-                }
+                } catch(e) {}
+                $obj.css('word-wrap', 'break-word');
+                $obj.css('overflow-x', 'hidden');
+                self._inited = true;
             }
-            var pos = self.$marker.position();
+            $marker = $('<div data-ubb="ignore" style="display:block;width:0;margin:0;padding:0;border:0;clear:both;">.</div>', self.doc).appendTo($obj);
+            var pos = $marker.position();
+            // remove
+            $marker.remove();
+            $marker = null;
             if (pos) {
-                self.contentHeight = self.$marker.position().top;
+                self.contentHeight = pos.top;
             } else {
                 return self;
             }
         } else {
             // textarea
-            var text;
+            var text,
+                obj = $obj[0];
             if (!self.$marker) {
                 if (!self._inited) {
                     backupStyleNames = ['resize', 'overflow', 'overflow-x'];
@@ -122,7 +136,8 @@ G.def('autoHeight', ['Event'], function(Event) {
                 self.$marker.css({
                     fontSize: $obj.css('font-size'),
                     fontFamily: $obj.css('font-family'),
-                    lineHeight: $obj.css('line-height'),
+                    // if set line-height:1.5 or greater, it will get 1px in IE<=8 and jquery <= 1.5.2!
+                    lineHeight: obj.currentStyle ? obj.currentStyle.lineHeight : $obj.css('line-height'),
                     // if textarea not set width then normal way calculate width will be error
                     width: $obj.width()
                 });
