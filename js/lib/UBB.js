@@ -11,17 +11,299 @@
 /*global G:false, $:false, g_obj_id:true */
 
 
-//@import "Node.js";
-G.def( 'UBB', ['Node'], function (Node) {
+G.def('UBB', function () {
     'use strict';
-    var Util = {
-
-            /*inlineUbbTags: ['#text','bold','italic','color','url','image','video'],*/
+    var ubbTagNameReg = /(\/)?([a-zA-Z]+)/,
+        tagsParser = {
+            bold: {
+                parseHTML: function(nodeName, node, songString) {
+                    if (nodeName === '#text') {
+                        var container = node.parent();
+                        if (Util.isBold(container.css('font-weight'))) {
+                            return '[bold]'+songString+'[/bold]';
+                        }
+                    }
+                },
+                parseUBB: function(tag) {
+                    return tag.isClose ? '</b>' : '<b>';
+                },
+                // 值代表优先级，优先级高的可以包含优先级低的标签，相同则可以互相包含，必须为正整数
+                priority: 2,
+                // 是否是行内标签, 1表示可以内部的字符串换行,0表示不能换行但要补全
+                canWrap: 0,
+                // 转换成html后是否是block元素，如果是则紧随其后的换行不会转换成br
+                isBlock: 0
+            },
+            italic: {
+                parseHTML: function(nodeName, node, songString) {
+                    if (nodeName === '#text') {
+                        var container = node.parent();
+                        if (Util.isItalic(container.css('font-style'))) {
+                            return '[italic]'+songString+'[/italic]';
+                        }
+                    }
+                },
+                parseUBB: function(tag) {
+                    return tag.isClose ? '</i>' : '<i>';
+                },
+                priority: 2,
+                canWrap: 0,
+                isBlock: 0
+            },
+            color: {
+                parseHTML: function(nodeName, node, songString, setting) {
+                    if (nodeName === '#text') {
+                        var color,
+                            container = node.parent();
+                        color = Util.RGBtoHEX(container.css('color'));
+                        if (color && color !== setting.defaultColor && !(container[0].nodeName.toLowerCase() === 'a' && color === setting.linkDefaultColor)) {
+                            return '[color='+color+']'+songString+'[/color]';
+                        }
+                    }
+                },
+                parseUBB: function(tag) {
+                    return tag.isClose ? '</span>' : '<span style="color:'+(tag.val ? tag.val.slice(1) : '')+'">';
+                },
+                priority: 2,
+                canWrap: 0,
+                isBlock: 0
+            },
+            url: {
+                parseHTML: function(nodeName, node, songString) {
+                    if (nodeName === 'a') {
+                        return '[url href='+node.attr('href')+']'+songString+'[/url]';
+                    }
+                },
+                parseUBB: function(tag, i, tags) {
+                    if (tag.isClose) {
+                        return '</a>';
+                    } else {
+                        var t,
+                            l = tags.length,
+                            href = tag.val ? tag.val.replace(/^\ href\=/, '') : '';
+                        if (!tag.val) {
+                            i++;
+                            // for [url]http://www.guokr.com/question/[bold]265263[/bold]/[/url]
+                            for (; i<l; i++) {
+                                t = tags[i];
+                                if (t.isClose && t.type === 'url') {
+                                    break;
+                                } else if (t.type === '#text') {
+                                    href += t.val;
+                                }
+                            }
+                        }
+                        return '<a href="'+href+'">';
+                    }
+                },
+                priority: 2,
+                canWrap: 0,
+                isBlock: 0
+            },
+            image: {
+                parseHTML: function(nodeName, node) {
+                    if (nodeName === 'img' && !node.data('src')) {
+                        return '[image]'+node.attr('src')+'[/image]';
+                    }
+                },
+                parseUBB: function(tag, i, tags) {
+                    if (tag.isClose) {
+                        return '';
+                    } else {
+                        var src,
+                            nextTag = tags[i+1];
+                        if (nextTag.type === '#text') {
+                            src = nextTag.val;
+                            nextTag.val = ''; // set next text tag = ''
+                        } else {
+                            src = '';
+                        }
+                        return  src ? '<img src="'+src+'"/>' : '';
+                    }
+                },
+                priority: 1,
+                canWrap: 0,
+                isBlock: 0
+            },
+            video: {
+                parseHTML: function(nodeName, node) {
+                    var src;
+                    if (nodeName === 'img' && (src = node.data('src'))) {
+                        return '[video]'+src+'[/video]';
+                    }
+                },
+                parseUBB: function(tag, i, tags) {
+                    if (tag.isClose) {
+                        return '';
+                    } else {
+                        var src,
+                            nextTag = tags[i+1];
+                        if (nextTag.type === '#text') {
+                            src = nextTag.val;
+                            nextTag.val = '';
+                        } else {
+                            src = '';
+                        }
+                        return src ? '<img class="gui-ubb-flash" data-src="'+src+'" src="/skin/imgs/flash.png" width="480" height="400"/>' : '';
+                    }
+                },
+                priority: 1,
+                canWrap: 0,
+                isBlock: 0
+            },
+            flash: {
+                parseUBB: function(nodeName, tag, i, tags) {
+                    if (tag.isClose) {
+                        return '';
+                    } else {
+                        var src,
+                            nextTag = tags[i+1];
+                        if (nextTag.type === '#text') {
+                            src = nextTag.val;
+                            nextTag.val = '';
+                        } else {
+                            src = '';
+                        }
+                        return src ? '<img class="gui-ubb-flash" data-src="'+src+'" src="/skin/imgs/flash.png" width="480" height="400"/>' : '';
+                    }
+                },
+                priority: 1,
+                canWrap: 0,
+                isBlock: 0
+            },
+            blockquote: {
+                parseHTML: function(nodeName, node, songString) {
+                    if (nodeName === 'blockquote') {
+                        return '[blockquote]'+songString+'[/blockquote]';
+                    }
+                },
+                parseUBB: function(tag) {
+                    return tag.isClose ? '</blockquote>' : '<blockquote>';
+                },
+                priority: 4,
+                canWrap: 1,
+                isBlock: 1
+            },
+            ul: {
+                parseHTML: function(nodeName, node, songString) {
+                    if (nodeName === 'ul') {
+                        return '[ul]\n'+songString+'\n[/ul]';
+                    }
+                    if (nodeName === 'li') {
+                        var parent = node.parent()[0];
+                        // if its parent is ul and it's not the last node
+                        if (parent && parent.nodeName.toLowerCase() === 'ul' && node.next().length) {
+                            return songString + '\n';
+                        }
+                    }
+                },
+                parseUBB: function(tag, i, tags) {
+                    if (tag.isClose) {
+                        return '</li></ul>';
+                    } else {
+                        var l = tags.length,
+                            innerTags = [],
+                            t;
+                        i++;
+                        for (; i<l; i++) {
+                            t = tags[i];
+                            if (t.type === 'ul') {
+                                break;
+                            }
+                            if (t.type === '#text') {
+                                innerTags.push(t);
+                            }
+                        }
+                        for (i=0,l=innerTags.length; i<l; i++) {
+                            t = innerTags[i];
+                            // add <li>text</li>
+                            if (t.val) {
+                                if (i === 0) {
+                                    t.val = t.val.replace(/^\n/, '');
+                                }
+                                if (i === l-1) {
+                                    t.val = t.val.replace(/\n$/, '');
+                                }
+                                t.val = t.val.replace(/\n/g, '</li><li>');
+                            }
+                        }
+                        return '<ul><li>';
+                    }
+                },
+                priority: 3,
+                canWrap: 1,
+                isBlock: 1
+            },
+            ol: {
+                parseHTML: function(nodeName, node, songString) {
+                    if (nodeName === 'ol') {
+                        return '[ol]\n'+songString+'\n[/ol]';
+                    }
+                    if (nodeName === 'li') {
+                        var parent = node.parent()[0];
+                        // if its parent is ul and it's not the last node
+                        if (parent && parent.nodeName.toLowerCase() === 'ol' && node.next().length) {
+                            return songString + '\n';
+                        }
+                    }
+                },
+                parseUBB: function(tag, i, tags) {
+                    if (tag.isClose) {
+                        return '</li></ol>';
+                    } else {
+                        var l = tags.length,
+                            innerTags = [],
+                            t;
+                        i++;
+                        for (; i<l; i++) {
+                            t = tags[i];
+                            if (t.type === 'ol') {
+                                break;
+                            }
+                            if (t.type === '#text') {
+                                innerTags.push(t);
+                            }
+                        }
+                        for (i=0,l=innerTags.length; i<l; i++) {
+                            t = innerTags[i];
+                            // add <li>text</li>
+                            if (t.val) {
+                                if (i === 0) {
+                                    t.val = t.val.replace(/^\n/, '');
+                                }
+                                if (i === l-1) {
+                                    t.val = t.val.replace(/\n$/, '');
+                                }
+                                t.val = t.val.replace(/\n/g, '</li><li>');
+                            }
+                        }
+                        return '<ol><li>';
+                    }
+                },
+                priority: 3,
+                canWrap: 1,
+                isBlock: 1
+            },
+            ref: {
+                parseHTML: function(nodeName, node, songString) {
+                    if (nodeName === 'div' && node[0].className === 'gui-ubb-ref') {
+                        return '[ref]'+songString+'[/ref]';
+                    }
+                },
+                parseUBB: function(tag, i, tags) {
+                    return tag.isClose ? '</div>' : '<div class="gui-ubb-ref">';
+                },
+                priority: 1,
+                canWrap: 0,
+                isBlock: 1
+            }
+        },
+        Util = {
             /**
              * 判断display样式是否是换行的样式
              */
-            isBlock: function( displayStyle ) {
-                return ~$.inArray( displayStyle, [
+            isBlock: function(node) {
+                return ~$.inArray( node.css('display'), [
                     'block',
                     'table',
                     'table-cell',
@@ -35,10 +317,10 @@ G.def( 'UBB', ['Node'], function (Node) {
             /**
              * 判断一个样式是否为bold
              */
-            isBold: function( fontWeight ) {
-                var number = parseInt( fontWeight, 10 );
-                if( isNaN(number) ) {
-                    return (/^(bold|bolder)$/).test( fontWeight );
+            isBold: function(fontWeight) {
+                var number = parseInt(fontWeight, 10);
+                if(isNaN(number)) {
+                    return (/^(bold|bolder)$/).test(fontWeight);
                 } else {
                     return number > 400;
                 }
@@ -48,48 +330,6 @@ G.def( 'UBB', ['Node'], function (Node) {
              */
             isItalic: function( fontWeight ) {
                 return (/^(italic|oblique)$/).test( fontWeight );
-            },
-            /**
-             * 判断是否是一个有序列表
-             */
-            isOrderedList: function( listStyleType ) {
-                return listStyleType !== 'none' && !this.isUnOrderedList( listStyleType );
-            },
-            /**
-             * 判断是否是一个无序列表
-             */
-            isUnOrderedList: function( listStyleType ) {
-                return (/^(disc|circle|square)$/).test( listStyleType );
-            },
-            /**
-             * 解析list，ul、ol或者是其他list-style符合的元素
-             * @param {object} $node 节点
-             */
-            parseListNode: function( $node, parentNode ) {
-                var start = new Node(),
-                    listStyleType = $node.css('list-style-type');
-                if ( listStyleType === 'none' ) {
-                    return [start];
-                }
-                var listType = this.isUnOrderedList( listStyleType ) ? 'ul' :'ol';
-                start.tagName = 'li';
-                // 如果有父元素，且其祖先元素有tag为ul或ol
-                if ( parentNode && (parentNode = parentNode.findAncestorByTagName(['ul','ol'], true)) ) {
-                    // 如果父元素的listType与li的listType相同，则略过，即默认添加
-                    if ( parentNode.tagName !== listType ) {
-                        // 修改父节点tagName
-                        parentNode.tagName = listType;
-                    }
-                    // 如果不同则重新生成一个ul/ol
-                    return [start];
-                // 如果没有父元素为ul/ol
-                } else {
-                    var n = new Node();
-                    n.tagName = 'li';
-                    start.tagName = listType;
-                    start.append( n );
-                    return [start, n];
-                }
             },
             /**
              * 将颜色值转行成Hex方式展示
@@ -121,380 +361,317 @@ G.def( 'UBB', ['Node'], function (Node) {
                 return RGB2HexValue;
             },
             /**
-             * 处理换行、空格、&nbsp;
-             * 不处理自动换行
-             * @param {object} $node 节点
-             * @param {object} re 对象
-             * @param {object} setting 配置
-             * @return {boolean} 是否需要转换成节点
-             */
-            parseTextNode: function( $node, start, setting ) {
-                start.tagName = '#text';
-                var text = $node.text(),
-                    n;
-                // 如果没有字符传
-                if ( !text ) {
-                    return false;
-                }
-                var $container = $node.parent(),
-                    color;
-                if ( !setting.keepWhiteSpace ) {
-                    text = $.trim(text)
-                            .replace(/\s{2,}/g,'');
-                }
-                if ( !setting.keepNewLine ) {
-                    text = text.replace(/\n/g,'');
-                }
-                if ( text === '' ) {
-                    return false;
-                }
-                start.value = text;
-
-                // inline 样式在这里处理
-                if ( Util.isBold( $container.css('font-weight') ) ) {
-                    n = start.clone();
-                    start.tagName = 'bold';
-                    start.value = null;
-                    start.append(n);
-                }
-                if ( Util.isItalic( $container.css('font-style') ) ) {
-                    n = start.clone(true);
-                    start.tagName = 'italic';
-                    start.value = null;
-                    start.detachChildren();
-                    start.append(n);
-                }
-                if ( (color = Util.RGBtoHEX($container.css('color'))) && color !== setting.defaultColor && !($container[0].nodeName.toLowerCase() === 'a' && color === setting.linkDefaultColor ) ) {
-                    n = start.clone(true);
-                    start.tagName = 'color';
-                    start.attr( 'color',  color );
-                    start.value = null;
-                    start.detachChildren();
-                    start.append(n);
-                }
-                return true;
-            },
-            /**
              * 解析单个jquery object为Node 对象
              * @param {object} $node jquery object
              * @param {object} currentNode 当前解析完成的节点(即父节点)
              * @param {object} setting 配置
              * @return {object/array} 返回解析之后的节点，如果这个节点不需要则返回空，如果是一个dom解析成多个节点则返回数组:[start, end]
              */
-            parse$Node: function( $node, currentNode, setting ) {
-                if ( setting.filter ) {
-                    var i = 0,
-                        filterR,
-                        l = setting.filter.length;
-                    for ( ; i<l; i++ ) {
-                        filterR = setting.filter[i].node( $node, currentNode, setting );
-                        if ( !filterR ) {
-                            return null;
-                        } else if ( filterR.isNode ) {
-                            return filterR;
-                        }
-                    }
-                }
-                var tmp,
-                    start,                                  // 开始节点
-                    end,                                    // 结束节点
-                    node = $node[0],                        // 元素的dom
-                    nodeName = node.nodeName.toLowerCase(),
-                    nodeType = node.nodeType,
-                    href,
-                    display;
-                if ( nodeType === 8 ) {
+            parseNode: function(node, sonString, setting) {
+                var tagName, tagParser, tmp, addNewLineLater,
+                    nodeType = node[0].nodeType,
+                    nodeName = node[0].nodeName.toLowerCase();
+                // comments
+                if (nodeType === 8) {
                     return;
                 }
-                if ( nodeType !== 3 ) { // fix firefox bug
-                    display = $node.css('display');
-                    // list
-                    if( display === 'list-item' ) {
-                        // 重新定位到另一个新生成的父节点
-                        tmp = Util.parseListNode( $node, currentNode );
-                        start = tmp[0];
-                        end = tmp[1];
-                    } else {
-                        start = new Node();
+                // text
+                if (nodeType !== 3) {
+                    // node是block元素，并且它不是父元素的最后一个节点
+                    if (Util.isBlock(node) && !(Util.isBlock(node.parent()) && !node.next().length) ) {
+                        addNewLineLater = true;
                     }
-
-                    // block
-                    if( Util.isBlock( display ) ) {
-                        start.tagName = '#line';
-                        start.attr( '_isBlock', true );
-                        start.attr( '_isWrap', $node.height() > 0 ); // 根据高度，判断block元素是否是表现为一行
+                    if (nodeName === 'br') {
+                        sonString = sonString + '\n';
                     }
                 } else {
-                    start = new Node();
+                    sonString = node.text();
+                    if (!setting.keepWhiteSpace) {
+                        sonString = $.trim(sonString)
+                                     .replace(/\s{2,}/g,'');
+                    }
+                    if (!setting.keepNewLine) {
+                        sonString = sonString.replace(/\n/g,'');
+                    }
+                    if (sonString === '') {
+                        return;
+                    }
                 }
+                for (tagName in setting.tags) {
+                    tagParser = setting.tags[tagName];
+                    if (tagParser.parseHTML) {
+                        tmp = tagParser.parseHTML(nodeName, node, sonString, setting);
+                        if (tmp) {
+                            sonString = tmp;
+                        }
+                    }
+                }
+                if (addNewLineLater) {
+                    sonString = sonString + '\n';
+                }
+                return sonString;
+            },
+            scanUbbText: function(text, ubbTagsPriority, wrapUbbTags) {
+                // encode html
+                text = Util.HTMLEncode(text);
+                var c, r, tagName, tag, prevOpenTag,
+                    i = 0,
+                    l = text.length,
+                    buf = '',
+                    tags = [],
+                    stack = [];
+                for(; i<l; i++) {
+                    c = text.charAt(i);
+                    switch(c) {
+                    case '[':
+                        if (buf) {
+                            tag = {type: '#text', val: buf};
+                            Util.pushTextUbbTag(tags, stack, tag, wrapUbbTags);
+                            buf = '';
+                        }
+                        break;
+                    case ']':
+                        r = ubbTagNameReg.exec(buf);
+                        // is tag
+                        if (r && r[2] && ubbTagsPriority[tagName = r[2].toLowerCase()]) {
+                            tag = {type: tagName, val: buf.slice(r[2].length + (r[1] ? 1 : 0)), isClose: !!r[1]};
 
-                switch( nodeName ) {
-                    case 'img':
-                        start.value = $node.data('src');
-                        // 处理图片
-                        if ( !start.value ) {
-                            start.value = $node.attr('src');
-                            start.tagName = 'image';
-                        // 处理视频
-                        } else {
-                            start.tagName = 'video';
-                        }
-                        break;
-                    case 'embed':
-                        // 处理swf
-                        // 此处跳过
-                        break;
-                    case 'a':
-                        // 处理a标签
-                        start.tagName = 'url';
-                        href = $node.attr('href');
-                        start.attr( 'href', href );
-                        break;
-                    case 'blockquote':
-                        // 处理blockquote
-                        start.tagName = 'blockquote';
-                        break;
-                    case 'ul':
-                        start.tagName = 'ul';
-                        break;
-                    case 'ol':
-                        start.tagName = 'ol';
-                        break;
-                    case '#text':
-                        // 处理文本节点
-                        if ( !Util.parseTextNode( $node, start, setting ) ) {
-                            return;
-                        }
-                        break;
-                    case 'br':
-                        start.tagName = 'br';
-                        break;
-                    default:
-                        break;
-                }
-                return end ? [start, end] : start;
-            },
-            /**
-             * 生成一行
-             *  如果前一节点最后有换行属性showLastNewLine，那本节点就不在前面加换行。
-             *  字符串结束加换行
-             * @param {object} node 节点
-             * @param {string} sonString 字符串
-             * @param {array} re 数组
-             */
-            drawLine: function( node, sonString, re ) {
-                var prev;
-                if ( node.attr('_isWrap') !== false ) {
-                    if ( !node.isFirst() && !node.prev().attr( '_showLastNewLine' ) ) {
-                        re.push('\n');
-                    }
-                    re.push(sonString);
-                    if ( !node.isLast() ) {
-                        re.push('\n');
-                        node.attr( '_showLastNewLine', true );
-                    }
-                } else if( (prev=node.prev()) && (!prev.attr('_isBlock') && prev.tagName !== 'br') ) {
-                    re.push('\n');
-                    node.attr( '_showLastNewLine', true );
-                }
-            },
-            /**
-             * 生成每个节点对应的字符串
-             * @param {object} node 节点
-             * @return {string} 字符串
-             */
-            rendUbbTag: function( node, sonString ) {
-                var re = [];
-                switch( node.tagName ) {
-                    case '#line':
-                        /*var children,
-                            prevTag;
-                        if (node.parent()
-                            && (prevTag = node.prev())
-                            && prevTag.tagName !== 'br'
-                            && (children = node.children())
-                            && children.length
-                            && children[0].tagName === '#text' ) {
-                            re.push('\n');
-                        }*/
-                        Util.drawLine( node, sonString, re );
-                        break;
-                    case '#text':
-                        re.push(node.value);
-                        break;
-                    case 'color':
-                        re.push('[color=');
-                        re.push( node.attr('color') );
-                        re.push(']');
-                        re.push(sonString);
-                        re.push('[/color]');
-                        break;
-                    case 'li':
-                        Util.drawLine( node, sonString, re );
-                        break;
-                    case 'ul':
-                        Util.drawLine( node, '[ul]\n'+sonString+'\n[/ul]', re );
-                        break;
-                    case 'ol':
-                        Util.drawLine( node, '[ol]\n'+sonString+'\n[/ol]', re );
-                        break;
-                    case 'br':
-                        var block = node.findAncestorByTagName(['#line','li','ul','ol']);
-                        if ( !node.isFirst( block ) && !node.isLast( block ) ) {
-                            re.push('\n');
-                            node.attr( '_showLastNewLine', true );
-                        }
-                        break;
-                    default:
-                        var s = '[';
-                        s += node.tagName;
-                        node.eachAttr(function( value, key ) {
-                            if ( key.indexOf('_') !== 0 ) {
-                                s += ' ';
-                                s += key;
-                                s += '=';
-                                s += value;
+                            prevOpenTag = tags[tags.length-1];
+                            // close
+                            if (tag.isClose) {
+                                if (!prevOpenTag) {
+                                    // unused tag has to be clear
+                                    buf = '';
+                                    continue;
+                                }
+                                Util.pushCloseUbbTag(tags, stack, tag);
+                            // open
+                            } else {
+                                Util.pushOpenUbbTag(tag, tags, stack, ubbTagsPriority);
                             }
-                        });
-                        s += ']';
-                        s += node.value || '';
-                        s += sonString;
-                        s += '[/';
-                        s += node.tagName;
-                        s += ']';
-                        if ( node.attr('_isBlock') ) {
-                            Util.drawLine( node, s, re );
+                        // not tag
                         } else {
-                            re.push( s );
+                            tag = {type: '#text', val: '['+buf+']'};
+                            Util.pushTextUbbTag(tags, stack, tag, wrapUbbTags);
+                        }
+                        buf = '';
+                        break;
+                    default:
+                        buf += c;
+                        break;
+                    }
+                }
+                if (buf) {
+                    tag = {type: '#text', val: buf};
+                    Util.pushTextUbbTag(tags, stack, tag, wrapUbbTags);
+                }
+
+                // complete all unmatched open tag
+                Util.pushCloseUbbTag(tags, stack);
+                return stack;
+            },
+            canContains: function(father, son, ubbTagsPriority) {
+                return ubbTagsPriority[father.type] >= ubbTagsPriority[son.type];
+            },
+            pushOpenUbbTag: function(tag, unMatchedOpenTags, stack, ubbTagsPriority) {
+                // can contains
+                var i, t;
+                for(i = unMatchedOpenTags.length-1; i>=0; i--) {
+                    t = unMatchedOpenTags[i];
+                    // can contains
+                    if (Util.canContains(t, tag, ubbTagsPriority)) {
+                        break;
+                    } else {
+                        unMatchedOpenTags.pop();
+                        stack.push({type: t.type, isClose: true});
+                    }
+                }
+                unMatchedOpenTags.push(tag);
+                stack.push(tag);
+            },
+            pushCloseUbbTag: function(unMatchedOpenTags, stack, closeTag) {
+                var tag;
+                while(tag = unMatchedOpenTags.pop()) {
+                    // tag match
+                    if (closeTag && closeTag.type === tag.type) {
+                        // not closed when push Text
+                        if (!tag.closed) {
+                            stack.push(closeTag);
                         }
                         break;
+                    // not match
+                    } else {
+                        stack.push({type: tag.type, isClose: true});
+                    }
                 }
-                return re.join('');
-            }
-        },
-        /**
-         * 解析jquery object（树）为Node 对象
-         * @param {object} $node jquery object
-         * @param {object} currentNode 当前解析完成的节点(即父节点)
-         * @param {object} setting 配置
-         * @param {object} 解析完成的节点
-         */
-        parseHtml = function( $node, currentNode, setting ) {
-            if ( $node.length !== 1 ) {
-                throw 'ParseHtml: $node must only contains one element!';
-            }
-            var $children = $node.contents(),
-                start = Util.parse$Node( $node, currentNode, setting ),    // 父节点添加此节点
-                end,                                                       // 子节点添加的位置
-                i = 0,
-                l = $children.length,
-                ii = 0,
-                ll;
-            // 不用解析的节点，则直接返回。例如注释,或者为空的字符串
-            if ( start == null ) {
-                return;
-            }
-            // 如果返回的是数组
-            if ( start.length === 2 ) {
-                end = start[1];
-                start = start[0];
-            } else {
-                end = start;
-            }
-
-            // 添加上下文关系
-            if ( currentNode ) {
-                // 正常节点
-                if ( start.tagName ) {
-                    currentNode.append( start );
-                // 没有tagName则此节点为空节点，则直接添加子节点
+                // no match
+            },
+            pushPrefixUbbTag: function(stack, tags) {
+                var i = tags.length-1;
+                for (; i>=0; i--) {
+                    stack.push(tags[i]);
+                }
+            },
+            pushSuffixUbbTag: function(stack, tags) {
+                var i,l;
+                for (i=0,l=tags.length; i<l; i++) {
+                    stack.push({type: tags[i].type, isClose: true});
+                }
+            },
+            pushTextUbbTag: function(openTags, stack, textTag, wrapUbbTags) {
+                var str = textTag.val.replace(/\r\n/g, '\n').split('\n'),
+                    l = str.length;
+                // no \n
+                if (l === 1) {
+                    stack.push(textTag);
                 } else {
-                    end = currentNode;
+                    var i, tag, inlineTags, j;
+
+                    inlineTags = [];
+                    // find latest inline open tags
+                    for (j = openTags.length-1; j >= 0; j--) {
+                        tag = openTags[j];
+                        if (!wrapUbbTags[tag.type]) {
+                            inlineTags.push(tag);
+                            // make sure the next closeTag not to be push into stack
+                            tag.closed = true;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // finded
+                    if (inlineTags.length) {
+                        for (i=0; i<l; i++) {
+                            // if str[i] === '' then don't push
+                            // push open tag
+                            if (i !== 0) {
+                                Util.pushPrefixUbbTag(stack, inlineTags);
+                            }
+                            // push text tag
+                            stack.push({type:'#text', val:str[i]});
+                            // push close tag
+                            Util.pushSuffixUbbTag(stack, inlineTags);
+                            // push new line
+                            if (i !== l-1) {
+                                stack.push({type:'#text',val:'\n'});
+                            }
+                        }
+                    // nope
+                    } else {
+                        textTag.val = str.join('\n');
+                        stack.push(textTag);
+                    }
                 }
+            },
+            HTMLEncode: function (str) {
+                if (str) {
+                    str = str.replace(/&/igm, '&amp;');
+                    str = str.replace(/</igm, '&lt;');
+                    str = str.replace(/>/igm, '&gt;');
+                    str = str.replace(/\"/igm, '&quot;');
+                }
+                return str;
             }
-            // 解析子节点
-            for( i=0; i<l; i++ ) {
-                parseHtml( $children.eq(i), end, setting );
-            }
-            return start;
         },
-        rendUbb = function( node, setting ) {
-            var re = [],
-                i,
-                l,
-                children = node.children();
-            for( i=0,l=children.length; i<l; i++ ) {
-                re.push( rendUbb( children[i], setting ) );
+        parseHtml = function(node, setting) {
+            var i,l,
+                re = [],
+                children = node.contents();
+            for(i=0,l=children.length; i<l; i++) {
+                re.push(parseHtml(children.eq(i), setting));
             }
-            return Util.rendUbbTag( node, re.join(''), setting );
+            return Util.parseNode(node, re.join(''), setting);
         },
         /**
          * 解析ubb string为Node 对象
-         * @param {string} ubb 
-         * @param {object} currentNode 当前解析完成的节点(即父节点)
+         * @param {string} ubb
          * @param {object} setting 配置
-         * @param {object} 解析完成的节点
+         * @param {string} 解析完成的节点
          */
-        parseUbb = function(ubb, currentNode, setting) {
-            
+        parseUbb = function(ubb, setting) {
+            var i, l, tag, nextTag,
+                isStartWithNewLine = /^\n/,
+                str = '',
+                tags = Util.scanUbbText(ubb, setting.ubbTagsPriority, setting.wrapUbbTags),
+                tagsParser = setting.tags,
+                tagInfo;
+            for (i=0,l=tags.length; i<l; i++) {
+                tag = tags[i];
+                if (tag.type === '#text') {
+                    str += tag.val.replace(/\n/g, '<br/>');
+                } else {
+                    tagInfo = tagsParser[tag.type];
+                    str += tagInfo.parseUBB(tag, i, tags);
+                    // remove first new line after a close block tag
+                    if (tagInfo.isBlock && tag.isClose) {
+                        nextTag = tags[i+1];
+                        if (nextTag && nextTag.type === '#text' && isStartWithNewLine.test(nextTag.val)) {
+                            nextTag.val = nextTag.val.replace(/^\n/, '');
+                        }
+                    }
+                }
+            }
+            return str;
+        },
+        /**
+         * 处理ubb string，修复错误标签
+         * @param {string} ubb
+         * @param {object} setting 配置
+         * @param {string} 解析完成的节点
+         */
+        fixUbb = function(ubb, setting) {
+            var i, l, tag, nextTag,
+                isStartWithNewLine = /^\n/,
+                str = '',
+                tags = Util.scanUbbText(ubb, setting.ubbTagsPriority, setting.wrapUbbTags);
+            for (i=0,l=tags.length; i<l; i++) {
+                tag = tags[i];
+                if (tag.type === '#text') {
+                    str += tag.val;
+                } else {
+                    str += '[' + (tag.isClose ? '/' : '') + tag.type + (tag.val || '') + ']';
+                }
+            }
+            return str;
         };
 
     /**
      *  var ubbParser = new UBB();
      *  @param {object} setting 设置
      */
-    function UBB( setting ) {
-        this.setting = $.extend( {
+        function UBB(setting) {
+        this.setting = $.extend({
                             defaultColor: '#000000',
                             linkDefaultColor: '#006699',
                             keepWhiteSpace: true,
-                            keepNewLine: false,
-                            tags:{}
-                        }, setting );
+                            keepNewLine: false
+                       }, setting);
+        this.setting.tags = $.extend(tagsParser, this.setting.tags);
+        this.setting.ubbTagsPriority = {};
+        this.setting.wrapUbbTags = {};
+        G.each(this.setting.tags, function(v, k) {
+              this.setting.ubbTagsPriority[k] = v.priority;
+              this.setting.wrapUbbTags[k] = v.canWrap;
+        }, this);
+
         /**
          * @param {object} $dom jquery对象节点
          * @return {string} ubb字符串
          */
-        this.HTMLtoUBB = function ( $dom ) {
-            var node = parseHtml($dom, null, this.setting);
-            return rendUbb( node, this.setting );
+        this.HTMLtoUBB = function ($dom) {
+            return parseHtml($dom, this.setting);
         };
         /**
          * @param {string} ubb 字符串
          * @return {string} html字符串
          */
-        this.UBBtoHTML = function( ubb ) {
+        this.UBBtoHTML = function(ubb) {
+            return parseUbb(ubb, this.setting);
         };
-        /**
-         * 新增一种tag
-         * @param {string} name tag名字
-         * @param {object} parsers 解析器与绘制器,例子：{
-         *                                              parserNode:function() {},
-         *                                              rendUBBTag: function( node, songString ) {},
-         *                                              // TODD
-         *                                          }
-         */
-        this.newTag = function( name, parsers ) {
-            this.setting.tags[name] = parsers;
-            return this;
+        this.fixUBB = function(ubb) {
+            return fixUbb(ubb, this.setting);
         };
-        /**
-         * 设置过滤器，如果想要忽略一些html就使用过滤器
-         * @param {function} nodeFilter 节点的过滤器，html转ubb时使用，返回false,0,null,undefined, 则不处理此节点和其子节点
-         *                                                             返回node，则是修改此节点返回值，子节点依旧
-         *                                                             返回true或非node，则是不修改此节点
-         * @param {function} ubbFilter
-         */
-        this.filter = function( nodeFilter, ubbFilter ) {
-            this.setting.filter = this.setting.filter || [];
-            this.setting.filter.push({
-                node: nodeFilter,
-                ubb: ubbFilter
-            });
-            return this;
-        };
-        this.Node = Node;
     }
-    UBB.Node = Node;
     return UBB;
 });

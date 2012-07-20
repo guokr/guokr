@@ -194,7 +194,7 @@ G.def('autoComplete', ['Menu', 'Event'], function(Menu, Event) {
         }
         this.menu = null;
         this.oldValue = '';
-    }
+    };
     AutoComplete.prototype.close = function() {
         this.fire('close');
         this._close = true;

@@ -2,20 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>UBB组件</title>
+    <title>UBB parser</title>
     <link rel="stylesheet" href="../skin/h.css" />
     <link rel="stylesheet" href="all.css" />
-    <style>
-.cmt-line {
-    border-bottom: 1px solid #CCCCCC;
-    font-size: 0;
-    height: 1px;
-    line-height: 1px;
-    margin: 5px 0;
-    width: 230px;
-}
+    <style type="text/css">
+    img {
+        display: inline-block;
+        _display: inline;
+    }
+    ul li {
+        list-style: disc inside;
+        margin-left: 20px;
+    }
+    ol li {
+        list-style: decimal inside;
+        margin-left: 20px;
+    }
+    #html {
+        color: #000;
+    }
     </style>
-    </head>
+</head>
 <body>
     <div class="container">
         <div class="guokr" id="guokr"></div>
@@ -33,7 +40,7 @@
         <div class="top-wp">
             <div class="top fix">
                 <div class="top-main">
-                    <h1 class="top-main-n2">UBB组件</h1>
+                    <h1 class="top-main-n2">UBB解析</h1>
                 </div>
             </div>
         </div>
@@ -41,74 +48,84 @@
             <dl class="main-example">
                 <dt>描述：</dt>
                 <dd>
-* UBB解析器
+* <br/>
+* <br/>
                 </dd>
                 <dt>引用js和css：</dt>
                 <dd>
                     JS:<br/>
-                    //@import "lib/UBB.js"
+                    //@import "lib/UBB.js";
                 </dd>
                 <dt>API接口</dt>
                 <dd>
 <pre class="demo">
-    var ubbParser = new UBB(),
-        $content = $('#editorContent'),
-        s = ubbParser.HTMLtoUBB( $content );
-    $content.siblings('.msgPlace').html( s );
+var parser = new UBB();
+    $ubb = $('#ubb'),
+    $html = $('#html');
+$('#UBBtoHTML').click(function() {
+    $html.html(parser.UBBtoHTML($ubb.val()));
+});
+$('#HTMLtoUBB').click(function() {
+    $ubb.val(parser.HTMLtoUBB($html));
+});
+$('#fixUBB').click(function() {
+    $ubb.val(parser.fixUBB($ubb.val()));
+});
 </pre>
-                <button class="sg_btn mt20 workDemo">运行</button>
                 </dd>
                 <dt>demo:</dt>
                 <dd>
-                    <div id="editorContent">
-                        <blockquote><div class="cmt-line"></div>引用 these are the parts inside the blockquote <div class="cmt-line"></div></blockquote>
-                        and these are the parts outside the blockquote, <br/>
-                        balabala
-                    </div>
-                    <br/>
-                    the result after UBB is:<br/>
-                    <p class="msgPlace"></p>
-                </dd>
-                <dt>API接口</dt>
-                <dd>
-<pre class="demo">
-    // post/comments.js
-    var ubbParser = new UBB({ defaultColor: '#333333' }),
-        $content = $('#editorContent2'),
-        s = '';
-    /**
-     * 设置过滤器，如果想要忽略一些html就使用过滤器
-     * @param {function} nodeFilter 节点的过滤器，html转ubb时使用，返回false,0,null,undefined, 则不处理此节点和其子节点
-     *                                                             返回node，则是修改此节点返回值，子节点依旧
-     *                                                             返回true或非node，则是不修改此节点
-     * @param {function} ubbFilter
-     */
-    // 设置过滤器，去掉blockquote
-    ubbParser.filter(function(  $node, currentNode, setting ) {
-        var nodeName = $node[0].nodeName.toLowerCase();
-        if ( nodeName === 'blockquote' ) {
-            return false;
-        }
-        if ( nodeName === 'a' ) {
-            return new ubbParser.Node();
-        }
-        return true;
-    });
-    s = ubbParser.HTMLtoUBB( $content );
-    $content.siblings('.msgPlace').html( s );
-</pre>
-                <button class="sg_btn mt20 workDemo">运行</button>
-                </dd>
-                <dt>demo:</dt>
-                <dd>
-                    <div id="editorContent2">
-                        <blockquote><div class="cmt-line"></div>引用 these are the parts inside the blockquote <div class="cmt-line"></div></blockquote>
-                        and these are the parts outside the blockquote, <br/>
-                        balabala
-                    </div>
-                    <br/>
-                    the result after UBB is:<br/>
-                    <p class="msgPlace"></p>
+                <textarea id="ubb" name="" rows="30" cols="80" class="fl t_txt">
+[blockquote]引用@玉子桑 的话：那两杯奇怪的东西是神马！！！
+谁来解释下上边的白斑！！！[/blockquote]
+[url href=http://www.guokr.com/i/0014169607/]玉子
+桑[/url]serfsdfsd
+[bold][color=#999999]食品科学硕士，果壳[/color][/bold]
+
+<h1>测试encode html</h1>
+
+[image]http://www.guokr.com/skin/imgs/3-logo.png[/image]
+[ref]http://127.0.0.1:8000/example/UBB.html[/ref]
+
+[italic]斜体[bold]加粗 && 斜体[/bold]斜体[/italic]
+
+[ul][bold]
+这是第一条[/bold]
+可能的第二条
+
+这里是第四条
+
+
+[bold]最后一条
+[/bold][/ul]
+[ol]
+沙发
+板凳
+地板
+
+
+什么都没有了T T
+[/ol]
+[italic]
+斜
+
+体
+[bold]
+加粗 && 斜体
+[/bold]
+斜体
+[/italic]
+
+[BOLD]大小写无关[/bold]
+[bold]大小写无关[/BOLD]
+[BOLD]大小写无关[/BOLD]
+</textarea>
+                <ul class="fl">
+                  <li><button id="UBBtoHTML">UBBtoHTML</button></li>
+                  <li><button id="HTMLtoUBB">HTMLtoUBB</button></li>
+                  <li><button id="fixUBB">fixUBB</button></li>
+                </ul>
+                <div id="html" class="fl t_txt" style=""></div>
                 </dd>
             </dl>
             <div class="mt30"></div>
@@ -122,11 +139,7 @@
     <script>
         G.req( 'UBB', function( UBB ) {
             window.UBB = UBB;
-            $('.workDemo').each(function(i){
-                $(this).bind('click',function(){
-                    $.globalEval( $('.demo:eq('+i+')').text() );
-                });
-            });
+            $.globalEval( $('.demo:eq(0)').text() );
         });
     </script>
 </body>
