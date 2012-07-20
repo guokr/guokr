@@ -13,7 +13,7 @@
 
 G.def('UBB', function () {
     'use strict';
-    var ubbTagNameReg = /(\/)?([a-zA-Z]+)/,
+    var ubbTagNameReg = /\[(\/)?([a-zA-Z]+)/,
         tagsParser = {
             bold: {
                 parseHTML: function(nodeName, node, songString) {
@@ -88,8 +88,8 @@ G.def('UBB', function () {
                                 t = tags[i];
                                 if (t.isClose && t.type === 'url') {
                                     break;
-                                } else if (t.type === '#text') {
-                                    href += t.val;
+                                } else if (typeof t === 'string') {
+                                    href += t;
                                 }
                             }
                         }
@@ -112,9 +112,9 @@ G.def('UBB', function () {
                     } else {
                         var src,
                             nextTag = tags[i+1];
-                        if (nextTag.type === '#text') {
-                            src = nextTag.val;
-                            nextTag.val = ''; // set next text tag = ''
+                        if (typeof nextTag === 'string') {
+                            src = nextTag;
+                            tags[i+1] = ''; // set next text tag = ''
                         } else {
                             src = '';
                         }
@@ -138,9 +138,9 @@ G.def('UBB', function () {
                     } else {
                         var src,
                             nextTag = tags[i+1];
-                        if (nextTag.type === '#text') {
-                            src = nextTag.val;
-                            nextTag.val = '';
+                        if (typeof nextTag === 'string') {
+                            src = nextTag;
+                            tags[i+1] = '';
                         } else {
                             src = '';
                         }
@@ -158,9 +158,9 @@ G.def('UBB', function () {
                     } else {
                         var src,
                             nextTag = tags[i+1];
-                        if (nextTag.type === '#text') {
-                            src = nextTag.val;
-                            nextTag.val = '';
+                        if (typeof nextTag === 'string') {
+                            src = nextTag;
+                            tags[i+1] = '';
                         } else {
                             src = '';
                         }
@@ -203,28 +203,25 @@ G.def('UBB', function () {
                     } else {
                         var l = tags.length,
                             innerTags = [],
-                            t;
+                            tagIndexs = [],
+                            t, index;
                         i++;
                         for (; i<l; i++) {
                             t = tags[i];
                             if (t.type === 'ul') {
                                 break;
                             }
-                            if (t.type === '#text') {
+                            if (typeof t === 'string') {
                                 innerTags.push(t);
+                                tagIndexs.push(i);
                             }
                         }
                         for (i=0,l=innerTags.length; i<l; i++) {
                             t = innerTags[i];
+                            index = tagIndexs[i];
                             // add <li>text</li>
-                            if (t.val) {
-                                if (i === 0) {
-                                    t.val = t.val.replace(/^\n/, '');
-                                }
-                                if (i === l-1) {
-                                    t.val = t.val.replace(/\n$/, '');
-                                }
-                                t.val = t.val.replace(/\n/g, '</li><li>');
+                            if (t && t === '\n') {
+                                tags[index] = (i === 0 || i === l-1) ? '' : '</li><li>';
                             }
                         }
                         return '<ul><li>';
@@ -253,28 +250,25 @@ G.def('UBB', function () {
                     } else {
                         var l = tags.length,
                             innerTags = [],
-                            t;
+                            tagIndexs = [],
+                            t, index;
                         i++;
                         for (; i<l; i++) {
                             t = tags[i];
                             if (t.type === 'ol') {
                                 break;
                             }
-                            if (t.type === '#text') {
+                            if (typeof t === 'string') {
                                 innerTags.push(t);
+                                tagIndexs.push(i);
                             }
                         }
                         for (i=0,l=innerTags.length; i<l; i++) {
                             t = innerTags[i];
+                            index = tagIndexs[i];
                             // add <li>text</li>
-                            if (t.val) {
-                                if (i === 0) {
-                                    t.val = t.val.replace(/^\n/, '');
-                                }
-                                if (i === l-1) {
-                                    t.val = t.val.replace(/\n$/, '');
-                                }
-                                t.val = t.val.replace(/\n/g, '</li><li>');
+                            if (t && t === '\n') {
+                                tags[index] = (i === 0 || i === l-1) ? '' : '</li><li>';
                             }
                         }
                         return '<ol><li>';
@@ -411,78 +405,31 @@ G.def('UBB', function () {
                 }
                 return sonString;
             },
-            scanUbbText: function(text, ubbTagsPriority, wrapUbbTags) {
-                // encode html
-                text = Util.HTMLEncode(text);
-                var c, r, tagName, tag, prevOpenTag,
-                    i = 0,
-                    l = text.length,
-                    buf = '',
-                    tags = [],
-                    stack = [];
-                for(; i<l; i++) {
-                    c = text.charAt(i);
-                    switch(c) {
-                    case '[':
-                        if (buf) {
-                            tag = {type: '#text', val: buf};
-                            Util.pushTextUbbTag(tags, stack, tag, wrapUbbTags);
-                            buf = '';
-                        }
-                        break;
-                    case ']':
-                        r = ubbTagNameReg.exec(buf);
-                        // is tag
-                        if (r && r[2] && ubbTagsPriority[tagName = r[2].toLowerCase()]) {
-                            tag = {type: tagName, val: buf.slice(r[2].length + (r[1] ? 1 : 0)), isClose: !!r[1]};
-
-                            prevOpenTag = tags[tags.length-1];
-                            // close
-                            if (tag.isClose) {
-                                if (!prevOpenTag) {
-                                    // unused tag has to be clear
-                                    buf = '';
-                                    continue;
-                                }
-                                Util.pushCloseUbbTag(tags, stack, tag);
-                            // open
-                            } else {
-                                Util.pushOpenUbbTag(tag, tags, stack, ubbTagsPriority);
-                            }
-                        // not tag
-                        } else {
-                            tag = {type: '#text', val: '['+buf+']'};
-                            Util.pushTextUbbTag(tags, stack, tag, wrapUbbTags);
-                        }
-                        buf = '';
-                        break;
-                    default:
-                        buf += c;
-                        break;
-                    }
-                }
-                if (buf) {
-                    tag = {type: '#text', val: buf};
-                    Util.pushTextUbbTag(tags, stack, tag, wrapUbbTags);
-                }
-
-                // complete all unmatched open tag
-                Util.pushCloseUbbTag(tags, stack);
-                return stack;
-            },
             canContains: function(father, son, ubbTagsPriority) {
                 return ubbTagsPriority[father.type] >= ubbTagsPriority[son.type];
+            },
+            pushAutoClosedTags: function(stack, tag) {
+                if (tag.autoClosedTags) {
+                    var tags = tag.autoClosedTags,
+                        t;
+                    while (t = tags.pop()) {
+                        stack.push(t);
+                        Util.pushAutoClosedTags(stack, t);
+                    }
+                }
             },
             pushOpenUbbTag: function(tag, unMatchedOpenTags, stack, ubbTagsPriority) {
                 // can contains
                 var i, t;
-                for(i = unMatchedOpenTags.length-1; i>=0; i--) {
+                for (i = unMatchedOpenTags.length-1; i>=0; i--) {
                     t = unMatchedOpenTags[i];
                     // can contains
                     if (Util.canContains(t, tag, ubbTagsPriority)) {
                         break;
                     } else {
-                        unMatchedOpenTags.pop();
+                        // 记录此标签,因为不能包含而自动关闭的标签
+                        tag.autoClosedTags = tag.autoClosedTags || [];
+                        tag.autoClosedTags.push(unMatchedOpenTags.pop());
                         stack.push({type: t.type, isClose: true});
                     }
                 }
@@ -490,14 +437,12 @@ G.def('UBB', function () {
                 stack.push(tag);
             },
             pushCloseUbbTag: function(unMatchedOpenTags, stack, closeTag) {
-                var tag;
-                while(tag = unMatchedOpenTags.pop()) {
+                var tag, i;
+                while (tag = unMatchedOpenTags.pop()) {
                     // tag match
                     if (closeTag && closeTag.type === tag.type) {
-                        // not closed when push Text
-                        if (!tag.closed) {
-                            stack.push(closeTag);
-                        }
+                        stack.push(closeTag);
+                        // Util.pushAutoClosedTags(stack, tag);
                         break;
                     // not match
                     } else {
@@ -518,50 +463,30 @@ G.def('UBB', function () {
                     stack.push({type: tags[i].type, isClose: true});
                 }
             },
-            pushTextUbbTag: function(openTags, stack, textTag, wrapUbbTags) {
-                var str = textTag.val.replace(/\r\n/g, '\n').split('\n'),
-                    l = str.length;
-                // no \n
-                if (l === 1) {
-                    stack.push(textTag);
-                } else {
-                    var i, tag, inlineTags, j;
+            pushLineUbbTag: function(openTags, stack, textTag, wrapUbbTags) {
+                var i, tag, inlineTags, j;
 
-                    inlineTags = [];
-                    // find latest inline open tags
-                    for (j = openTags.length-1; j >= 0; j--) {
-                        tag = openTags[j];
-                        if (!wrapUbbTags[tag.type]) {
-                            inlineTags.push(tag);
-                            // make sure the next closeTag not to be push into stack
-                            tag.closed = true;
-                        } else {
-                            break;
-                        }
-                    }
-
-                    // finded
-                    if (inlineTags.length) {
-                        for (i=0; i<l; i++) {
-                            // if str[i] === '' then don't push
-                            // push open tag
-                            if (i !== 0) {
-                                Util.pushPrefixUbbTag(stack, inlineTags);
-                            }
-                            // push text tag
-                            stack.push({type:'#text', val:str[i]});
-                            // push close tag
-                            Util.pushSuffixUbbTag(stack, inlineTags);
-                            // push new line
-                            if (i !== l-1) {
-                                stack.push({type:'#text',val:'\n'});
-                            }
-                        }
-                    // nope
+                inlineTags = [];
+                // find latest inline open tags
+                for (j = openTags.length-1; j >= 0; j--) {
+                    tag = openTags[j];
+                    if (!wrapUbbTags[tag.type]) {
+                        inlineTags.push(tag);
                     } else {
-                        textTag.val = str.join('\n');
-                        stack.push(textTag);
+                        break;
                     }
+                }
+
+                // finded
+                if (inlineTags.length) {
+                    // push close tag
+                    Util.pushSuffixUbbTag(stack, inlineTags);
+                    stack.push('\n');
+                    // push open tag
+                    Util.pushPrefixUbbTag(stack, inlineTags);
+                // nope
+                } else {
+                    stack.push('\n');
                 }
             },
             HTMLEncode: function (str) {
@@ -572,6 +497,70 @@ G.def('UBB', function () {
                     str = str.replace(/\"/igm, '&quot;');
                 }
                 return str;
+            },
+            scanUbbText: function(text, ubbTagsPriority, wrapUbbTags) {
+                // encode html
+                text = Util.HTMLEncode(text);
+                text = text.replace(/\r\n/g, '\n'); // for IE hack
+                var c, r, tagName, tag, prevOpenTag,
+                    i = 0,
+                    l = text.length,
+                    buf = '',
+                    unMatchedOpenTags = [],
+                    stack = [];
+                for(; i<l; i++) {
+                    c = text.charAt(i);
+                    switch(c) {
+                    case '[':
+                        if (buf) {
+                            stack.push(buf);
+                        }
+                        buf = '[';
+                        break;
+                    case ']':
+                        r = ubbTagNameReg.exec(buf);
+                        // is tag
+                        if (r && r[2] && ubbTagsPriority[tagName = r[2].toLowerCase()]) {
+                            tag = {type: tagName, val: buf.slice(r[2].length + (r[1] ? 1 : 0)), isClose: !!r[1]};
+
+                            prevOpenTag = unMatchedOpenTags[unMatchedOpenTags.length-1];
+                            // close
+                            if (tag.isClose) {
+                                if (!prevOpenTag) {
+                                    // unused tag has to be clear
+                                    buf = '';
+                                    continue;
+                                }
+                                Util.pushCloseUbbTag(unMatchedOpenTags, stack, tag);
+                            // open
+                            } else {
+                                Util.pushOpenUbbTag(tag, unMatchedOpenTags, stack, ubbTagsPriority);
+                            }
+                        // not tag
+                        } else {
+                            stack.push(buf + ']');
+                        }
+                        buf = '';
+                        break;
+                    case '\n':
+                        if (buf) {
+                            stack.push(buf);
+                            buf = '';
+                        }
+                        Util.pushLineUbbTag(unMatchedOpenTags, stack, '\n', wrapUbbTags);
+                        break;
+                    default:
+                        buf += c;
+                        break;
+                    }
+                }
+                if (buf) {
+                    stack.push(buf);
+                }
+
+                // complete all unmatched open tag
+                Util.pushCloseUbbTag(unMatchedOpenTags, stack);
+                return stack;
             }
         },
         parseHtml = function(node, setting) {
@@ -598,8 +587,10 @@ G.def('UBB', function () {
                 tagInfo;
             for (i=0,l=tags.length; i<l; i++) {
                 tag = tags[i];
-                if (tag.type === '#text') {
-                    str += tag.val.replace(/\n/g, '<br/>');
+                if (tag === '\n') {
+                    str += '<br/>';
+                } else if (typeof tag === 'string') {
+                    str += tag;
                 } else {
                     tagInfo = tagsParser[tag.type];
                     str += tagInfo.parseUBB(tag, i, tags);
@@ -627,8 +618,8 @@ G.def('UBB', function () {
                 tags = Util.scanUbbText(ubb, setting.ubbTagsPriority, setting.wrapUbbTags);
             for (i=0,l=tags.length; i<l; i++) {
                 tag = tags[i];
-                if (tag.type === '#text') {
-                    str += tag.val;
+                if (typeof tag === 'string') {
+                    str += tag;
                 } else {
                     str += '[' + (tag.isClose ? '/' : '') + tag.type + (tag.val || '') + ']';
                 }
