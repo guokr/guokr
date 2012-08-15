@@ -2,6 +2,7 @@
  * autoHeight
  * @author mzhou
  * @log 0.1
+ *      0.2 fix destory bug, destory the timer;
  */
 
 /*jshint undef:true, browser:true, noarg:true, curly:true, regexp:true, newcap:true, trailing:false, noempty:true, regexp:false, strict:true, evil:true, funcscope:true, iterator:true, loopfunc:true, multistr    :true, boss:true, eqnull:true, eqeqeq:false, undef:true */
@@ -16,7 +17,6 @@ G.def('autoHeight', ['Event'], function(Event) {
             $obj = $(selector),
             obj = $obj[0],
             nodeName = obj && obj.nodeName.toLowerCase(),
-            timer,
             $iframe;
         if (!obj) {
             return;
@@ -66,7 +66,7 @@ G.def('autoHeight', ['Event'], function(Event) {
             // because of image flash load, so have to use setTimeout;
             adjustHeight = function() {
                 self.adjustHeight();
-                setTimeout(adjustHeight, 50);
+                self._timer = setTimeout(adjustHeight, 50);
             };
             adjustHeight();
         } else {
@@ -76,10 +76,10 @@ G.def('autoHeight', ['Event'], function(Event) {
 
             adjustHeight();
             $obj.bind('paste.gkAutoHeight cut.gkAutoHeight mouseup.gkAutoHeight keydown.gkAutoHeight keyup.gkAutoHeight dragover.gkAutoHeight drop.gkAutoHeight', function() {
-                if (timer) {
-                    clearTimeout(timer);
+                if (self._timer) {
+                    clearTimeout(self._timer);
                 }
-                timer = setTimeout(adjustHeight, 50);
+                self._timer = setTimeout(adjustHeight, 50);
             });
         }
     }
@@ -178,6 +178,9 @@ G.def('autoHeight', ['Event'], function(Event) {
 
     AutoHeight.prototype.destroy = function() {
         var self = this;
+        if (self._timer) {
+            clearTimeout(self._timer);
+        }
         if (self.marker && self.marker.length) {
             self.marker.remove();
         }
