@@ -1,3 +1,5 @@
+//@import "lib/jQuery.js";
+//@import "lib/GUtils.js";
 //@import "lib/Overlay.js";
 G.def('./demo', ['Overlay'], function (Overlay) {
     new Overlay()
