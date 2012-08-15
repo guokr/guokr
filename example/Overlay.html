@@ -106,6 +106,7 @@
 *       0.7 使用Event组件重写了事件部分，并增加了afterOpen和afterClose两个api<br/>
 *       0.8 fix了同一个实例open两次时，先关闭再重新打开的bug。这回触发一次close事件<br/>
 *       0.9 增加了showCover和hideCover两个方式，支持了背景cover。<br/>
+*       1.0 fix showCover bug, add jshint
 //@import "Event.js";
 //@import "support.js";
                 </dd>
@@ -177,9 +178,12 @@
          // 设置宽度
          .width( 500 )
          // 设置浮层位置固定，不随页面滚动
-         .showCover(); // 显示cover，并且cover随着浮窗的显示而显示。
-         // .showCover( 0.1, '#FFF' )
-         // .showCover( 0.1 );
+         .showCover() // 显示cover，并且cover随着浮窗的显示而显示。
+         .showCover(0.1, '#FFF')
+         .showCover('blue')
+         .showCover(0.2)
+         .close()
+         .open('&lt;div&gt;框中的内容!&lt;/div&gt;');
          // block.hideCover(); 隐藏cover，并且cover以后并不随着浮窗的显示而显示。
     </pre>
                 <button class="sg_btn mt20 workdemoBtn">运行</button><span>（须返回页首查看效果）</span>
@@ -191,11 +195,7 @@
             <div class="mt30"></div>
         </div>
     </div>
-    <script>
-    var GJS_URL = '/js/',
-        GJS_PRELOAD = ['GUtils'];
-    </script>
-    <script src="../js/G/G.js"></script>
+    <script src="../js/h.js"></script>
     <script>
         G.req( 'Overlay', function( Overlay ) {
             window.Overlay = Overlay;
