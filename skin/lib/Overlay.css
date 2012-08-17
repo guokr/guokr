@@ -1,6 +1,6 @@
 /* @module: new block component（全局弹出框样式）并且以后改成以gui-开头，因为所有的与js生成的class，统一用gui-开头。*/
 .gui-block {
-    position: fixed;
+    position: fixed;    /*fix chrome18 bug: can't get z-index value before open*/
     _position: absolute;
     z-index: 999;
     display: none;
