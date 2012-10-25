@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>多文件上传MultipleUploader</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+    <style type="text/css">
+    .gui-multiple-error {
+        background-color: red;
+    }
+    .gui-multiple-timeout {
+        background-color: purple;
+    }
+    .gui-multiple-abort {
+        background-color: black;
+    }
+    .gui-multiple-success {
+        background-color: green;
+    }
+    .gui-multiple-uploading {
+        background-color: blue;
+    }
+    .gui-multiple-waiting {
+        background-color: yellow;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">多文件上传MultipleUploader</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd>
+* 多文件异步上传模块，用iframe实现<br/>
+* @author: mzhou<br/>
+* @version: 1.0<br/>
+                </dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/MultipleUploader.js";<br/>
+                </dd>
+                <dt>API接口</dt>
+                <dd>
+<pre class="demo">
+var uploader1 = new MultipleUploader('#uploader1');
+/**
+依据 CSS 钩子：
+success状态为绿色
+
+**/
+</pre>
+                </dd>
+                <dt>DEMO：</dt>
+                <dd>
+                <div id="uploader1"></div>
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../js/G/G.js"></script>
+    <script>
+        G.req( 'MultipleUploader', function( MultipleUploader ) {
+            window.MultipleUploader = MultipleUploader;
+            $.globalEval( $('.demo:eq(0)').text() );
+        });
+    </script>
+</body>
+</html>

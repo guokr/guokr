@@ -1,3 +1,11 @@
+/**
+ * 用于多文件上传的组件
+ *  对于支持multiple属性的浏览器一次选择多份文件
+ *
+ *
+ *
+ */
+
 
 /*jshint undef:true, browser:true, noarg:true, curly:true, regexp:true, newcap:true, trailing:false, noempty:true, regexp:false, strict:true, evil:true, funcscope:true, iterator:true, loopfunc:true, multistr:true, boss:true, eqnull:true, eqeqeq:false, undef:true */
 /*global G:false, $:false */
@@ -5,29 +13,82 @@
 G.def('MultipleUploader', ['Event'], function(Event) {
     'use strict';
     var defaultOption = {
-            buttonTmpl: '<input type="file" name="{v}" multiple />',
+            buttonTmpl: '<input type="file" name="{v}" />',
             viewTmpl: '<ul></ul>',
             fileView: '<li data-id="{id}">{filename}</li>',
             name: 'fileUploader',
-            uploadOnChange: true,
+            uploadOnChange: false,
             maxCount: 10,
-            maxConnection: 2
+            maxConnection: 2,
+            defaultFailMsg: '上传失败',
+            stateClassPrefix: 'gui-multiple-'
         },
         uniqueId = 0;
 
     function Uploader(container, option) {
-        this.$container = $(container);
-        this._option = $.extend({}, option);
-        this._params = this._option.params || {};
-        this.maxCount = this._option.maxCount;
-        this.maxConnection = this._option.maxConnection;
-        this.count = 0;
-        this._connections = [];
-        this._waiting = [];
-        this._queue = [];
-        this._inputs = {};
-        this._fileViews = {};
+        var self = this;
+        // input container dom
+        self.$container = $(container);
+        // option
+        self._option = $.extend({}, defaultOption, option);
+        // upload data
+        self._params = self._option.params || {};
+        // max uploaded file number
+        self.maxCount = self._option.maxCount;
+        // max connection number
+        self.maxConnection = self._option.maxConnection;
+        // number of selected file
+        self.count = 0;
+
+        // 以下属性在提交结束后会被清理
+        self._abortFunc = {};
+        self._connections = [];
+        self._waiting = [];
+        self._queue = [];
+
+        // 以下属性会被保留，除非removeUpload
+        self._fileViews = {};
+        self._uploads = {};  // files or input doms
+
+        // init
+        self._init();
+
+        // upload waiting file
+        self.on('complete', function(id, state) {
+            var firstWaitingId = self._waiting[self._waiting.length-1];
+            // upload waitings
+            if (firstWaitingId) {
+                self.upload(firstWaitingId);
+            }
+        });
+        // setup fileViews state
+        self.on('stateChange', function(id, state) {
+            self.constructor.setStateClass($(self.getFileView(id)), state, self._option.stateClassPrefix);
+        });
     }
+    Event.extend(Uploader);
+
+    Uploader.state = {
+        SUCCESS: 'success',
+        WAITING: 'waiting',
+        UPLOADING: 'uploading',
+        ERROR: 'error',
+        TIMEOUT: 'timeout',
+        ABORT: 'abort'
+    };
+
+    Uploader.setStateClass = function($dom, state, prefix) {
+        var k, v,
+            states = this.state;
+        for (k in states) {
+            v = states[k];
+            if (states.hasOwnProperty(k) && state !== v) {
+                $dom.removeClass(prefix + v);
+            }
+        }
+        $dom.addClass(prefix + state);
+        return this;
+    };
 
     Uploader.supportXhr = function() {
         var input = document.createElement('input'),
@@ -35,6 +96,7 @@ G.def('MultipleUploader', ['Event'], function(Event) {
         input.type = 'file';
         support = (
             'multiple' in input &&
+            'files' in input &&
                 typeof File != "undefined" &&
                 typeof FormData != "undefined" &&
                 typeof (new XMLHttpRequest()).upload != "undefined" );
@@ -74,8 +136,9 @@ G.def('MultipleUploader', ['Event'], function(Event) {
         return false;
     };
 
-    Event.extend(Uploader);
-
+    /**
+     * init
+     */
     Uploader.prototype._init = function() {
         var self = this;
         self._newButton();
@@ -87,7 +150,7 @@ G.def('MultipleUploader', ['Event'], function(Event) {
             $this.replaceWith($clone);
             $this.detach();
             // add input
-            id = self.addInput(this);
+            id = self._addUpload(this);
             // autoUpload on change
             if (self._option.uploadOnChange) {
                 self.upload(id);
@@ -107,18 +170,43 @@ G.def('MultipleUploader', ['Event'], function(Event) {
         }
     };
 
-    Uploader.prototype._getInputId = function() {
+    Uploader.prototype._getUploadId = function() {
         return '__UPLOADERS-' + uniqueId++;
     };
 
-    Uploader.prototype.addInput = function(input) {
+    /**
+     * 为上传组件添加input
+     *
+     * @param {object} input dom元素
+     * @return {string/array} id 返回分配的id，如果浏览器支持multiple则返回id的数组
+     */
+    Uploader.prototype._addUpload = function(input) {
+        if (this.constructor.supportXhr()) {
+            var i = 0,
+                fileList = input.files,
+                l = fileList.length,
+                file,
+                re = [];
+            for (; i<l; i++) {
+                file = fileList[i];
+                re.push(this._addOneUpload(file));
+            }
+            return re;
+        } else {
+            return this._addOneUpload(input);
+        }
+    };
+
+    Uploader.prototype._addOneUpload = function(input) {
         if (this.count >= this.maxCount) {
             this.fire('addTooManyFiles', input, this.count);
             return -1;
         }
-        var id = this._getInputId(),
+
+        // add input
+        var id = this._getUploadId(),
             $fileView;
-        this._input[id] = input;
+        this._uploads[id] = input;
         this._queue.push(id);
         this.count++;
 
@@ -128,24 +216,47 @@ G.def('MultipleUploader', ['Event'], function(Event) {
         return id;
     };
 
-    Uploader.prototype.removeInput = function(id) {
+    Uploader.prototype.removeUpload = function(id) {
         var Klass = this.constructor,
             fileView = this._fileViews[id];
-        Klass.removeIfExist(this._queue, id);
+        // remove waiting/connections/inputs
         Klass.removeIfExist(this._waiting, id);
-        if (Klass.removeIfExist(this._waiting, id)) {
-            this.abort(id);
-        }
-        delete this._inputs[id];
+        this.abort(id);
+
+        // remove queue/fileViews/_uploads
+        Klass.removeIfExist(this._queue, id);
         if (fileView) {
             $(this._fileViews[id]).remove();
             delete this._fileViews[id];
         }
+        delete this._uploads[id];
         return this;
     };
 
+    /**
+     * 依据id获取文件名字
+     * NOTE: 当提交结束之后，便获取不到名字
+     *
+     * @param {string} id
+     * @return {string} filename
+     *
+     */
     Uploader.prototype.getFileName = function(id) {
-        return this._inputs[id].value.replace(/.*(\/|\\)/, "");
+        if (this.constructor.supportXhr()) {
+            var file = this._uploads[id];
+            return file.fileName != null ? file.fileName : file.name;
+        } else {
+            return this._uploads[id].value.replace(/.*(\/|\\)/, "");
+        }
+    };
+
+    Uploader.prototype.uploadAll = function(id) {
+        var i = 0,
+            l = this._queue.length;
+        for (; i<l; i++) {
+            this.upload(this._queue[i]);
+        }
+        return this;
     };
 
     Uploader.prototype.upload = function(id) {
@@ -155,6 +266,7 @@ G.def('MultipleUploader', ['Event'], function(Event) {
         // too many connections
         if (this._connections.length >= this.maxConnection) {
             this._intoWaiting(id);
+            return this;
         }
 
         // if is in connection
@@ -175,36 +287,116 @@ G.def('MultipleUploader', ['Event'], function(Event) {
     };
 
     Uploader.prototype.abort = function(id) {
-        
+        var abort = this._abortFunc[id];
+        if (abort) {
+            delete this._abortFunc[id];
+            abort();
+        }
+        this.fire('abort', id);
+        this._finishConnection(id, this.constructor.state.ABORT);
+        return this;
     };
 
     Uploader.prototype._intoWaiting = function(id) {
-        var Klass = this.constructor;
+        var Klass = this.constructor,
+            re;
         Klass.removeIfExist(this._queue, id);
-        return Klass.pushIfExist(this._waiting, id);
+        re = Klass.pushIfExist(this._waiting, id);
+        this.fire('waiting', id);
+        this.fire('stateChange', id, Klass.state.WAITING);
+        return re;
     };
 
     Uploader.prototype._intoConnections = function(id) {
-        var Klass = this.constructor;
+        var Klass = this.constructor,
+            re;
         Klass.removeIfExist(this._queue, id);
         Klass.removeIfExist(this._waiting, id);
-        return Klass.pushIfExist(this._connnections, id);
+        re = Klass.pushIfExist(this._connnections, id);
+        this.fire('uploading', id);
+        this.fire('stateChange', id, Klass.state.UPLOADING);
+        return re;
     };
 
-    Uploader.prototype._finishConnection = function(id) {
-        this.fire('connectionComplete', id);
-        delete this._inputs[id];
-        return this.constructor.removeIfExist(this._connnections, id);
+    Uploader.prototype._finishConnection = function(id, state) {
+        var Klass = this.constructor;
+        Klass.removeIfExist(this._connnections, id);
+        this.fire('complete', id, state);
+        this.fire('stateChange', id, state);
     };
 
     Uploader.prototype._uploadByXhr = function(id, params) {
     };
 
     Uploader.prototype._uploadByForm = function(id, params) {
+        var self = this,
+            timeoutInterval,
+            iframeId = 'hidden_iframe_' + id,
+            formId = 'hidden_form_' + id,
+            $input = $(self.getUpload(id)),
+            $iframe = $('<iframe id="' + iframeId + '" name="' + iframeId + '" />') //对于 IE 要在创建的字符串就给出 id 和 name，如果 $('<iframe/>').attr('name', ...)，form 设置 target 到这个 iframe 仍然会提交到新窗口
+                .css('display', 'none')
+                .appendTo('body'),
+            $form = $input.wrap('<form/>').parent()
+                    .css('display', 'none')
+                    .attr({
+                        'id': formId,
+                        'name': formId,
+                        'target': iframeId,
+                        'enctype': 'multipart/form-data',
+                        'encoding': 'multipart/form-data',
+                        'action': self._option.url,
+                        'method': 'POST'
+                    })
+                    .appendTo('body');
+
+        $.each(params, function (i, el) {
+            $('<input type="hidden"/>').attr('name', i ).val( el ).appendTo( $form );
+        });
+
+        $iframe.bind('load', function () {
+            clearTimeout(timeoutInterval);
+            var data,
+                state;
+            try {
+                data = $.parseJSON($iframe.contents().text());
+            } catch (e) {
+                data = {error: 1, msg: self._option.defaultFailMsg};
+            }
+            if (data.error) {
+                self.fire('success', data, id);
+                state = self.constructor.state.SUCCESS;
+            } else {
+                self.fire('error', data, id);
+                state = self.constructor.state.ERROR;
+            }
+            self._finishConnection(id, state);
+            //$iframe.remove();//TODO: 这样 remove 会造成网页 favicon 一直在转圈浏览器一直显示正在 loading
+        });
+
+        this._abortFunc[id] = function() {
+            $form.remove();
+            $iframe.remove();
+            clearTimeout(timeoutInterval);
+        };
+
+        $form.submit();
+
+        timeoutInterval = setTimeout(function() {
+            self.fire('timeout', id);
+            self._finishConnection(id, self.constructor.state.TIMEOUT);
+        }, self._option.timeout);
     };
 
-    Uploader.prototype.getInput = function(id) {
-        return this._inputs[id];
+    /**
+     * get input dom or file
+     *
+     * @param {string} id
+     * @return {object} dom input / file object(File)
+     *
+     */
+    Uploader.prototype.getUpload = function(id) {
+        return this._uploads[id];
     };
 
     Uploader.prototype.getFileView = function(id) {
@@ -214,4 +406,6 @@ G.def('MultipleUploader', ['Event'], function(Event) {
     Uploader.prototype.remove = function() {
 
     };
+
+    return Uploader;
 });
