@@ -25,13 +25,15 @@ G.def('MultipleUploader', ['Event'], function(Event) {
         },
         uniqueId = 0;
 
-    function Uploader(container, option) {
+    function Uploader(container, url, option) {
         var self = this;
         // input container dom
         self.$container = $(container);
+        // upload url
+        self.uploadUrl = url;
         // option
         self._option = $.extend({}, defaultOption, option);
-        // upload data
+        // upload data, 不支持复杂的数据，比如数组
         self._params = self._option.params || {};
         // max uploaded file number
         self.maxCount = self._option.maxCount;
@@ -163,6 +165,8 @@ G.def('MultipleUploader', ['Event'], function(Event) {
     Uploader.prototype._newButton = function() {
         this.$container.html( G.format(this._option.buttonTmpl, this._option.name) );
         this.$button = this.$container.find('input[type=file]');
+        // name of input
+        this.uploadName = this.$button.attr('name');
         this.$view = $(this._option.viewTmpl);
         this.$container.append(this.$view);
         if (this.constructor.supportXhr()) {
@@ -259,7 +263,20 @@ G.def('MultipleUploader', ['Event'], function(Event) {
         return this;
     };
 
-    Uploader.prototype.upload = function(id) {
+    Uploader.prototype.upload = function(ids) {
+        if (G.type(ids) === 'array') {
+            var i = 0,
+                l = ids.length;
+            for (; i<l; i++) {
+                this._uploadOne(ids[i]);
+            }
+        } else {
+            this._uploadOne(ids);
+        }
+        return this;
+    };
+
+    Uploader.prototype._uploadOne = function(id) {
         var fileName = this.getFileName(id),
             params;
 
@@ -286,14 +303,20 @@ G.def('MultipleUploader', ['Event'], function(Event) {
         return this;
     };
 
-    Uploader.prototype.abort = function(id) {
+    Uploader.prototype.abort = function(id, isTimeout) {
         var abort = this._abortFunc[id];
         if (abort) {
             delete this._abortFunc[id];
             abort();
         }
-        this.fire('abort', id);
-        this._finishConnection(id, this.constructor.state.ABORT);
+
+        if (!isTimeout) {
+            this.fire('abort', id);
+            this._finishConnection(id, this.constructor.state.ABORT);
+        } else {
+            this.fire('timeout', id);
+            this._finishConnection(id, this.constructor.state.TIMEOUT);
+        }
         return this;
     };
 
@@ -326,6 +349,55 @@ G.def('MultipleUploader', ['Event'], function(Event) {
     };
 
     Uploader.prototype._uploadByXhr = function(id, params) {
+        var xhr = new XMLHttpRequest(),
+            self = this,
+            name = params.filename,
+            file = self.getUpload(id),
+            formData = new FormData(),
+            state, timeoutInterval;
+        xhr.upload.onprogress = function(e) {
+            if (e.lengthComputable) {
+                self.fire('progress', id, e.loaded, e.total);
+            }
+        };
+        xhr.onreadystatechange = function(e) {
+            if (xhr.readyState == 4) {
+                if (xhr.status === 200) {
+                    var data = xhr.response;
+                    if (data.error) {
+                        self.fire('error', id, data);
+                        state = self.constructor.state.ERROR;
+                    } else {
+                        self.fire('success', id, data);
+                        state = self.constructor.state.SUCCESS;
+                    }
+                } else {
+                    self.fire('error', id, data);
+                    state = self.constructor.state.ERROR;
+                }
+                self._finishConnection(id, state);
+            }
+        };
+        xhr.responseType = 'json';
+        xhr.open('POST', $.param(params), true);
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        xhr.setRequestHeader("X-File-Name", encodeURIComponent(name));
+        xhr.setRequestHeader("Cache-Control", "no-cache");
+        formData.append(self.uploadName, file);
+
+        self._abortFunc[id] = function() {
+            xhr.abort();
+            if (timeoutInterval) {
+                clearTimeout(timeoutInterval);
+            }
+        };
+
+        timeoutInterval = setTimeout(function() {
+            timeoutInterval = null;
+            self.abort(id, true);
+        }, self._option.timeout);
+
+        xhr.send(formData);
     };
 
     Uploader.prototype._uploadByForm = function(id, params) {
@@ -345,7 +417,7 @@ G.def('MultipleUploader', ['Event'], function(Event) {
                         'target': iframeId,
                         'enctype': 'multipart/form-data',
                         'encoding': 'multipart/form-data',
-                        'action': self._option.url,
+                        'action': self.uploadUrl,
                         'method': 'POST'
                     })
                     .appendTo('body');
@@ -364,10 +436,10 @@ G.def('MultipleUploader', ['Event'], function(Event) {
                 data = {error: 1, msg: self._option.defaultFailMsg};
             }
             if (data.error) {
-                self.fire('success', data, id);
+                self.fire('success', id, data);
                 state = self.constructor.state.SUCCESS;
             } else {
-                self.fire('error', data, id);
+                self.fire('error', id, data);
                 state = self.constructor.state.ERROR;
             }
             self._finishConnection(id, state);
@@ -377,15 +449,17 @@ G.def('MultipleUploader', ['Event'], function(Event) {
         this._abortFunc[id] = function() {
             $form.remove();
             $iframe.remove();
-            clearTimeout(timeoutInterval);
+            if (timeoutInterval) {
+                clearTimeout(timeoutInterval);
+            }
         };
 
-        $form.submit();
-
         timeoutInterval = setTimeout(function() {
-            self.fire('timeout', id);
-            self._finishConnection(id, self.constructor.state.TIMEOUT);
+            timeoutInterval = null;
+            self.abort(id, true);
         }, self._option.timeout);
+
+        $form.submit();
     };
 
     /**
