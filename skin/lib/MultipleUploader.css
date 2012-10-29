@@ -1,0 +1,53 @@
+.uploader ul {
+    margin: 1em 0;
+    overflow: hidden;
+    text-align: left;
+}
+    .uploader ul li {
+        margin-bottom: 0.2em;
+        padding: 1em;
+        list-style: none;
+        color: #333;
+        background-color: #E6E6E6;
+        -webkit-box-shadow: 0px 1px 2px #666;
+           -moz-box-shadow: 0px 1px 2px #666;
+            -ms-box-shadow: 0px 1px 2px #666;
+             -o-box-shadow: 0px 1px 2px #666;
+                box-shadow: 0px 1px 2px #666;
+    }
+.uploader .gui-multiple-error {
+    background-color: red;
+}
+.uploader .gui-multiple-timeout {
+    background-color: purple;
+}
+.uploader .gui-multiple-abort {
+    background-color: black;
+}
+.uploader .gui-multiple-success {
+    background-color: green;
+}
+.uploader .gui-multiple-uploading {
+    background-color: blue;
+}
+.uploader .gui-multiple-waiting {
+    background-color: yellow;
+}
+.uploader .gui-multiple-drag-area {
+    margin: 1em 0.5em;
+    padding: 1em;
+    color: #C09853;
+    background-color: #FCF8E3;
+    border: 1px solid #FBEED5;
+    -webkit-border-radius: 4px;
+       -moz-border-radius: 4px;
+            border-radius: 4px;
+    -webkit-text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+       -moz-text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.uploader .gui-multiple-drag-area.gui-multiple-dragenter {
+    color: #3A87AD;
+    background-color: #D9EDF7;
+    border-color: #BCE8F1;
+}
