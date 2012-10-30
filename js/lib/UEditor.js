@@ -3059,6 +3059,17 @@ G.def('UEditor', ['UBB'], function(UBB) {
                 return  html;
 
             },
+
+            /**
+             * 用于获取UBB格式的内容
+             *      add by mzhou
+             * @return {string} ubb code string
+             */
+            getUBB: function() {
+                var me = this;
+                return me.ubbparser.HTMLtoUBB(me.body);
+            },
+
             getAllHtml:function () {
                 var me = this,
                         headHtml = {html:''},
