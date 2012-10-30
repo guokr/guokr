@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑器</title>
+    <link rel="stylesheet" href="../skin/h.css" />
+    <link rel="stylesheet" href="all.css" />
+    <link rel="stylesheet" href="../skin/lib/UEditor.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="guokr" id="guokr"></div>
+        <div class="gheader-wp">
+        <div class="gheader-wp-b">
+        <div class="gheader">
+            <a id="guokrLogo" class="gheader-logo" title="果壳 科技有意思">果壳网</a>
+            <ul class="gheader-nav">
+                <li><a href="/ui.html">CSS UI</a></li>
+                <li><a href="/example/" class="current">JS组件</a></li>
+            </ul>
+        </div>
+        </div>
+        </div>
+        <div class="top-wp">
+            <div class="top fix">
+                <div class="top-main">
+                    <h1 class="top-main-n2">编辑器</h1>
+                </div>
+            </div>
+        </div>
+        <div class="wrap">
+            <dl class="main-example">
+                <dt>描述：</dt>
+                <dd></dd>
+                <dt>引用js和css：</dt>
+                <dd>
+                    JS:<br/>
+                    //@import "lib/Editor.js";<br/>
+                    CSS:<br/>
+                    @import "lib/Editor.css";
+                </dd>
+                <dt>基于textarea的编辑器：</dt>
+                <dd>
+<pre>var editor1 = new UE.ui.Editor();
+editor1.render('editorContent');
+</pre>
+                <button class="demo sg_btn mt20">运行</button>
+                </dd>
+                <dt>demo:</dt>
+                <dd><textarea id="editorContent" name="" rows="10" class="editor-content" cols="30">各位在本小组找到对象的同学，或者想来果壳找对象的。快在本贴自曝吧！亮出你们的照片。
+ [bold]发现已自曝的同学：[/bold] 
+1. [url href=http://www.guokr.com/i/0927807376/]nasdaq[/url]君及其夫人
+[image]http://ouchxp.sitemix.jp/z1.PNG[/image]    
+
+2. [url href=http://www.guokr.com/blog/51386/?page=1#comment]小园听风[/url]
+[image]http://img1.guokr.com/gkimage/d8/kn/9l/d8kn9l.png[/image]       
+其夫人：
+[image]http://img1.guokr.com/gkimage/nt/3m/7u/nt3m7u.png[/image]
+
+如果我的发帖侵犯了如上几位的肖像权，切勿怪我。我的眼珠子已经掉下来了！
+
+3. [bold]果壳网视频曝光：[/bold]
+各种你见过的、没见过的果壳员工。
+[flash]http://www.tudou.com/v/rBE4JTbbZSE/v.swf[/flash]
+</textarea></dd>
+            </dl>
+        </div>
+    </div>
+    <script>
+    var GJS_URL = '/js/',
+        GJS_PRELOAD = ['GUtils'];
+    </script>
+    <script src="../js/G/G.js"></script>
+    <script>
+        G.req( 'UEditor', function( UEditor ) {
+            window.UEditor = UEditor;
+            $('.demo').each(function( i ) {
+                var $this = $(this);
+                $this.toggle(function() {
+                    $.globalEval( $this.prev().text() );
+                }, function() {
+                    var key = 'editor'+(i+1);
+                    if ( window[key] ) {
+                        window[key].destory();
+                        window[key] = null;
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
