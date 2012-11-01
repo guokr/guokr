@@ -3,7 +3,7 @@
  *
  */
 
-G.def('UEditor', ['UBB'], function(UBB) {
+G.def('UEditor', ['UBB', 'Overlay'], function(UBB, Overlay) {
     (function () {
         // --- modify by mzhou ---
         var URL = '/';
@@ -2845,6 +2845,10 @@ G.def('UEditor', ['UBB'], function(UBB) {
             // add ubb parser
             me.ubbparser = new UBB();
             // ------------------------------------
+            // --- modify by weihu ---
+            me.block = new Overlay();
+            $('#blockWindow').css('z-index', 1002);            // TODO to improve fix z-index when fullscreen
+            // ------------------------------------
             me.fireEvent( "langReady" );
 
             UE.instants['ueditorInstant' + me.uid] = me;
@@ -5391,7 +5395,7 @@ G.def('UEditor', ['UBB'], function(UBB) {
             'anchor':'~/dialogs/anchor/anchor.html',
             'insertimage':'~/dialogs/image/image.html',
             'inserttable':'~/dialogs/table/table.html',
-            'link':'~/dialogs/link/link.html',
+            //'link':'~/dialogs/link/link.html',            // ignored by weihu
             'spechars':'~/dialogs/spechars/spechars.html',
             'searchreplace':'~/dialogs/searchreplace/searchreplace.html',
             'map':'~/dialogs/map/map.html',
@@ -5446,6 +5450,80 @@ G.def('UEditor', ['UBB'], function(UBB) {
                 };
             }( ci );
         }
+        // --- add by weihu---
+        editorui.link = function(editor){
+            var ui = new editorui.Button( {
+                className:'edui-for-link',
+                title:editor.options.labelMap.link || editor.getLang( "labelMap.link" ) || '',
+                onclick:function () {
+                    var href        = '',           // 输入链接地址
+                        htmlTmpl    = '<input id="editorBlockValue" type="text" value="http://" class="b_txt"><p class="gui-block-bd-do"><a id="editorBlockClose1" data-operation="confirm" href="javascript: void 0;" class="mw_btn">确定</a><a class="blockClose" href="javascript: void 0;">取消</a></p><p id="editorBlockError" class="gui-block-error">&nbsp;</p>',
+                        range       = editor.selection.getRange(),
+                        errorTip    = '你输入的网址不正确，请检查一下。有困难，<a href="/help/" target="_blank">联系客服</a>',
+                        urlReg      = /((http|ftp|https):\/\/)?[\w\-_]+(\.[\w\-_]+)+([\w\-\.,\@\?\^=%&:\/~\+#]*[\w\-\@\?\^=%&\/~\+#])?/;
+                    /**
+                     * 判断链接是否格式正确
+                     * @param {string} url  url值
+                     */
+                    function validateUrl(url) {
+                        return urlReg.test(url);
+                    }
+                    /**
+                     * 在block窗口中提示出错！
+                     * @param {Object} $error  出错的提示位置
+                     * @param {string} html  出错的提示信息
+                     */
+                    function error($error, html) {
+                        $error.html(html);
+                    }
+                    // 关闭点击“确定”窗口
+                    function CloseBlock() {
+                        var obj = {
+                            'target': '_blank',
+                        };
+                        href = $('#editorBlockValue').val();
+                        if (validateUrl(href)) {
+                            obj.href = href;
+                            obj.title = href;
+                            obj.data_ue_src = href;
+                            editor.execCommand('link', obj);
+                            editor.block.close();
+                        } else {
+                            error($('#editorBlockError'), errorTip);
+                            return false;
+                        }
+                    }
+                    // 判断是否折叠
+                    range.collapsed ? editor.queryCommandValue( "link" ) : editor.selection.getStart();
+                    editor.block.open(
+                            htmlTmpl,
+                            [
+                                {
+                                    event: 'click',
+                                    selector: '[data-operation=confirm]',
+                                    func: CloseBlock
+                                },
+                                {
+                                    event: 'keyup',
+                                    selector: '#editorBlockValue',
+                                    func: function(e) {
+                                        if(e.keyCode === 13) {
+                                            CloseBlock();
+                                        }
+                                    }
+                                }
+                            ],
+                            function($blockContent) {
+                                $blockContent.find('input').eq(0).focus().select();
+                            }
+                    )
+                    .title('插入链接')
+                    .showCover();
+                }
+            });
+            return ui;
+        };
+        // ----
         editorui.cleardoc = function ( editor ) {
             var ui = new editorui.Button( {
                 className:'edui-for-cleardoc',
@@ -5521,9 +5599,9 @@ G.def('UEditor', ['UBB'], function(UBB) {
 
         var dialogBtns = {
             noOk:['searchreplace', 'help', 'spechars', 'webapp'],
-            ok:['attachment', 'anchor', 'link', 'insertimage', 'map', 'gmap', 'insertframe', 'wordimage',
+            ok:['attachment', 'anchor', 'insertimage', 'map', 'gmap', 'insertframe', 'wordimage',
                 'insertvideo', 'highlightcode', 'insertframe', 'edittd', 'scrawl', 'template','background']
-
+            // ignored 'link' by weihu
         };
 
         for ( var p in dialogBtns ) {
@@ -7345,7 +7423,6 @@ G.def('UEditor', ['UBB'], function(UBB) {
                 return this.highlight ? -1 :0;
             },
             execCommand : function( cmdName, opt ) {
-
                 var range = new dom.Range(this.document),
                     tds = this.currentSelectedArr;
 
@@ -7360,12 +7437,9 @@ G.def('UEditor', ['UBB'], function(UBB) {
                         doLink(range.selectNodeContents(ti),opt);
                     }
                     range.selectNodeContents(tds[0]).select();
-
-                   
                 }else{
                     doLink(range=this.selection.getRange(),opt);
                     range.collapse().select(true);
-
                 }
             },
             queryCommandValue : function() {
