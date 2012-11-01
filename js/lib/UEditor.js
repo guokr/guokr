@@ -6169,6 +6169,7 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                     }
                     /*
                      * 修改MenuButton为普通的Button
+                     * by mzhou
                     var ui = new editorui.MenuButton( {
                         editor:editor,
                         className:'edui-for-' + cmd,
