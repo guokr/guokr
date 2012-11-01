@@ -131,12 +131,12 @@ G.def('UEditor', ['UBB', 'Overlay'], function(UBB, Overlay) {
 
                     //insertorderedlist
             //有序列表的下拉配置,值留空时支持多语言自动识别，若配置值，则以此值为准
-            ,insertorderedlist : {"decimal":"1,2,3...","lower-alpha":"a,b,c...","lower-roman":"i,ii,iii...","upper-alpha":"A,B,C","upper-roman":"I,II,III..."}
+            // ,insertorderedlist : {"decimal":"1,2,3...","lower-alpha":"a,b,c...","lower-roman":"i,ii,iii...","upper-alpha":"A,B,C","upper-roman":"I,II,III..."}
              
 
                     //insertunorderedlist
             //无序列表的下拉配置，值留空时支持多语言自动识别，若配置值，则以此值为准
-            ,insertunorderedlist : {"circle":"","disc":"","square":""}
+            // ,insertunorderedlist : {"circle":"","disc":"","square":""}
             
 
             
@@ -6096,12 +6096,22 @@ G.def('UEditor', ['UBB', 'Overlay'], function(UBB, Overlay) {
                             onclick:_onMenuClick
                         } )
                     }
+                    /*
+                     * 修改MenuButton为普通的Button
                     var ui = new editorui.MenuButton( {
                         editor:editor,
                         className:'edui-for-' + cmd,
                         title:editor.getLang( "labelMap." + cmd ) || '',
-                        'items':items,
                         onbuttonclick:function () {
+                            var value = editor.queryCommandValue( cmd ) || this.value;
+                            editor.execCommand( cmd, value );
+                        }
+                    } );
+                    */
+                    var ui = new editorui.Button( {
+                        className:'edui-for-' + cmd,
+                        title:editor.getLang( "labelMap." + cmd ) || '',
+                        onclick:function () {
                             var value = editor.queryCommandValue( cmd ) || this.value;
                             editor.execCommand( cmd, value );
                         }
@@ -6119,6 +6129,7 @@ G.def('UEditor', ['UBB', 'Overlay'], function(UBB, Overlay) {
                     } );
                     return ui;
                 };
+
             })( cl )
         }
 
@@ -6810,11 +6821,13 @@ G.def('UEditor', ['UBB', 'Overlay'], function(UBB, Overlay) {
     // --- 插入列表 ---
     UE.plugins['list'] = function () {
         var me = this,
-                notExchange = {
-                    'TD':1,
-                    'PRE':1,
-                    'BLOCKQUOTE':1
-                };
+            notExchange = {
+                'TD':1,
+                'PRE':1,
+                'BLOCKQUOTE':1
+            };
+        /**
+         * 取消下拉菜单
         me.setOpt( {
             'insertorderedlist':{
                 'decimal':'',
@@ -6829,6 +6842,7 @@ G.def('UEditor', ['UBB', 'Overlay'], function(UBB, Overlay) {
                 'square':''
             }
         } );
+        */
         function adjustList( list, tag, style ) {
             var nextList = list.nextSibling;
             if ( nextList && nextList.nodeType == 1 && nextList.tagName.toLowerCase() == tag && (domUtils.getStyle( nextList, 'list-style-type' ) || (tag == 'ol' ? 'decimal' : 'disc')) == style ) {
@@ -7115,12 +7129,12 @@ G.def('UEditor', ['UBB', 'Overlay'], function(UBB, Overlay) {
                             style = command.toLowerCase() == 'insertorderedlist' ? 'decimal' : 'disc';
                         }
                         var me = this,
-                                range = this.selection.getRange(),
-                                filterFn = function ( node ) {
-                                    return   node.nodeType == 1 ? node.tagName.toLowerCase() != 'br' : !domUtils.isWhitespace( node );
-                                },
-                                tag = command.toLowerCase() == 'insertorderedlist' ? 'ol' : 'ul',
-                                frag = me.document.createDocumentFragment();
+                            range = this.selection.getRange(),
+                            filterFn = function ( node ) {
+                                return   node.nodeType == 1 ? node.tagName.toLowerCase() != 'br' : !domUtils.isWhitespace( node );
+                            },
+                            tag = command.toLowerCase() == 'insertorderedlist' ? 'ol' : 'ul',
+                            frag = me.document.createDocumentFragment();
                         range.adjustmentBoundary().shrinkBoundary();
                         var bko = range.createBookmark( true ),
                                 start = domUtils.findParentByTagName( me.document.getElementById( bko.start ), 'li' ),
