@@ -3,7 +3,7 @@
  *
  */
 
-G.def('UEditor', ['UBB', 'Overlay'], function(UBB, Overlay) {
+G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils) {
     (function () {
         // --- modify by mzhou ---
         var URL = '/';
@@ -5400,7 +5400,7 @@ G.def('UEditor', ['UBB', 'Overlay'], function(UBB, Overlay) {
             'searchreplace':'~/dialogs/searchreplace/searchreplace.html',
             'map':'~/dialogs/map/map.html',
             'gmap':'~/dialogs/gmap/gmap.html',
-            'insertvideo':'~/dialogs/video/video.html',
+            //'insertvideo':'~/dialogs/video/video.html',   // ignored by weihu
             'help':'~/dialogs/help/help.html',
             'highlightcode':'~/dialogs/highlightcode/highlightcode.html',
             'emotion':'~/dialogs/emotion/emotion.html',
@@ -5454,7 +5454,7 @@ G.def('UEditor', ['UBB', 'Overlay'], function(UBB, Overlay) {
         editorui.link = function(editor){
             var ui = new editorui.Button( {
                 className:'edui-for-link',
-                title:editor.options.labelMap.link || editor.getLang( "labelMap.link" ) || '',
+                title:editor.options.labelMap.link || editor.getLang('labelMap.link') || '',
                 onclick:function () {
                     var href        = '',           // 输入链接地址
                         htmlTmpl    = '<input id="editorBlockValue" type="text" value="http://" class="b_txt"><p class="gui-block-bd-do"><a id="editorBlockClose1" data-operation="confirm" href="javascript: void 0;" class="mw_btn">确定</a><a class="blockClose" href="javascript: void 0;">取消</a></p><p id="editorBlockError" class="gui-block-error">&nbsp;</p>',
@@ -5494,7 +5494,7 @@ G.def('UEditor', ['UBB', 'Overlay'], function(UBB, Overlay) {
                         }
                     }
                     // 判断是否折叠
-                    range.collapsed ? editor.queryCommandValue( "link" ) : editor.selection.getStart();
+                    range.collapsed ? editor.queryCommandValue('link') : editor.selection.getStart();
                     editor.block.open(
                             htmlTmpl,
                             [
@@ -5521,6 +5521,77 @@ G.def('UEditor', ['UBB', 'Overlay'], function(UBB, Overlay) {
                     .showCover();
                 }
             });
+            return ui;
+        };
+        editorui.insertvideo = function(editor){
+            var ui = new editorui.Button( {
+                className:'edui-for-insertvideo',
+                title:editor.options.labelMap.cleardoc || editor.getLang('labelMap.insertvideo') || '',
+                onclick:function () {
+                    var href        = '',           // 输入链接地址
+                        htmlTmpl    = '<input id="editorBlockValue" type="text" value="http://" class="b_txt"><p class="gui-block-bd-do"><a id="editorBlockClose1" data-operation="confirm" href="javascript: void 0;" class="mw_btn">确定</a><a class="blockClose" href="javascript: void 0;">取消</a></p><p id="editorBlockError" class="gui-block-error">&nbsp;</p>',
+                        range       = editor.selection.getRange(),
+                        errorTip    = '你输入的网址不正确，请检查一下。有困难，<a href="/help/" target="_blank">联系客服</a>',
+                        urlReg      = /((http|ftp|https):\/\/)?[\w\-_]+(\.[\w\-_]+)+([\w\-\.,\@\?\^=%&:\/~\+#]*[\w\-\@\?\^=%&\/~\+#])?/;
+                    /**
+                     * 判断链接是否格式正确
+                     * @param {string} url  url值
+                     */
+                    function validateUrl(url) {
+                        return urlReg.test(url);
+                    }
+                    /**
+                     * 在block窗口中提示出错！
+                     * @param {Object} $error  出错的提示位置
+                     * @param {string} html  出错的提示信息
+                     */
+                    function error($error, html) {
+                        $error.html(html);
+                    }
+                    // 关闭点击“确定”窗口
+                    function CloseBlock() {
+                        var obj = {
+                            'target': '_blank',
+                        };
+                        href = $('#editorBlockValue').val();
+                        if (validateUrl(href) && UBBUtils.tValidateFlash(href)) {
+                            obj.url = href;
+                            editor.execCommand('insertvideo', obj);
+                            editor.block.close();
+                        } else {
+                            error($('#editorBlockError'), errorTip);
+                            return false;
+                        }
+                    }
+                    // 判断是否折叠
+                    range.collapsed ? editor.queryCommandValue('insertvideo') : editor.selection.getStart();
+                    editor.block.open(
+                            htmlTmpl,
+                            [
+                                {
+                                    event: 'click',
+                                    selector: '[data-operation=confirm]',
+                                    func: CloseBlock
+                                },
+                                {
+                                    event: 'keyup',
+                                    selector: '#editorBlockValue',
+                                    func: function(e) {
+                                        if(e.keyCode === 13) {
+                                            CloseBlock();
+                                        }
+                                    }
+                                }
+                            ],
+                            function($blockContent) {
+                                $blockContent.find('input').eq(0).focus().select();
+                            }
+                    )
+                    .title('插入视频')
+                    .showCover();
+                }
+            });
+
             return ui;
         };
         // ----
@@ -5600,8 +5671,8 @@ G.def('UEditor', ['UBB', 'Overlay'], function(UBB, Overlay) {
         var dialogBtns = {
             noOk:['searchreplace', 'help', 'spechars', 'webapp'],
             ok:['attachment', 'anchor', 'insertimage', 'map', 'gmap', 'insertframe', 'wordimage',
-                'insertvideo', 'highlightcode', 'insertframe', 'edittd', 'scrawl', 'template','background']
-            // ignored 'link' by weihu
+                'highlightcode', 'insertframe', 'edittd', 'scrawl', 'template','background']
+            // ignored 'insertvideo', 'link' by weihu
         };
 
         for ( var p in dialogBtns ) {
@@ -6123,7 +6194,6 @@ G.def('UEditor', ['UBB', 'Overlay'], function(UBB, Overlay) {
                         } else {
                             ui.setDisabled( false );
                             var value = editor.queryCommandValue( cmd );
-                            ui.setValue( value );
                             ui.setChecked( state )
                         }
                     } );
