@@ -6098,6 +6098,7 @@ G.def('UEditor', ['UBB', 'Overlay'], function(UBB, Overlay) {
                     }
                     /*
                      * 修改MenuButton为普通的Button
+                     * by mzhou
                     var ui = new editorui.MenuButton( {
                         editor:editor,
                         className:'edui-for-' + cmd,
@@ -6123,7 +6124,6 @@ G.def('UEditor', ['UBB', 'Overlay'], function(UBB, Overlay) {
                         } else {
                             ui.setDisabled( false );
                             var value = editor.queryCommandValue( cmd );
-                            ui.setValue( value );
                             ui.setChecked( state )
                         }
                     } );
