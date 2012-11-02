@@ -1045,7 +1045,7 @@ G.def( 'UBB', function () {
                         }
                     }
                 }
-                return '<a href="' + href + '">' + sonString + '</a>';
+                return '<a href="' + href + '" title="' + href + '">' + sonString + '</a>';
             },
             canContains: 'bold,italic,color,url,image',
             canWrap: 0,

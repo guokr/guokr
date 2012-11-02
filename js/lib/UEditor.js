@@ -5452,7 +5452,7 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
         }
         // --- add by weihu---
         editorui.link = function(editor){
-            var ui = new editorui.Button( {
+            var ui = new editorui.Button({
                 className:'edui-for-link',
                 title:editor.options.labelMap.link || editor.getLang('labelMap.link') || '',
                 onclick:function () {
@@ -5493,6 +5493,11 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                             return false;
                         }
                     }
+
+                    // 判断是否打开状态
+                    if(editor.block.isOpen()) {
+                        return false;
+                    }
                     // 判断是否折叠
                     range.collapsed ? editor.queryCommandValue('link') : editor.selection.getStart();
                     editor.block.open(
@@ -5521,10 +5526,11 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                     .showCover();
                 }
             });
+            editor.ui._dialogs['linkDialog'] = ui;          // TODO modify by weihu, 与原来传入dialog参数不一样
             return ui;
         };
         editorui.insertvideo = function(editor){
-            var ui = new editorui.Button( {
+            var ui = new editorui.Button({
                 className:'edui-for-insertvideo',
                 title:editor.options.labelMap.cleardoc || editor.getLang('labelMap.insertvideo') || '',
                 onclick:function () {
@@ -5563,6 +5569,11 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                             return false;
                         }
                     }
+
+                    // 判断是否打开状态
+                    if(editor.block.isOpen()) {
+                        return false;
+                    }
                     // 判断是否折叠
                     range.collapsed ? editor.queryCommandValue('insertvideo') : editor.selection.getStart();
                     editor.block.open(
@@ -5592,6 +5603,7 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                 }
             });
 
+            editor.ui._dialogs['insertvideoDialog'] = ui;          // TODO modify by weihu, 与原来传入dialog参数不一样
             return ui;
         };
         // ----
@@ -6326,11 +6338,17 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                     className:'edui-bubble',
                     _onEditButtonClick:function () {
                         this.hide();
-                        editor.ui._dialogs.linkDialog.open();
+                        // editor.ui._dialogs.linkDialog.open();
+                        editor.ui._dialogs.linkDialog._onClick();       // TODO modify by weihu, 调用了button私有方法
                     },
                     _onImgEditButtonClick:function ( name ) {
                         this.hide();
-                        editor.ui._dialogs[name] && editor.ui._dialogs[name].open();
+                        // editor.ui._dialogs[name] && editor.ui._dialogs[name].open();
+                        if(name === 'insertvideoDialog') {
+                            editor.ui._dialogs[name] && editor.ui._dialogs[name]._onClick();    // TODO modify by weihu, 这里传入的是Button对象
+                        } else {
+                            editor.ui._dialogs[name] && editor.ui._dialogs[name].open();
+                        }
 
                     },
                     _onImgSetFloat:function ( value ) {
@@ -6429,12 +6447,17 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                             if ( !dialogs[dialogName] ) {
                                 return;
                             }
+                            /* TODO modify by weihu, 注意视频外的图像情况
                             !html && (html = popup.formatHtml(
                                     '<nobr>'+editor.getLang("property")+': <span onclick=$$._onImgSetFloat("none") class="edui-clickable">'+editor.getLang("default")+'</span>&nbsp;&nbsp;' +
                                             '<span onclick=$$._onImgSetFloat("left") class="edui-clickable">'+editor.getLang("justifyleft")+'</span>&nbsp;&nbsp;' +
                                             '<span onclick=$$._onImgSetFloat("right") class="edui-clickable">'+editor.getLang("justifyright")+'</span>&nbsp;&nbsp;' +
                                             '<span onclick=$$._onImgSetFloat("center") class="edui-clickable">'+editor.getLang("justifycenter")+'</span>&nbsp;&nbsp;' +
                                             '<span onclick="$$._onImgEditButtonClick(\'' + dialogName + '\');" class="edui-clickable">'+editor.getLang("modify")+'</span></nobr>' ))
+                            */
+                            !html && (html = popup.formatHtml(
+                                    '<nobr>'+editor.getLang("anthorMsg")+': <a target="_blank" href="' + img.title + '" >' + img.title + '</a>' +
+                                    '&nbsp;&nbsp;<span onclick="$$._onImgEditButtonClick(\'' + dialogName + '\');" class="edui-clickable">'+editor.getLang("modify")+'</span></nobr>' ))
 
                         }
                         if ( editor.ui._dialogs.linkDialog ) {
@@ -7855,7 +7878,7 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
         function creatInsertStr(url,width,height,align,toEmbed,addParagraph){
             return  !toEmbed ?
                     (addParagraph? ('<p '+ (align !="none" ? ( align == "center"? ' style="text-align:center;" ':' style="float:"'+ align ) : '') + '>'): '') +
-                    '<img align="'+align+'" width="'+ width +'" height="' + height + '" _url="'+url+'" class="edui-faked-video"' +
+                    '<img align="'+align+'" width="'+ width +'" height="' + height + '" _url="'+url+'" title="'+url+'" class="edui-faked-video"' +
                     ' src="'+me.options.UEDITOR_CSSIMAGE_URL+'spacer.gif" style="background:url('+me.options.UEDITOR_CSSIMAGE_URL+'videologo.gif) no-repeat center center; border:1px solid gray;" />' +
                     (addParagraph?'</p>':'')
                     :
@@ -7863,7 +7886,7 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                     ' src="' + url + '" width="' + width  + '" height="' + height  + '" align="' + align + '"' +
                     ( align !="none" ? ' style= "'+ ( align == "center"? "display:block;":" float: "+ align )  + '"' :'' ) +
                     ' wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true" >';
-        }
+        }   // --- modify by weihu, add "title" ---
 
         function switchImgAndEmbed(img2embed){
             var tmpdiv,
