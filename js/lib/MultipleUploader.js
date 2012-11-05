@@ -8,9 +8,9 @@
  *
  *  返回数据必须是json格式
  *      正确格式：{}
- *      错误格式：{error: 1, msg: '提示信息'}
+ *      错误格式：{error_code: 900001, error: '提示信息'} ，错误json中的key
  *  事件：
- *      addTooManyFiles 添加了超过限制的文件，参数(input/file, count)
+ *      addTooManyFiles 添加了超过限制的文件，参数(input/file, maxCount)
  *      abort           强制停止上传，参数(id)
  *      timeout         上传超时，参数(id)
  *      waiting         等待上传中，参数(id)
@@ -48,6 +48,12 @@
  *
  *  @author mzhou
  *  @log 0.1 init
+ *       0.2 添加setting的注释
+ *           修改addTooManyFiles事件的第二个参数为maxCount，原来是count
+ *           uploadOnChange参数默认值修改为true
+ *           添加errorCodeKey、errorCode和errorMsgKey三个配置项
+ *           name选项的默认值修改为'upload_file'
+ *           支持201 status
  */
 
 
@@ -59,20 +65,42 @@
 G.def('MultipleUploader', ['Event'], function(Event) {
     'use strict';
     var defaultOption = {
+            // 按钮模版
             buttonTmpl: '<input type="file" name="{v}" size="10"/>',
+            // 文件列表模版
             viewTmpl: '<ul></ul>',
+            // 单个文件模版
             fileViewTmpl: '<li data-id="{id}">{filename}</li>',
+            // 拖动部分HTML模版
             dragTmpl: '<div class="gui-multiple-drag-area">将文件拖到此处上传</div>',
-            // dragSelector: '#draggable',
-            name: 'fileUploader',
-            uploadOnChange: false,
-            maxCount: 10,
+            name: 'upload_file',   // 提交时候用的name
+            // 在选择完成之后立即开始提交
+            uploadOnChange: true,
+            // 最多可以上传的文件数量
+            maxCount: 100,
+            // 同时提交的链接数
             maxConnection: 2,
+            // 默认上传失败时候的提示语，会被传给error，complete事件
             defaultFailMsg: '上传失败',
+            // 文件列表css hook的class前缀
             stateClassPrefix: 'gui-multiple-',
+            // 拖动状态css hook的class前缀
             dragStateClassPrefix: 'gui-multiple-drag',
+            // 超时时间
             timeout: 10000,
-            forceUseForm: false
+            // 强制使用form提交，会禁用多文件选择、XMLHttpRequest的提交
+            forceUseForm: false,
+            // 上传失败时候，json格式中错误码的key
+            errorCodeKey: 'error_code',
+            // 上传失败时候，json格式中错误消息的key
+            errorMsgKey: 'error',
+            // 上传失败时候，json格式中的错误码值，分别代表了：
+            //      iframe提交时候，返回数据不是json格式;
+            //      XMLHttpRequest提交时候，返回status不是200;
+            //      XMLHttpRequest提交时候，返回数据不是json格式;
+            errorCode: [900001, 900002, 900003]
+            // 上传用参数
+            // params: {name: value}
         },
         uniqueId = 0;
 
@@ -352,7 +380,7 @@ G.def('MultipleUploader', ['Event'], function(Event) {
      */
     Uploader.prototype._addOneUpload = function(input) {
         if (this.count >= this.maxCount) {
-            this.fire('addTooManyFiles', input, this.count);
+            this.fire('addTooManyFiles', input, this.maxCount);
             return -1;
         }
 
@@ -544,17 +572,23 @@ G.def('MultipleUploader', ['Event'], function(Event) {
         };
         xhr.onreadystatechange = function(e) {
             if (xhr.readyState == 4) {
+                var option = self._option,
+                    data;
                 if (timeoutInterval) {
                     clearTimeout(timeoutInterval);
                 }
-                if (xhr.status === 200) {
-                    var data = xhr.responseText;
+                // 200 === 正常
+                // 201 === 正常且创建了新资源
+                if (xhr.status === 200 || xhr.status === 201) {
+                    data = xhr.responseText;
                     try {
                         data = $.parseJSON(data);
                     } catch(e) {
-                        data = {error: 3, msg: self._option.defaultFailMsg};
+                        data = {};
+                        data[option.errorCodeKey] = option.errorCode[3];
+                        data[option.errorMsgKey] = option.defaultFailMsg;
                     }
-                    if (data.error == null) {
+                    if (data[option.errorCodeKey] == null) {
                         self.fire('success', id, data);
                         state = self.constructor.state.SUCCESS;
                     } else {
@@ -562,7 +596,10 @@ G.def('MultipleUploader', ['Event'], function(Event) {
                         state = self.constructor.state.ERROR;
                     }
                 } else {
-                    self.fire('error', id, {error: 2, msg: '上传失败'});
+                    data = {};
+                    data[option.errorCodeKey] = option.errorCode[1];
+                    data[option.errorMsgKey] = option.defaultFailMsg;
+                    self.fire('error', id, data);
                     state = self.constructor.state.ERROR;
                 }
                 self._finishConnection(id, state);
@@ -605,17 +642,17 @@ G.def('MultipleUploader', ['Event'], function(Event) {
                 .css('display', 'none')
                 .appendTo('body'),
             $form = $input.wrap('<form/>').parent()
-                    .css('display', 'none')
-                    .attr({
-                        'id': formId,
-                        'name': formId,
-                        'target': iframeId,
-                        'enctype': 'multipart/form-data',
-                        'encoding': 'multipart/form-data',
-                        'action': self.uploadUrl,
-                        'method': 'POST'
-                    })
-                    .appendTo('body');
+                .css('display', 'none')
+                .attr({
+                    'id': formId,
+                    'name': formId,
+                    'target': iframeId,
+                    'enctype': 'multipart/form-data',
+                    'encoding': 'multipart/form-data',
+                    'action': self.uploadUrl,
+                    'method': 'POST'
+                })
+                .appendTo('body');
 
         $.each(params, function (i, el) {
             $('<input type="hidden"/>').attr('name', i ).val( el ).appendTo( $form );
@@ -625,15 +662,18 @@ G.def('MultipleUploader', ['Event'], function(Event) {
             if (timeoutInterval) {
                 clearTimeout(timeoutInterval);
             }
-            var data,
+            var option = self._option,
+                data,
                 state;
             try {
                 data = $.parseJSON($iframe.contents().text());
             } catch (e) {
-                data = {error: 1, msg: self._option.defaultFailMsg};
+                data = {};
+                data[option.errorCodeKey] = option.errorCode[0];
+                data[option.errorMsgKey] = option.defaultFailMsg;
             }
 
-            if (data.error == null) {
+            if (data[option.errorCodeKey] == null) {
                 self.fire('success', id, data);
                 state = self.constructor.state.SUCCESS;
             } else {

@@ -44,7 +44,12 @@
                 <dt>API接口</dt>
                 <dd>
 <pre class="demo">
-var uploader1 = new MultipleUploader('#uploader1', '/');
+var uploader1 = new MultipleUploader('#uploader1', '/image.json', {params: {ukey: 'adasda'}});
+uploader1
+    .on('success', function(id, data) {
+        $(uploader1.getFileView(id))
+            .append(G.format('&lt;br/&gt;&lt;mark&gt;hashkey为{hashkey}，宽度为{width}，高度为{height}&lt;/mark&gt;', data.result));
+    });
 /**
 依据 CSS 钩子：
 success状态为绿色
