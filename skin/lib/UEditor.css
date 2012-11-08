@@ -111,10 +111,9 @@ span.edui-unclickable {
     vertical-align: top;
 }
 .edui-menuitem .edui-icon {
-    width: 20px!important;
-    height: 20px!important;
+    width: 25px!important;
+    height: 25px!important;
     background: url(/skin/imgs/UEditor/icons.png) 0 -40px;
-    background: url(/skin/imgs/UEditor/icons.gif) 0 -40px\9;
 }
 
 .edui-menuitem .edui-label {
@@ -369,28 +368,30 @@ span.edui-unclickable {
     height: 20px;
     margin: 2px 4px 2px 3px;
     background: url(/skin/imgs/UEditor/icons.png) -180px 0;
-    background: url(/skin/imgs/UEditor/icons.gif) -180px 0\9;
 }
 
 /* toolbar button */
 .edui-toolbar .edui-button .edui-icon,
 .edui-toolbar .edui-menubutton .edui-icon,
 .edui-toolbar .edui-splitbutton .edui-icon {
-    height: 20px!important;
-    width: 20px!important;
+    height: 25px!important;
+    width: 25px!important;
     background-image: url(/skin/imgs/UEditor/icons.png);
-    background-image: url(/skin/imgs/UEditor/icons.gif)\9;
 }
 
 .edui-toolbar .edui-button .edui-button-wrap {
     padding: 1px;
     position: relative;
 }
+/*
 .edui-toolbar .edui-button .edui-state-hover .edui-button-wrap {
     background-color: #fff5d4;
     padding: 0;
     border: 1px solid #dcac6c;
 }
+*/
+/*
+ * 这里原来是icon的选中状态
 .edui-toolbar .edui-button .edui-state-checked .edui-button-wrap {
     background-color: #ffe69f;
     padding: 0;
@@ -401,6 +402,7 @@ span.edui-unclickable {
     padding: 0;
     border: 1px solid gray;
 }
+*/
 
 /* toolbar splitbutton */
 .edui-toolbar .edui-splitbutton-body .edui-arrow,
@@ -497,7 +499,6 @@ span.edui-unclickable {
 }
 .edui-toolbar .edui-combox-body .edui-arrow {
     background: url(/skin/imgs/UEditor/icons.png) -741px 0;
-    _background: url(/skin/imgs/UEditor/icons.gif) -741px 0;
     height: 20px;
     width: 9px;
 }
@@ -593,270 +594,133 @@ span.edui-unclickable {
     padding:2px 5px;
 }
 /* toolbar icons */
-
-.edui-for-undo .edui-icon {
-    background-position: -160px 0;
-}
-.edui-for-redo .edui-icon {
-    background-position: -100px 0;
-}
+/*
+ * mzhou
+example:
+默认样式：
 .edui-for-bold .edui-icon {
+    background-position: 0 -50px;
+}
+hover样式：
+.edui-for-bold .edui-state-hover .edui-icon {
     background-position: 0 0;
 }
-.edui-for-italic .edui-icon {
-    background-position: -60px 0;
+激活样式：
+.edui-for-bold .edui-state-active .edui-icon,
+.edui-for-bold .edui-state-checked .edui-icon {
+    background-position: 0 -25px;
 }
-.edui-for-underline .edui-icon {
-    background-position: -140px 0;
+*/
+.edui-for-bold .edui-icon {
+    background-position: -25px -50px;
 }
-.edui-for-strikethrough .edui-icon {
-    background-position: -120px 0;
+.edui-for-bold .edui-state-hover .edui-icon {
+    background-position: -25px 0;
 }
-.edui-for-subscript .edui-icon {
-    background-position: -600px 0;
-}
-.edui-for-superscript .edui-icon {
-    background-position: -620px 0;
-}
-.edui-for-blockquote .edui-icon {
-    background-position: -220px 0;
-}
-.edui-for-forecolor .edui-icon {
-    background-position: -720px 0;
-}
-.edui-for-backcolor .edui-icon {
-    background-position: -760px 0;
-}
-.edui-for-inserttable .edui-icon {
-    background-position: -580px -20px;
-}
-.edui-for-autotypeset .edui-icon {
-    background-position: -640px -40px;
-}
-.edui-for-justifyleft .edui-icon {
-    background-position: -460px 0;
-}
-.edui-for-justifycenter .edui-icon {
-    background-position: -420px 0;
-}
-.edui-for-justifyright .edui-icon {
-    background-position: -480px 0;
-}
-.edui-for-justifyjustify .edui-icon {
-    background-position: -440px 0;
-}
-.edui-for-insertorderedlist .edui-icon {
-    background-position: -80px 0;
-}
-.edui-for-insertunorderedlist .edui-icon {
-    background-position: -20px 0;
-}
-.edui-for-lineheight .edui-icon {
-    background-position: -725px -40px;
-}
-.edui-for-rowspacingbottom .edui-icon {
-    background-position: -745px -40px;
-}
-.edui-for-rowspacingtop .edui-icon {
-    background-position: -765px -40px;
+.edui-for-bold .edui-state-active .edui-icon,
+.edui-for-bold .edui-state-checked .edui-icon {
+    background-position: -25px -25px;
 }
 
-.edui-for-horizontal .edui-icon {
-    background-position: -360px 0;
+.edui-for-italic .edui-icon {
+    background-position: -50px -50px;
 }
+.edui-for-italic .edui-state-hover .edui-icon {
+    background-position:  -50px 0;
+}
+.edui-for-italic .edui-state-active .edui-icon,
+.edui-for-italic .edui-state-checked .edui-icon {
+    background-position:  -50px -25px;
+}
+
 .edui-for-link .edui-icon {
-    background-position: -500px 0;
+    background-position: -575px -50px;
 }
-.edui-for-code .edui-icon {
-    background-position: -440px -40px;
+.edui-for-link .edui-state-hover .edui-icon {
+    background-position: -575px 0;
+}
+.edui-for-link .edui-state-active .edui-icon,
+.edui-for-link .edui-state-checked .edui-icon {
+    background-position: -575px -25px;
 }
 
 .edui-for-insertimage .edui-icon {
-    background-position: -380px 0;
+    background-position: -75px -50px;
 }
-.edui-for-insertframe .edui-icon {
-    background-position: -240px -40px;
+.edui-for-insertimage .edui-state-hover .edui-icon {
+    background-position: -75px 0;
 }
-.edui-for-emoticon .edui-icon {
-    background-position: -60px -20px;
-}
-.edui-for-spechars .edui-icon {
-    background-position: -240px 0;
-}
-.edui-for-help .edui-icon {
-    background-position: -340px 0;
-}
-.edui-for-print .edui-icon {
-    background-position: -440px -20px;
-}
-.edui-for-preview .edui-icon {
-    background-position: -420px -20px;
-}
-.edui-for-selectall .edui-icon {
-    background-position: -400px -20px;
-}
-.edui-for-searchreplace .edui-icon {
-    background-position: -520px -20px;
-}
-.edui-for-map .edui-icon {
-    background-position: -40px -40px;
-}
-.edui-for-gmap .edui-icon {
-    background-position: -260px -40px;
+.edui-for-insertimage .edui-state-active .edui-icon,
+.edui-for-insertimage .edui-state-checked .edui-icon {
+    background-position: -75px -25px;
 }
 .edui-for-insertvideo .edui-icon {
-    background-position: -320px -20px;
+    background-position: -100px -50px;
 }
-.edui-for-time .edui-icon {
-    background-position: -160px -20px;
+.edui-for-insertvideo .edui-state-hover .edui-icon {
+    background-position: -100px 0;
 }
-.edui-for-date .edui-icon {
-    background-position: -140px -20px;
+.edui-for-insertvideo .edui-state-active .edui-icon,
+.edui-for-insertvideo .edui-state-checked .edui-icon {
+    background-position: -100px -25px;
 }
-.edui-for-cut .edui-icon {
-    background-position: -680px 0;
+
+.edui-for-insertunorderedlist .edui-icon {
+    background-position: -175px -50px;
 }
-.edui-for-copy .edui-icon {
-    background-position: -700px 0;
+.edui-for-insertunorderedlist .edui-state-hover .edui-icon {
+    background-position:  -175px 0;
 }
-.edui-for-paste .edui-icon {
-    background-position: -560px 0;
+.edui-for-insertunorderedlist .edui-state-active .edui-icon,
+.edui-for-insertunorderedlist .edui-state-checked .edui-icon {
+    background-position: -175px -25px;
 }
-.edui-for-formatmatch .edui-icon {
-    background-position: -40px 0;
+
+.edui-for-insertorderedlist .edui-icon {
+    background-position: -200px -50px;
 }
-.edui-for-pasteplain .edui-icon {
-    background-position: -360px -20px;
-}
-.edui-for-directionalityltr .edui-icon {
-    background-position: -20px -20px;
-}
-.edui-for-directionalityrtl .edui-icon {
-    background-position: -40px -20px;
-}
-.edui-for-source .edui-icon {
-    background-position: -260px -0px;
-}
-.edui-for-removeformat .edui-icon {
-    background-position: -580px 0;
-}
-.edui-for-unlink .edui-icon {
-    background-position: -640px 0;
-}
-.edui-for-touppercase .edui-icon {
-    background-position: -786px 0;
-}
-.edui-for-tolowercase .edui-icon {
-    background-position: -806px 0;
-}
-.edui-for-insertrow .edui-icon {
-    background-position: -740px -20px;
-}
-.edui-for-insertcol .edui-icon {
-    background-position: -700px -20px;
-}
-.edui-for-mergeright .edui-icon {
-    background-position: -60px -40px;
-}
-.edui-for-mergedown .edui-icon {
-    background-position: -80px -40px;
-}
-.edui-for-splittorows .edui-icon {
-    background-position: -100px -40px;
-}
-.edui-for-splittocols .edui-icon {
-    background-position: -120px -40px;
-}
-.edui-for-insertparagraphbeforetable .edui-icon {
-    background-position: -140px -40px;
-}
-.edui-for-deleterow .edui-icon {
-    background-position: -660px -20px;
-}
-.edui-for-deletecol .edui-icon {
-    background-position: -640px -20px;
-}
-.edui-for-splittocells .edui-icon {
-    background-position: -800px -20px;
-}
-.edui-for-mergecells .edui-icon {
-    background-position: -760px -20px;
-}
-.edui-for-deletetable .edui-icon {
-    background-position: -620px -20px;
-}
-.edui-for-cleardoc .edui-icon {
-    background-position: -520px 0;
-}
-.edui-for-fullscreen .edui-icon {
-    background-position: -100px -20px;
-}
-.edui-for-anchor .edui-icon {
+.edui-for-insertorderedlist .edui-state-hover .edui-icon {
     background-position:  -200px 0;
 }
-.edui-for-pagebreak .edui-icon {
-    background-position:  -460px -40px;
-}
-.edui-for-imagenone .edui-icon {
-    background-position: -480px -40px;
-}
-.edui-for-imageleft .edui-icon {
-    background-position: -500px -40px;
-}
-.edui-for-wordimage .edui-icon {
-    background-position: -660px -40px;
-}
-.edui-for-imageright .edui-icon {
-    background-position: -520px -40px;
-}
-.edui-for-imagecenter .edui-icon {
-    background-position: -540px -40px;
+.edui-for-insertorderedlist .edui-state-active .edui-icon,
+.edui-for-insertorderedlist .edui-state-checked .edui-icon {
+    background-position: -200px -25px;
 }
 
-.edui-for-indent .edui-icon {
-    background-position:  -400px 0;
+.edui-for-insertmathjax .edui-icon {
+    background-position: -125px -50px;
 }
-.edui-for-outdent .edui-icon {
-    background-position:  -540px 0;
+.edui-for-insertmathjax .edui-state-hover .edui-icon {
+    background-position: -125px 0;
 }
-.edui-for-webapp .edui-icon {
-    background-position:  -601px -40px
-}
-
-.edui-for-table .edui-icon {
-    background-position: -580px -20px;
-}
-.edui-for-edittable .edui-icon {
-    background-position: -420px -40px;
-}
-.edui-for-template .edui-icon {
-    background-position: -339px -40px;
-}
-.edui-for-delete .edui-icon {
-    background-position: -360px -40px;
-}
-.edui-for-highlightcode .edui-icon{
-    background-position: -440px -40px;
-}
-.edui-for-deletehighlightcode .edui-icon{
-    background-position: -360px -40px;
-}
-.edui-for-attachment .edui-icon{
-    background-position: -620px -40px;
-}
-.edui-for-edittd .edui-icon {
-    background-position: -700px -40px;
+.edui-for-insertmathjax .edui-state-active .edui-icon,
+.edui-for-insertmathjax .edui-state-checked .edui-icon {
+    background-position: -125px -25px;
 }
 
-.edui-for-snapscreen .edui-icon {
-    background-position: -581px -40px
+.edui-for-fullscreen .edui-icon {
+    background-position: -525px -50px;
 }
-.edui-for-scrawl .edui-icon {
-    background-position: -801px -41px
+.edui-for-fullscreen .edui-state-hover .edui-icon {
+    background-position: -525px 0;
 }
-.edui-for-background .edui-icon {
-    background-position: -678px -40px;
+.edui-for-fullscreen .edui-state-active .edui-icon {
+    background-position: -525px -25px;
 }
+.edui-for-fullscreen .edui-state-hover.edui-state-checked .edui-icon {
+    background-position: -550px 0;
+}
+.edui-for-fullscreen .edui-state-active.edui-state-checked .edui-icon {
+    background-position: -550px -25px;
+}
+/* 故意把checked状态放在最后，为了让IE6好看些 mzhou */
+.edui-for-fullscreen .edui-state-checked .edui-icon {
+    background-position: -550px -50px;
+}
+
+
+
+
 
 /*link-dialog*/
 .edui-for-link .edui-dialog-content  {

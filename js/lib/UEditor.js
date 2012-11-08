@@ -5609,14 +5609,14 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
         };
         editorui.insertmathjax = function(editor){
             var ui = new editorui.Button({
-                className:'edui-for-insertvideo',
+                className:'edui-for-insertmathjax',
                 title:editor.options.labelMap.insertmathjax || editor.getLang('labelMap.insertmathjax') || '',
                 onclick:function () {
                     var text        = '',                       // 输入公式
                         htmlTmpl    = '',
                         range       = editor.selection.getRange(),
                         parentNode  = range.startContainer.parentNode,
-                        mathClass   = 'edui-faked-mathjax',
+                        mathClass   = 'edui-faked-insertmathjax',
                         isEdit      = !!(parentNode.className === mathClass);
                     if(editor.queryCommandState('insertmathjax') === 1 && isEdit) {
                         text = parentNode.innerHTML;
@@ -6558,7 +6558,7 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                         // ---- add by weihu
                         if(editor.ui._dialogs.insertmathjaxDialog) {
                             var math = domUtils.findParent(editor.selection.getStart(), null, true);
-                            if(math.className === 'edui-faked-mathjax') {
+                            if(math.className === 'edui-faked-insertmathjax') {
                                 html += popup.formatHtml(
                                         '<nobr><span class="edui-clickable" onclick="$$._onEditMathJaxClick();">'+editor.getLang("modify")+'</span></nobr>');
                                 popup.showAnchorRect(math);
@@ -8027,9 +8027,9 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
     };
 
     // --- 插入公式 add by weihu ---
-    UE.plugins['mathjax'] = function (){
+    UE.plugins['insertmathjax'] = function (){
         var me      = this,
-            mathclass   = "edui-faked-mathjax";
+            mathclass   = "edui-faked-insertmathjax";
 
         function creatInsertStr(text, isBlock){
             if(isBlock) {
