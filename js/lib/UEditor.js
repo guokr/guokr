@@ -67,9 +67,9 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
 
 
             //工具栏上的所有的功能按钮和下拉框，可以在new编辑器的实例时选择自己需要的从新定义
-            ,toolbars:[["Bold","Italic","Link","InsertImage","InsertVideo","InsertUnorderedList","InsertOrderedList","FullScreen"]]
+            ,toolbars:[["Bold","Italic","Link","InsertImage","InsertVideo","InsertUnorderedList","InsertOrderedList","insertMathJax","FullScreen"]]           // add insertMathJax by weihu
             //当鼠标放在工具栏上时显示的tooltip提示
-            ,labelMap:{'fullscreen':'','insertunorderedlist':'','insertorderedlist':'','link':'','bold':'','italic':'','insertimage':'','insertvideo':''}
+            ,labelMap:{'fullscreen':'','insertunorderedlist':'','insertorderedlist':'','link':'','bold':'','italic':'','insertimage':'','insertvideo':'', 'insertmathjax':''}           // add insertmathjax by weihu
 
             //webAppKey
             //百度应用的APIkey，每个站长必须首先去百度官网注册一个key后方能正常使用app功能
@@ -5574,8 +5574,6 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                     if(editor.block.isOpen()) {
                         return false;
                     }
-                    // 判断是否折叠
-                    range.collapsed ? editor.queryCommandValue('insertvideo') : editor.selection.getStart();
                     editor.block.open(
                             htmlTmpl,
                             [
@@ -5604,6 +5602,80 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
             });
 
             editor.ui._dialogs['insertvideoDialog'] = ui;          // TODO modify by weihu, 与原来传入dialog参数不一样
+            editor.addListener( 'selectionchange', function () {
+                ui.setChecked( editor.queryCommandState( 'insertvideo' ) );
+            });
+            return ui;
+        };
+        editorui.insertmathjax = function(editor){
+            var ui = new editorui.Button({
+                className:'edui-for-insertvideo',
+                title:editor.options.labelMap.insertmathjax || editor.getLang('labelMap.insertmathjax') || '',
+                onclick:function () {
+                    var text        = '',                       // 输入公式
+                        htmlTmpl    = '',
+                        range       = editor.selection.getRange(),
+                        parentNode  = range.startContainer.parentNode,
+                        mathClass   = 'edui-faked-mathjax',
+                        isEdit      = !!(parentNode.className === mathClass);
+                    if(editor.queryCommandState('insertmathjax') === 1 && isEdit) {
+                        text = parentNode.innerHTML;
+                        range.selectNode(parentNode);           // 选中节点
+                    }
+                    htmlTmpl    = '<textarea id="editorBlockValue" class="t_txt" cols="40" rows="5">'+ text +'</textarea><div id="previewMathJax"></div><p class="gui-block-bd-do"><a id="editorBlockClose1" data-operation="confirm" href="javascript: void 0;" class="mw_btn">确定</a><a class="blockClose" href="javascript: void 0;">取消</a></p>';
+                    // 关闭点击“确定”窗口
+                    function CloseBlock() {
+                        var obj = {};
+                        obj.text = $('#editorBlockValue').val();
+                        obj.isBlock = !!$('#previewMathJax').find('div').length;
+                        if(isEdit) {
+                            range.deleteContents();             // 如果是编辑状态，先删除节点
+                        }
+                        editor.execCommand('insertmathjax', obj);
+                        editor.block.close();
+                    }
+
+                    // 判断是否打开状态
+                    if(editor.block.isOpen()) {
+                        return false;
+                    }
+                    editor.block.open(
+                            htmlTmpl,
+                            [
+                                {
+                                    event: 'click',
+                                    selector: '[data-operation=confirm]',
+                                    func: CloseBlock
+                                },
+                                {
+                                    event: 'keyup',
+                                    selector: '#editorBlockValue',
+                                    func: function(e) {
+                                        if(e.keyCode === 13) {
+                                            CloseBlock();
+                                        }
+                                    }
+                                }
+                            ],
+                            function($blockContent) {
+                                if (typeof MathJax !== 'undefined') {
+                                    $blockContent.find('textarea').eq(0).focus().select();
+                                    $('#editorBlockValue').bind('keyup', function() {
+                                        $('#previewMathJax').text($('#editorBlockValue').val());
+                                        MathJax.Hub.Queue(['Typeset', MathJax.Hub, $('#previewMathJax')[0]]);
+                                    }).keyup();
+                                }
+                            }
+                    )
+                    .title('插入公式')
+                    .showCover();
+                }
+            });
+
+            editor.ui._dialogs['insertmathjaxDialog'] = ui;          // TODO modify by weihu, 与原来传入dialog参数不一样
+            editor.addListener( 'selectionchange', function () {
+                ui.setChecked( editor.queryCommandState( 'insertmathjax' ) );
+            });
             return ui;
         };
         // ----
@@ -6349,8 +6421,13 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                         } else {
                             editor.ui._dialogs[name] && editor.ui._dialogs[name].open();
                         }
-
                     },
+                    // ---- add by weihu
+                    _onEditMathJaxClick: function() {
+                        this.hide();
+                        editor.ui._dialogs.insertmathjaxDialog._onClick();
+                    },
+                    // ----
                     _onImgSetFloat:function ( value ) {
                         this.hide();
                         editor.execCommand( "imagefloat", value );
@@ -6478,11 +6555,28 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                                 popup.showAnchor( link );
                             }
                         }
-
+                        // ---- add by weihu
+                        if(editor.ui._dialogs.insertmathjaxDialog) {
+                            var math = domUtils.findParent(editor.selection.getStart(), null, true);
+                            if(math.className === 'edui-faked-mathjax') {
+                                html += popup.formatHtml(
+                                        '<nobr><span class="edui-clickable" onclick="$$._onEditMathJaxClick();">'+editor.getLang("modify")+'</span></nobr>');
+                                popup.showAnchorRect(math);
+                            }
+                        }
+                        // ----
                         if ( html ) {
                             popup.getDom( 'content' ).innerHTML = html;
-                            popup.anchorEl = img || link;
+                            popup.anchorEl = img || link || math;           // add math by weihu
                             popup.showAnchor( popup.anchorEl );
+                            // ---- add by weihu, to fix block math popup position
+                            if(math) {
+                                var rect = baidu.editor.ui.uiUtils.getClientRect(math);
+                                rect.right = rect.left;
+                                rect.width = 0;
+                                popup.showAnchorRect(rect);
+                            }
+                            // ----
                         } else {
                             popup.hide();
                         }
@@ -7927,6 +8021,37 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
             queryCommandState : function(){
                 var img = me.selection.getRange().getClosedNode(),
                     flag = img && (img.className == "edui-faked-video");
+                return this.highlight ? -1 :(flag?1:0);
+            }
+        };
+    };
+
+    // --- 插入公式 add by weihu ---
+    UE.plugins['mathjax'] = function (){
+        var me      = this,
+            mathclass   = "edui-faked-mathjax";
+
+        function creatInsertStr(text, isBlock){
+            if(isBlock) {
+                return '<div class="'+ mathclass +'">'+ text +'</div>';
+            } else {
+                return '<span class="'+ mathclass +'">'+ text +'</span>';
+            }
+        }
+
+        me.commands["insertmathjax"] = {
+            execCommand: function (cmd, mathJaxObj){
+                var html = creatInsertStr(mathJaxObj.text, mathJaxObj.isBlock);
+                me.execCommand("inserthtml",html);
+                if(!mathJaxObj.isBlock) {                   // 行内元素时，需要把光标移出span
+                    var range = me.selection.getRange(),
+                        parentNode = range.startContainer.parentNode;
+                    range.selectNode(parentNode).setCursor(true);
+                }
+            },
+            queryCommandState : function(){
+                var p = me.selection.getRange().startContainer.parentNode,
+                    flag = p && (p.className === mathclass);
                 return this.highlight ? -1 :(flag?1:0);
             }
         };
@@ -10781,7 +10906,8 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
             'insertunorderedlist':'无序列表', 'fullscreen':'全屏', 'directionalityltr':'从左向右输入', 'directionalityrtl':'从右向左输入',
             'rowspacingtop':'段前距', 'rowspacingbottom':'段后距', 'highlightcode':'插入代码', 'pagebreak':'分页', 'insertframe':'插入Iframe', 'imagenone':'默认',
             'imageleft':'左浮动', 'imageright':'右浮动', 'attachment':'附件', 'imagecenter':'居中', 'wordimage':'图片转存',
-            'lineheight':'行间距','edittd':'单元格', 'customstyle':'自定义标题', 'autotypeset':'自动排版', 'webapp':'百度应用', 'touppercase':'字母大写', 'tolowercase':'字母小写','background':'背景','template':'模板','scrawl':'涂鸦'
+            'lineheight':'行间距','edittd':'单元格', 'customstyle':'自定义标题', 'autotypeset':'自动排版', 'webapp':'百度应用', 'touppercase':'字母大写', 'tolowercase':'字母小写','background':'背景','template':'模板','scrawl':'涂鸦',
+            'insertmathjax': '插入公式'           // add insertmathjax by weihu
         },
         'insertorderedlist':{
             'decimal':'1,2,3...',

@@ -66,6 +66,7 @@ editor1.render('editorContent1');
                 <dd>
 <pre>var editor2 = new UE.ui.Editor();
 editor2.render('editorContent2');
+MathJax.Hub.Queue(['Typeset', MathJax.Hub, $('#baidu_editor_0')[0]]);
 </pre>
                 <button class="demo sg_btn mt20">运行</button>
                 </dd>
@@ -84,6 +85,8 @@ editor2.render('editorContent2');
 3. [bold]果壳网视频曝光：[/bold]
 各种你见过的、没见过的果壳员工。
 [flash]http://www.tudou.com/v/rBE4JTbbZSE/v.swf[/flash]
+行内公式：($ a + 1 $)
+块公式：($$ \lim_{n \to \infty}  \frac{ x_n-x_{n-1} }{ y_n-y_{n-1} }= a  $$)
 </textarea></dd>
             </dl>
         </div>
@@ -92,6 +95,22 @@ editor2.render('editorContent2');
     var GJS_URL = '/js/',
         GJS_PRELOAD = ['GUtils'];
     </script>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        jax: ["input/TeX", "output/HTML-CSS"],
+        extensions: ["tex2jax.js","TeX/AMSmath.js","TeX/AMSsymbols.js","TeX/noUndefined.js"],
+        tex2jax: {
+            inlineMath: [ ["($", "$)"] ],
+            displayMath: [ ["($$","$$)"] ],
+            skipTags: ["script","noscript","style","textarea"],
+            processEscapes: true,
+            processEnvironments: true,
+            preview: "TeX"
+        },
+        showProcessingMessages: false
+    });
+    </script>
+    <script src="../js/lib/mathjax-2.1/MathJax.js"></script>
     <script src="../js/G/G.js"></script>
     <script>
         G.req( 'UEditor', function( UEditor ) {
