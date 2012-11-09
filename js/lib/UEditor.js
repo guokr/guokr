@@ -5456,11 +5456,17 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                 className:'edui-for-link',
                 title:editor.options.labelMap.link || editor.getLang('labelMap.link') || '',
                 onclick:function () {
-                    var href        = '',           // 输入链接地址
-                        htmlTmpl    = '<input id="editorBlockValue" type="text" value="http://" class="b_txt"><p class="gui-block-bd-do"><a id="editorBlockClose1" data-operation="confirm" href="javascript: void 0;" class="mw_btn">确定</a><a class="blockClose" href="javascript: void 0;">取消</a></p><p id="editorBlockError" class="gui-block-error">&nbsp;</p>',
+                    var href        = 'http://',           // 输入链接地址
+                        htmlTmpl    = '',
                         range       = editor.selection.getRange(),
                         errorTip    = '你输入的网址不正确，请检查一下。有困难，<a href="/help/" target="_blank">联系客服</a>',
-                        urlReg      = /((http|ftp|https):\/\/)?[\w\-_]+(\.[\w\-_]+)+([\w\-\.,\@\?\^=%&:\/~\+#]*[\w\-\@\?\^=%&\/~\+#])?/;
+                        urlReg      = /((http|ftp|https):\/\/)?[\w\-_]+(\.[\w\-_]+)+([\w\-\.,\@\?\^=%&:\/~\+#]*[\w\-\@\?\^=%&\/~\+#])?/,
+                        parentNode  = domUtils.findParentByTagName( editor.selection.getStart(), "a", true );
+                        isEdit      = !!parentNode;
+                    if(editor.queryCommandState('link') === 1 && isEdit) {
+                        href = parentNode.getAttribute( 'data_ue_src' ) || parentNode.getAttribute( 'href', 2 );
+                    }
+                    htmlTmpl = '<input id="editorBlockValue" type="text" value="'+ href +'" class="b_txt"><p class="gui-block-bd-do"><a id="editorBlockClose1" data-operation="confirm" href="javascript: void 0;" class="mw_btn">确定</a><a class="blockClose" href="javascript: void 0;">取消</a></p><p id="editorBlockError" class="gui-block-error">&nbsp;</p>',
                     /**
                      * 判断链接是否格式正确
                      * @param {string} url  url值
@@ -5527,6 +5533,9 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                 }
             });
             editor.ui._dialogs['linkDialog'] = ui;          // TODO modify by weihu, 与原来传入dialog参数不一样
+            editor.addListener( 'selectionchange', function () {
+                ui.setChecked( editor.queryCommandState( 'link' ) );
+            });
             return ui;
         };
         editorui.insertvideo = function(editor){
@@ -5617,7 +5626,9 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                         range       = editor.selection.getRange(),
                         parentNode  = range.startContainer.parentNode,
                         mathClass   = 'edui-faked-mathjax',
-                        isEdit      = !!(parentNode.className === mathClass);
+                        isEdit      = !!(parentNode.className === mathClass),
+                        isBindCancel= false,                    // 是否取消等待加载
+                        t;                                      // setTimeout 设置的timeout
                     if(editor.queryCommandState('insertmathjax') === 1 && isEdit) {
                         text = parentNode.innerHTML;
                         range.selectNode(parentNode);           // 选中节点
@@ -5633,6 +5644,19 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                         }
                         editor.execCommand('insertmathjax', obj);
                         editor.block.close();
+                    }
+                    // 未加载好的处理
+                    function beforeMathLoaded() {
+                        editor.block.close();
+                        editor.ui._dialogs.insertmathjaxDialog._onClick();
+                    }
+                    // 取消等待加载
+                    function cancelWait() {
+                        console.log(t);
+                        console.log('clearTimeout ===========');
+                        clearTimeout(t);
+                        t = 0;
+                        isBindCancel = false;
                     }
 
                     // 判断是否打开状态
@@ -5655,7 +5679,7 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                                             CloseBlock();
                                         }
                                     }
-                                }
+                                 }
                             ],
                             function($blockContent) {
                                 if (typeof MathJax !== 'undefined') {
@@ -5664,11 +5688,44 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                                         $('#previewMathJax').text($('#editorBlockValue').val());
                                         MathJax.Hub.Queue(['Typeset', MathJax.Hub, $('#previewMathJax')[0]]);
                                     }).keyup();
+                                } else {
+                                    $blockContent.html('Not ready! Please wait!');
+                                    if(!t) {
+                                        t = setTimeout(function() {
+                                                           beforeMathLoaded();
+                                                       },
+                                                       1500
+                                                      );
+                                        console.log(t);
+                                        console.log('setTimeout ===========');
+                                    }
                                 }
                             }
                     )
                     .title('插入公式')
-                    .showCover();
+                    .showCover()
+                    /*
+                    .afterOpen(function(arg) {
+                        if(typeof MathJax === 'undefined') {
+                            arg[1].html('Not ready! Please wait!');
+                            if(!t) {
+                                t = setTimeout(function() {
+                                                   beforeMathLoaded();
+                                               },
+                                               1500
+                                              );
+                                console.log(t);
+                                console.log('setTimeout ===========');
+                            }
+                        }
+                    })
+                    */
+                    .afterOpen(function(arg) {
+                        if(t && !isBindCancel) {
+                            arg[0].find('.blockClose').unbind('click').one('click', cancelWait);
+                            isBindCancel = true;
+                        }
+                    });
                 }
             });
 
@@ -7622,7 +7679,9 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
         }
         UE.commands['link'] = {
             queryCommandState : function(){
-                return this.highlight ? -1 :0;
+                var link = domUtils.findParentByTagName( this.selection.getStart(), "a", true ),
+                    flag = link ? 1 : 0;
+                return this.highlight ? -1: flag;
             },
             execCommand : function( cmdName, opt ) {
                 var range = new dom.Range(this.document),
