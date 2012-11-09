@@ -897,8 +897,7 @@ hover样式：
 
 /* ui.Editor */
 .edui-editor {
-    border:  1px solid #ccc;
-    background-color: white;
+    border:  1px solid #D9D9D9;
     position: relative;
     overflow: visible;
 }
@@ -907,8 +906,8 @@ hover样式：
     zoom: 1;
 }
 .edui-editor-toolbarboxouter {
-    border-bottom:  1px solid #ccc;
-    background: white url(/skin/imgs/UEditor/toolbar_bg.png) repeat-x bottom left;
+    border-bottom:  1px solid #D9D9D9;
+    background-color: #F4F4F4;
 }
 .edui-editor-toolbarboxinner {
     padding: 2px;
