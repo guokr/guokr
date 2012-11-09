@@ -5618,16 +5618,15 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
         };
         editorui.insertmathjax = function(editor){
             var ui = new editorui.Button({
-                className:'edui-for-insertvideo',
+                className:'edui-for-insertmathjax',
                 title:editor.options.labelMap.insertmathjax || editor.getLang('labelMap.insertmathjax') || '',
                 onclick:function () {
                     var text        = '',                       // 输入公式
                         htmlTmpl    = '',
                         range       = editor.selection.getRange(),
                         parentNode  = range.startContainer.parentNode,
-                        mathClass   = 'edui-faked-mathjax',
+                        mathClass   = 'edui-faked-insertmathjax',
                         isEdit      = !!(parentNode.className === mathClass),
-                        isBindCancel= false,                    // 是否取消等待加载
                         t;                                      // setTimeout 设置的timeout
                     if(editor.queryCommandState('insertmathjax') === 1 && isEdit) {
                         text = parentNode.innerHTML;
@@ -5648,15 +5647,6 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                     // 未加载好的处理
                     function beforeMathLoaded() {
                         editor.block.close();
-                        editor.ui._dialogs.insertmathjaxDialog._onClick();
-                    }
-                    // 取消等待加载
-                    function cancelWait() {
-                        console.log(t);
-                        console.log('clearTimeout ===========');
-                        clearTimeout(t);
-                        t = 0;
-                        isBindCancel = false;
                     }
 
                     // 判断是否打开状态
@@ -5689,43 +5679,19 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                                         MathJax.Hub.Queue(['Typeset', MathJax.Hub, $('#previewMathJax')[0]]);
                                     }).keyup();
                                 } else {
-                                    $blockContent.html('Not ready! Please wait!');
+                                    $blockContent.html('Not ready! Please wait! AutoClose after 1 second!');
                                     if(!t) {
-                                        t = setTimeout(function() {
+                                        setTimeout(function() {
                                                            beforeMathLoaded();
                                                        },
-                                                       1500
-                                                      );
-                                        console.log(t);
-                                        console.log('setTimeout ===========');
+                                                       1000
+                                                  );
                                     }
                                 }
                             }
                     )
                     .title('插入公式')
-                    .showCover()
-                    /*
-                    .afterOpen(function(arg) {
-                        if(typeof MathJax === 'undefined') {
-                            arg[1].html('Not ready! Please wait!');
-                            if(!t) {
-                                t = setTimeout(function() {
-                                                   beforeMathLoaded();
-                                               },
-                                               1500
-                                              );
-                                console.log(t);
-                                console.log('setTimeout ===========');
-                            }
-                        }
-                    })
-                    */
-                    .afterOpen(function(arg) {
-                        if(t && !isBindCancel) {
-                            arg[0].find('.blockClose').unbind('click').one('click', cancelWait);
-                            isBindCancel = true;
-                        }
-                    });
+                    .showCover();
                 }
             });
 
@@ -6615,7 +6581,7 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                         // ---- add by weihu
                         if(editor.ui._dialogs.insertmathjaxDialog) {
                             var math = domUtils.findParent(editor.selection.getStart(), null, true);
-                            if(math.className === 'edui-faked-mathjax') {
+                            if(math.className === 'edui-faked-insertmathjax') {
                                 html += popup.formatHtml(
                                         '<nobr><span class="edui-clickable" onclick="$$._onEditMathJaxClick();">'+editor.getLang("modify")+'</span></nobr>');
                                 popup.showAnchorRect(math);
@@ -8086,9 +8052,9 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
     };
 
     // --- 插入公式 add by weihu ---
-    UE.plugins['mathjax'] = function (){
+    UE.plugins['insertmathjax'] = function (){
         var me      = this,
-            mathclass   = "edui-faked-mathjax";
+            mathclass   = "edui-faked-insertmathjax";
 
         function creatInsertStr(text, isBlock){
             if(isBlock) {
