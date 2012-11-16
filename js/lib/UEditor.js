@@ -3,7 +3,7 @@
  *
  */
 
-G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils) {
+G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils', 'at'], function(UBB, Overlay, UBBUtils, at) {
     (function () {
         // --- modify by mzhou ---
         var URL = '/';
@@ -5485,7 +5485,7 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                     // 关闭点击“确定”窗口
                     function CloseBlock() {
                         var obj = {
-                            'target': '_blank',
+                            'target': '_blank'
                         };
                         href = $('#editorBlockValue').val();
                         if (validateUrl(href)) {
@@ -5566,7 +5566,7 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                     // 关闭点击“确定”窗口
                     function CloseBlock() {
                         var obj = {
-                            'target': '_blank',
+                            'target': '_blank'
                         };
                         href = $('#editorBlockValue').val();
                         if (validateUrl(href) && UBBUtils.tValidateFlash(href)) {
@@ -5626,7 +5626,7 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                         range       = editor.selection.getRange(),
                         parentNode  = range.startContainer.parentNode,
                         mathClass   = 'edui-faked-insertmathjax',
-                        isEdit      = !!(parentNode.className === mathClass),
+                        isEdit      = !!(UE.dom.domUtils.hasClass(parentNode, mathClass)),
                         t;                                      // setTimeout 设置的timeout
                     if(editor.queryCommandState('insertmathjax') === 1 && isEdit) {
                         text = parentNode.innerHTML;
@@ -6581,10 +6581,9 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                         // ---- add by weihu
                         if(editor.ui._dialogs.insertmathjaxDialog) {
                             var math = domUtils.findParent(editor.selection.getStart(), null, true);
-                            if(math.className === 'edui-faked-insertmathjax') {
+                            if(UE.dom.domUtils.hasClass(math, 'edui-faked-insertmathjax')) {
                                 html += popup.formatHtml(
                                         '<nobr><span class="edui-clickable" onclick="$$._onEditMathJaxClick();">'+editor.getLang("modify")+'</span></nobr>');
-                                popup.showAnchorRect(math);
                             }
                         }
                         // ----
@@ -8076,7 +8075,7 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
             },
             queryCommandState : function(){
                 var p = me.selection.getRange().startContainer.parentNode,
-                    flag = p && (p.className === mathclass);
+                    flag = p && (UE.dom.domUtils.hasClass(p, mathclass));
                 return this.highlight ? -1 :(flag?1:0);
             }
         };
@@ -10878,6 +10877,65 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
         }
     };
 
+    // --- add by weihu ---
+    UE.plugins['at'] = function() {
+        var me = this,
+            atKey = '@';
+
+
+        me.addListener('keyup', function() {
+        //me.addListener('selectionchange', function(type, causeByUi) {     // 没有用selectionchange，因为shift+2不会触发selectionchange
+            // console.log(causeByUi);         // true 表示由用户交互引起的selectionchange
+            //if(causeByUi) {
+                var range = this.selection.getRange(),
+                    startOffset = range.startOffset,
+                    nodeValue = range.startContainer.nodeValue,
+                    leftChar = nodeValue.slice(startOffset-1, startOffset),
+                    span,
+                    containPos = {},
+                    pos = {};                       // 显示位置
+                    //console.log(leftChar);
+                // 成功后的回调函数
+                function afterSelect(name) {
+                    span.innerHTML = name;
+                    //range.setStartAtLast(span).setEndAtLast(span).select();
+                    range.setEndAtLast(span).select();
+                    //UE.dom.domUtils.mergSibling(span);
+                    range.removeInlineStyle('span').collapse(false).select();
+                }
+                // fail，取消at
+                function cancelAt() {
+                    //range.setEndAfter(span).select();
+                    range.setEndAfter(span);
+                    UE.dom.domUtils.remove(span);
+                    range.collapse(false).select();
+                }
+                if(leftChar === atKey) {
+                    span = this.document.createElement('span');
+                    range.insertNode(span);
+                    span.innerHTML = '&nbsp;';          // fix IE6-8, 否则pos.x = 8
+                    pos = UE.dom.domUtils.getXY(span);
+                    containPos = $(this.container).offset();
+                    pos.top = pos.y + containPos.top + $(this.container).children().eq(0).outerHeight();
+                    pos.left = pos.x + containPos.left;
+                    // fullscreen
+                    if(this.ui.isFullScreen()) {
+                        pos.top -= $(this.document).scrollTop();
+                    }
+
+                    at(pos, afterSelect, cancelAt, $(this.body));
+                    setTimeout(function() {             // 使at框获得焦点
+                        window.focus();
+                        $('.gui-at').find('input').focus();
+                    });
+                }
+
+            //}
+
+        });
+    };
+    // ---
+
     // --- 快捷健 ---
     UE.plugins['shortcutkeys'] = function() {
         var me = this,
@@ -10890,7 +10948,7 @@ G.def('UEditor', ['UBB', 'Overlay', 'UBBUtils'], function(UBB, Overlay, UBBUtils
                 "ctrl+shift+67" : "removeformat",
                 // "ctrl+shift+76" : "justify:left",
                 // "ctrl+shift+82" : "justify:right",
-                "ctrl+65" : "selectAll",
+                "ctrl+65" : "selectAll"
                 // "ctrl+13" : "autosubmit"//手动提交
             };
         me.addListener('keydown',function(type,e){

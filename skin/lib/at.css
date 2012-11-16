@@ -3,6 +3,7 @@
     position: absolute;
     width: 280px;
     background-color: #FFF;
+    z-index: 1105;
 }
     .gui-at input,
     .gui-at p {
