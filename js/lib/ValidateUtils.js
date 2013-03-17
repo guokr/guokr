@@ -13,7 +13,7 @@ G.def( 'ValidateUtils', function() {
 
     return {
         isEnglishAndNumber  : function( text ) {
-            return (/[^\x00-\xff]/ig).test( text );
+            return (/[\x00-\xff]/ig).test( text );
         },
         isNickname : function( s ){
             return !s.match(/[^\u3400-\u4db5\u4e00-\u9fcbA-Za-z0-9._\-]/);
